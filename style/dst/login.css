@@ -1,6 +1,50 @@
 /*
 Using SMACSS Architecture & BEM
 */
-h1 {
-  margin: 0 auto;
+body {
+  display: flex;
+  align-items: initial;
+  justify-content: initial;
+  flex-direction: column;
+}
+
+.nav {
+  min-height: 200px;
+  background-color: blueviolet;
+  position: relative;
+}
+
+.main {
+  min-height: 650px;
+  background-color: aquamarine;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.footer {
+  height: 100%;
+  background-color: crimson;
+}
+
+.nav__link {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.main__login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.login__info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }

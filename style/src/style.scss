@@ -3,31 +3,35 @@
 Using SMACSS Architecture & BEM
 */
 
-// Mixins y variables
-@mixin flex ($alItem: initial, $jusCon: initial){
-    display: flex;
-    align-items: $alItem;
-    justify-content: $jusCon;
-}
+// Imports
+@use 'mixins';
 
 // BASE_SMACSS
+html, body {
+    height: 100%;
+}
+
 body {
     font-size: 16px;
     font-family: Arial, Courier, monospace;
-
-    margin: 0;
-    padding: 0;
 }
 
 h1 {
-    font-size: 1.5em;
+    font-size: 2.5em;
+}
+
+h2 {
+    font-size: 2em;
+    margin: 0;
 }
 
 
 
 // LAYOUT_SMACSS
 .nav {
-    @include flex();
+    width: 100%;
+
+    @include mixins.flex(center, center);
 }
 
 // MODULES_SMACSS

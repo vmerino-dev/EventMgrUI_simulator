@@ -1,0 +1,8 @@
+
+// Mixins y variables
+@mixin flex ($alItem: initial, $jusCon: initial, $direction: initial){
+    display: flex;
+    align-items: $alItem;
+    justify-content: $jusCon;
+    flex-direction: $direction;
+}

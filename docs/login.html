@@ -33,22 +33,22 @@
     <body>
         <nav class="nav">
             <h1>Event Manager simulator</h1>
-            <a href="signin.html">Sign In</a>
+            <a class="nav__link" href="signin.html">Sign In</a>
         </nav>
-        <main>
+        <main class="main">
             <h2>Log In</h2>
             <form action="main.html" target="_self" method="post">
-                <fieldset>
-                    <label for="user">Introduce tu usuario o email
+                <fieldset class="main__login">
+                    <label class="login__info" for="user">Introduce tu usuario o email
                         <input id="user" type="text" minlength="3" maxlength="16" placeholder="Usuario" required>
                     </label>
-                    <label for="passwd">
+                    <label class="login__info" for="passwd">Introduce tu contraseña
                         <input id="passwd" type="password" minlength="3" maxlength="16" placeholder="Contraseña" required>
                     </label>
                     <button>Log In</button>
                 </fieldset>
             </form>
         </main>
-        <footer></footer>
+        <footer class="footer"></footer>
     </body>
 </html>

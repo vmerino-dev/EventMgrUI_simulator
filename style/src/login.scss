@@ -3,15 +3,48 @@
 Using SMACSS Architecture & BEM
 */
 
+// Imports
+@use 'mixins';
+
 // BASE_SMACSS
+body {
+    @include mixins.flex(initial, initial, column);
+}
 
 // LAYOUT_SMACSS
-h1 {
-    margin: 0 auto;
+.nav {
+    min-height: 200px;
+    background-color: blueviolet;
+    position: relative;
+}
+
+.main {
+    min-height: 650px;
+    background-color: aquamarine;
+    @include mixins.flex(center, center, column);
+}
+
+.footer {
+    height: 100%;
+    background-color: crimson;
 }
 
 
 // MODULES_SMACSS
+.nav__link {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.main__login {
+    @include mixins.flex(center, center, column);
+    gap: 10px;
+}
+
+.login__info {
+    @include mixins.flex(center, center, column);
+}
 
 // STATES_SMACSS
 
