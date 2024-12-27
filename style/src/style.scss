@@ -1,0 +1,37 @@
+
+/*
+Using SMACSS Architecture & BEM
+*/
+
+// Mixins y variables
+@mixin flex ($alItem: initial, $jusCon: initial){
+    display: flex;
+    align-items: $alItem;
+    justify-content: $jusCon;
+}
+
+// BASE_SMACSS
+body {
+    font-size: 16px;
+    font-family: Arial, Courier, monospace;
+
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    font-size: 1.5em;
+}
+
+
+
+// LAYOUT_SMACSS
+.nav {
+    @include flex();
+}
+
+// MODULES_SMACSS
+
+// STATES_SMACSS
+
+// THEMES_SMACSS

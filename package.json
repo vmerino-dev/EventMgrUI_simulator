@@ -1,0 +1,30 @@
+{
+  "name": "eventmgr-ui-simulator",
+  "version": "1.0.0",
+  "description": "An Event Manager for simulate frontend",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:css:login": "sass style/src/login.scss style/dst/login.css --no-source-map && postcss style/dst/login.css -o style/dst/login.css",
+    "build:css:style": "sass style/src/style.scss style/dst/style.css --no-source-map && postcss style/dst/style.css -o style/dst/style.css",
+    "build:css": "npm-run-all build:css:login build:css:style",
+    "watch:css": "nodemon --watch style/src --ext scss --exec \"npm run build:css\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "nodemon": "^3.1.9",
+    "postcss": "^8.4.49",
+    "postcss-cli": "^11.0.0",
+    "postcss-scss": "^4.0.9",
+    "sass": "^1.83.0"
+  },
+  "dependencies": {
+    "npm-run-all": "^4.1.5"
+  }
+}
