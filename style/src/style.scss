@@ -13,18 +13,20 @@ html, body {
 
 body {
     font-size: 16px;
-    font-family: Arial, Courier, monospace;
+    font-family: "TlW-SB", Arial, Courier, monospace;
 }
 
 h1 {
-    font-size: 2.5em;
+    font-size: 3em;
+    font-family: "TlW-bold";
 }
 
 h2 {
     font-size: 2em;
+    font-family: "TlW-bold";
+
     margin: 0;
 }
-
 
 
 // LAYOUT_SMACSS
@@ -39,3 +41,32 @@ h2 {
 // STATES_SMACSS
 
 // THEMES_SMACSS
+
+// Fuentes
+@font-face {
+    font-family: "TlW-SB";
+    src: url('../../assets/fonts/TitilliumWeb-SemiBold.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "TlW-SBIt";
+    src: url('../../assets/fonts/TitilliumWeb-SemiBoldItalic.ttf');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "TlW-bold";
+    src: url('../../assets/fonts/TitilliumWeb-Bold.ttf');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "TlW-boldIt";
+    src: url('../../assets/fonts/TitilliumWeb-BoldItalic.ttf');
+    font-weight: bold;
+    font-style: italic;
+}

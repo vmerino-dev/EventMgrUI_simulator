@@ -16,7 +16,6 @@ body {
 
 .main {
   min-height: 650px;
-  background-color: aquamarine;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,12 +28,17 @@ body {
 }
 
 .nav__link {
+  color: black;
+  text-decoration: none;
   position: absolute;
   top: 20px;
   right: 20px;
 }
 
 .main__login {
+  font-size: 1.3em;
+  padding: 80px 30px;
+  margin-top: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,7 +48,21 @@ body {
 
 .login__info {
   display: flex;
-  align-items: center;
+  align-items: initial;
   justify-content: center;
   flex-direction: column;
+}
+
+.info__input {
+  width: 400px;
+  margin-bottom: 12px;
+}
+
+.login__button {
+  width: 175px;
+}
+
+.login__button, .info__input {
+  height: 55px;
+  padding: 10px;
 }

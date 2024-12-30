@@ -18,9 +18,9 @@ body {
     position: relative;
 }
 
+// Main
 .main {
     min-height: 650px;
-    background-color: aquamarine;
     @include mixins.flex(center, center, column);
 }
 
@@ -32,19 +32,42 @@ body {
 
 // MODULES_SMACSS
 .nav__link {
+    color: black;
+    text-decoration: none;
+
     position: absolute;
     top: 20px;
     right: 20px;
 }
 
 .main__login {
+    font-size: 1.3em;
+
+    padding: 80px 30px;
+    margin-top: 20px;
     @include mixins.flex(center, center, column);
     gap: 10px;
 }
 
 .login__info {
-    @include mixins.flex(center, center, column);
+    @include mixins.flex(initial, center, column);
 }
+
+.info__input { // Input
+    width: 400px;
+    margin-bottom: 12px;
+}
+
+.login__button { // Button
+    // box-sizing --> border-box
+    width: 175px;
+}
+
+.login__button, .info__input { // Input + button
+    height: 55px;
+    padding: 10px;
+}
+
 
 // STATES_SMACSS
 
