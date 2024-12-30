@@ -8,13 +8,20 @@ Using SMACSS Architecture & BEM
 
 // BASE_SMACSS
 body {
+    background-image: url("../../assets/img/bg-janek-lachmann.jpg");
+    background-size: cover;
+    user-select: none;
+
     @include mixins.flex(initial, initial, column);
 }
 
 // LAYOUT_SMACSS
 .nav {
+    color: map-get(mixins.$colors, "whx0");
+    color: map-get(mixins.$colors, "wh");
+    background-image: url("../../assets/img/bg-jigar-panchal.jpg");
+
     min-height: 200px;
-    background-color: blueviolet;
     position: relative;
 }
 
@@ -25,26 +32,46 @@ body {
 }
 
 .footer {
+    color: map-get(mixins.$colors, "blx0");
+    color: map-get(mixins.$colors, "bl");
     height: 100%;
-    background-color: crimson;
+
+    @include mixins.flex(center, center, column);
 }
 
 
 // MODULES_SMACSS
 .nav__link {
-    color: black;
+    color: map-get(mixins.$colors, "wh");
+    padding: 5px;
+    font-size: 1.3em;
     text-decoration: none;
+    border: 1px solid #ffffff;
+    border-radius: 10px;
 
     position: absolute;
     top: 20px;
     right: 20px;
+
+    &:hover {
+        color: map-get(mixins.$colors, "blx0");
+        color: map-get(mixins.$colors, "bl");
+        background-color: map-get(mixins.$colors, "whx0");
+        background-color: map-get(mixins.$colors, "wh");
+    }
+
+    &:active {
+        background-color: map-get(mixins.$colors, "prx0");
+        background-color: map-get(mixins.$colors, "pr");
+    }
 }
 
 .main__login {
     font-size: 1.3em;
-
     padding: 80px 30px;
     margin-top: 20px;
+
+    backdrop-filter: blur(10px);
     @include mixins.flex(center, center, column);
     gap: 10px;
 }
@@ -55,17 +82,35 @@ body {
 
 .info__input { // Input
     width: 400px;
-    margin-bottom: 12px;
+    margin: 8px 0 12px 0;
+
 }
 
 .login__button { // Button
-    // box-sizing --> border-box
+    // box-sizing --> border-box (default)
+    color: map-get(mixins.$colors, "whx0");
+    color: map-get(mixins.$colors, "wh");
+    background-color: map-get(mixins.$colors, "blx0");
+    background-color: map-get(mixins.$colors, "bl");
     width: 175px;
+
+    &:hover {
+        color: map-get(mixins.$colors, "blx0");
+        color: map-get(mixins.$colors, "bl");
+        background-color: map-get(mixins.$colors, "whx0");
+        background-color: map-get(mixins.$colors, "wh");
+    }
 }
 
 .login__button, .info__input { // Input + button
     height: 55px;
     padding: 10px;
+}
+
+// Border-radius
+.main__login, .info__input, .login__button {
+    border: 1px solid #ffffff66;
+    border-radius: 20px;
 }
 
 

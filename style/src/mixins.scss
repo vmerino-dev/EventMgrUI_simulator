@@ -6,3 +6,12 @@
     justify-content: $jusCon;
     flex-direction: $direction;
 }
+
+$colors: (
+    "wh": oklch(90.02% 0.0092 248),
+    "whx0": #d9dfe4,
+    "bl": oklch(13.17% 0.0092 248),
+    "blx0": #05080b,
+    "pr": oklch(43.14% 0.1805 322.81),
+    "prx0": #7b1a88
+);

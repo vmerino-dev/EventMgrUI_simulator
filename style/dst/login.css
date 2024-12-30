@@ -2,6 +2,11 @@
 Using SMACSS Architecture & BEM
 */
 body {
+  background-image: url("../../assets/img/bg-janek-lachmann.jpg");
+  background-size: cover;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
   display: flex;
   align-items: initial;
   justify-content: initial;
@@ -9,8 +14,10 @@ body {
 }
 
 .nav {
+  color: #d9dfe4;
+  color: oklch(90.02% 0.0092 248deg);
+  background-image: url("../../assets/img/bg-jigar-panchal.jpg");
   min-height: 200px;
-  background-color: blueviolet;
   position: relative;
 }
 
@@ -23,22 +30,43 @@ body {
 }
 
 .footer {
+  color: #05080b;
+  color: oklch(13.17% 0.0092 248deg);
   height: 100%;
-  background-color: crimson;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .nav__link {
-  color: black;
+  color: oklch(90.02% 0.0092 248deg);
+  padding: 5px;
+  font-size: 1.3em;
   text-decoration: none;
+  border: 1px solid #ffffff;
+  border-radius: 10px;
   position: absolute;
   top: 20px;
   right: 20px;
+}
+.nav__link:hover {
+  color: #05080b;
+  color: oklch(13.17% 0.0092 248deg);
+  background-color: #d9dfe4;
+  background-color: oklch(90.02% 0.0092 248deg);
+}
+.nav__link:active {
+  background-color: #7b1a88;
+  background-color: oklch(43.14% 0.1805 322.81deg);
 }
 
 .main__login {
   font-size: 1.3em;
   padding: 80px 30px;
   margin-top: 20px;
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,14 +83,29 @@ body {
 
 .info__input {
   width: 400px;
-  margin-bottom: 12px;
+  margin: 8px 0 12px 0;
 }
 
 .login__button {
+  color: #d9dfe4;
+  color: oklch(90.02% 0.0092 248deg);
+  background-color: #05080b;
+  background-color: oklch(13.17% 0.0092 248deg);
   width: 175px;
+}
+.login__button:hover {
+  color: #05080b;
+  color: oklch(13.17% 0.0092 248deg);
+  background-color: #d9dfe4;
+  background-color: oklch(90.02% 0.0092 248deg);
 }
 
 .login__button, .info__input {
   height: 55px;
   padding: 10px;
+}
+
+.main__login, .info__input, .login__button {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 20px;
 }
