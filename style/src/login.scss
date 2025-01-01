@@ -10,6 +10,8 @@ Using SMACSS Architecture & BEM
 body {
     background-image: url("../../assets/img/bg-janek-lachmann.jpg");
     background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     user-select: none;
 
     @include mixins.flex(initial, initial, column);
@@ -23,6 +25,11 @@ body {
 
     min-height: 200px;
     position: relative;
+
+    // media query
+    @include mixins.mq-width(768px) {
+        min-height: 170px;
+    }
 }
 
 // Main
@@ -30,9 +37,11 @@ body {
     min-height: 650px;
     @include mixins.flex(center, center, column);
 
-    @include mixins.mq-width(1600px) {
-        min-height: 600px;
+    // media query
+    @include mixins.mq-width(768px) {
+        justify-content: flex-start;
     }
+
 }
 
 .footer {
@@ -68,6 +77,18 @@ body {
         background-color: map-get(mixins.$colors, "prx0");
         background-color: map-get(mixins.$colors, "pr");
     }
+
+    // media query
+    @include mixins.mq-width(768px) {
+        font-size: 1em;
+        border-radius: 17px;
+    }
+
+    // media query
+    @include mixins.mq-width(768px) {
+        top: 20px;
+        right: 20px;
+    }
 }
 
 .main__login {
@@ -85,13 +106,10 @@ body {
 }
 
 .info__input { // Input
-    width: mixins.$inputDef;
+    width: 400px;
     margin: 8px 0 12px 0;
     cursor: pointer;
 
-    @include mixins.mq-width(1600px) {
-        width: mixins.$inputDef1600;
-    }
 }
 
 .login__button { // Button
@@ -100,7 +118,7 @@ body {
     color: map-get(mixins.$colors, "wh");
     background-color: map-get(mixins.$colors, "blx0");
     background-color: map-get(mixins.$colors, "bl");
-    width: mixins.$buttonDef;
+    width: 175px;
     cursor: pointer;
 
     // HOVER
@@ -109,11 +127,6 @@ body {
         color: map-get(mixins.$colors, "bl");
         background-color: map-get(mixins.$colors, "whx0");
         background-color: map-get(mixins.$colors, "wh");
-    }
-
-    // MEDIA QUERY
-    @include mixins.mq-width(1600px) {
-        width: mixins.$buttonDef1600;
     }
 }
 
@@ -132,3 +145,17 @@ body {
 // STATES_SMACSS
 
 // THEMES_SMACSS
+h1 { // h1 heredaba de style.scss
+    // media query
+    @include mixins.mq-width(660px) {
+        font-size: 2.5em;
+    }
+}
+
+h2 {
+    // media query
+    @include mixins.mq-width(660px) {
+        font-size: 1.5em;
+    }
+}
+
