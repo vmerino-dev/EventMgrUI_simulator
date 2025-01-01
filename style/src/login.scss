@@ -29,6 +29,10 @@ body {
 .main {
     min-height: 650px;
     @include mixins.flex(center, center, column);
+
+    @include mixins.mq-width(1600px) {
+        min-height: 600px;
+    }
 }
 
 .footer {
@@ -43,15 +47,15 @@ body {
 // MODULES_SMACSS
 .nav__link {
     color: map-get(mixins.$colors, "wh");
-    padding: 5px;
+    padding: 10px;
     font-size: 1.3em;
     text-decoration: none;
-    border: 1px solid #ffffff;
-    border-radius: 10px;
+    border: 1px solid #ffffff66;
+    border-radius: 20px;
 
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 30px;
+    right: 30px;
 
     &:hover {
         color: map-get(mixins.$colors, "blx0");
@@ -81,9 +85,13 @@ body {
 }
 
 .info__input { // Input
-    width: 400px;
+    width: mixins.$inputDef;
     margin: 8px 0 12px 0;
+    cursor: pointer;
 
+    @include mixins.mq-width(1600px) {
+        width: mixins.$inputDef1600;
+    }
 }
 
 .login__button { // Button
@@ -92,13 +100,20 @@ body {
     color: map-get(mixins.$colors, "wh");
     background-color: map-get(mixins.$colors, "blx0");
     background-color: map-get(mixins.$colors, "bl");
-    width: 175px;
+    width: mixins.$buttonDef;
+    cursor: pointer;
 
+    // HOVER
     &:hover {
         color: map-get(mixins.$colors, "blx0");
         color: map-get(mixins.$colors, "bl");
         background-color: map-get(mixins.$colors, "whx0");
         background-color: map-get(mixins.$colors, "wh");
+    }
+
+    // MEDIA QUERY
+    @include mixins.mq-width(1600px) {
+        width: mixins.$buttonDef1600;
     }
 }
 

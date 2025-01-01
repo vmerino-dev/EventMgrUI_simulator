@@ -1,6 +1,16 @@
 /*
 Using SMACSS Architecture & BEM
 */
+/*
+****************************************************
+                Variables login.html
+****************************************************
+*/
+/*
+*****************************************
+                Mixins
+*****************************************
+*/
 body {
   background-image: url("../../assets/img/bg-janek-lachmann.jpg");
   background-size: cover;
@@ -28,6 +38,11 @@ body {
   justify-content: center;
   flex-direction: column;
 }
+@media screen and (max-width: 1600px) {
+  .main {
+    min-height: 600px;
+  }
+}
 
 .footer {
   color: #05080b;
@@ -41,14 +56,14 @@ body {
 
 .nav__link {
   color: oklch(90.02% 0.0092 248deg);
-  padding: 5px;
+  padding: 10px;
   font-size: 1.3em;
   text-decoration: none;
-  border: 1px solid #ffffff;
-  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 20px;
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 30px;
+  right: 30px;
 }
 .nav__link:hover {
   color: #05080b;
@@ -84,6 +99,12 @@ body {
 .info__input {
   width: 400px;
   margin: 8px 0 12px 0;
+  cursor: pointer;
+}
+@media screen and (max-width: 1600px) {
+  .info__input {
+    width: 300px;
+  }
 }
 
 .login__button {
@@ -92,12 +113,18 @@ body {
   background-color: #05080b;
   background-color: oklch(13.17% 0.0092 248deg);
   width: 175px;
+  cursor: pointer;
 }
 .login__button:hover {
   color: #05080b;
   color: oklch(13.17% 0.0092 248deg);
   background-color: #d9dfe4;
   background-color: oklch(90.02% 0.0092 248deg);
+}
+@media screen and (max-width: 1600px) {
+  .login__button {
+    width: 131px;
+  }
 }
 
 .login__button, .info__input {

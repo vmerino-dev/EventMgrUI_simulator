@@ -1,11 +1,5 @@
 
 // Mixins y variables
-@mixin flex ($alItem: initial, $jusCon: initial, $direction: initial){
-    display: flex;
-    align-items: $alItem;
-    justify-content: $jusCon;
-    flex-direction: $direction;
-}
 
 $colors: (
     "wh": oklch(90.02% 0.0092 248),
@@ -15,3 +9,40 @@ $colors: (
     "pr": oklch(43.14% 0.1805 322.81),
     "prx0": #7b1a88
 );
+
+/*
+****************************************************
+                Variables login.html
+****************************************************
+*/
+
+// WIDTH Input and Button
+$inputDef: 400px; // 400px por defecto (input)
+$buttonDef: 175px; // 175px por defecto (button)
+
+// size - (size * 0.25)
+$inputDef1600: 300px; // 300px para 1600px (input)
+$buttonDef1600: 131px; // 150px para 1600px (button)
+
+
+// HEIGHT Input and Button
+
+
+/*
+*****************************************
+                Mixins
+*****************************************
+*/
+@mixin flex ($alItem: initial, $jusCon: initial, $direction: initial){
+    display: flex;
+    align-items: $alItem;
+    justify-content: $jusCon;
+    flex-direction: $direction;
+}
+
+// Mixin para responsive design
+@mixin mq-width($medida: 480px){
+    @media screen and (max-width: $medida){
+        @content;
+    }
+}
