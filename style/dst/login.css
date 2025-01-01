@@ -111,6 +111,11 @@ body {
   justify-content: center;
   flex-direction: column;
   gap: 10px;
+  transition: box-shadow 0.5s, scale 0.5s;
+}
+.main__login:hover {
+  scale: 1.05;
+  box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.2);
 }
 
 .login__info {
@@ -182,5 +187,25 @@ body {
   }
   .info__input, .login__button {
     height: 41px;
+  }
+}
+@media screen and (max-width: 414px) {
+  h1 {
+    font-size: 1.7em;
+  }
+  .nav {
+    min-height: 150px;
+  }
+  .main__login {
+    padding: 60px 20px;
+  }
+  .info__input {
+    width: 255px;
+  }
+  .login__button {
+    width: 111px;
+  }
+  .info__input, .login__button {
+    height: 38px;
   }
 }

@@ -109,6 +109,13 @@ body {
     backdrop-filter: blur(10px);
     @include mixins.flex(center, center, column);
     gap: 10px;
+
+    &:hover {
+        scale: 1.05;
+        box-shadow: 0 0 6px 2px #00000033;
+    }
+
+    transition: box-shadow 0.5s, scale 0.5s;
 }
 
 .login__info {
@@ -194,5 +201,32 @@ h2 { // h2 heredaba de style.scss
 
     .info__input, .login__button { // Input + button
         height: 41px;
+    }
+}
+
+// Media query 414px
+@media screen and (max-width: 414px) {
+    h1 {
+        font-size: 1.7em;
+    } // h2 permanece en 1.5em
+
+    .nav{
+        min-height: 150px; // 170px --> 150px
+    }
+
+    .main__login{ // fieldset
+        padding: 60px 20px;
+    }
+
+    .info__input { // Input
+        width: 255px; // -15% de píxeles
+    }
+
+    .login__button { // Button
+        width: 111px; // -15% de píxeles
+    }
+
+    .info__input, .login__button { // Input + button
+        height: 38px; // -15% de píxeles
     }
 }
