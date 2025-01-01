@@ -42,6 +42,16 @@ body {
         justify-content: flex-start;
     }
 
+    // media query
+    @include mixins.mq-width(660px) {
+        min-height: 550px;
+    }
+
+    // media query
+    @include mixins.mq-width() { // 480px
+        min-height: 450px;
+    }
+
 }
 
 .footer {
@@ -145,17 +155,44 @@ body {
 // STATES_SMACSS
 
 // THEMES_SMACSS
+
+// *** Media Queries ***
 h1 { // h1 heredaba de style.scss
-    // media query
     @include mixins.mq-width(660px) {
         font-size: 2.5em;
     }
 }
 
-h2 {
-    // media query
+h2 { // h2 heredaba de style.scss
     @include mixins.mq-width(660px) {
         font-size: 1.5em;
     }
 }
 
+// Media query 520px
+@media screen and (max-width: 520px) {
+    h1 {
+        font-size: 2em;
+    } // h2 permanece en 1.5em
+
+    main {
+        justify-content: center;
+    }
+
+    .main__login{ // fieldset
+        font-size: 1.1em; // 1.3em --> 1em
+        padding: 60px 30px;
+    }
+
+    .info__input { // Input
+        width: 300px; // -25% de píxeles
+    }
+
+    .login__button { // Button
+        width: 131px; // -25% de píxeles
+    }
+
+    .info__input, .login__button { // Input + button
+        height: 41px;
+    }
+}
