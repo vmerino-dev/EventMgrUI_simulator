@@ -1,3 +1,4 @@
+"use strict";
 
 /*
 ****************************************
@@ -39,6 +40,9 @@ class User {
     #worskhopEvents = [];
     #msgThreads = [];
 
+    // Para cada obj Interaction solo puede haber una url de vídeo única por usuario
+    #interacciones = []; // Lista de obj Interaction (interacciones con los vídeos)
+
     // Constructor
     constructor(username, email, passwd) {
         // Crear excepción si el usuario ya existe
@@ -48,16 +52,32 @@ class User {
     }
 
     // getters
-    get username() {
+    get username() { // Devuelve el nombre de usuario
         return this.#username;
     }
 
-    get email() {
+    get email() { // Devuelve el email
         return this.#email;
     }
 
-    get passwd(){
+    get passwd(){ // Devuelve la contraseña
         return this.#passwd;
+    }
+
+    get conferenceEvents() { // Devuelve los eventos de conferencia
+        return this.#conferenceEvents;
+    }
+
+    get workshopEvents() { // Devuelve los eventos de taller
+        return this.#worskhopEvents;
+    }
+
+    get msgThreads() { // Devuelve los hilos de mensajes (conversaciones)
+        return this.#msgThreads;
+    }
+
+    get interacciones() { // Devuelve las interacciones con los vídeos
+        return this.#interacciones;
     }
 
     // setters
