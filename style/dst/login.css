@@ -76,12 +76,14 @@ body {
   position: absolute;
   top: 30px;
   right: 30px;
+  transition: box-shadow 0.3s ease, color 0.3s ease;
 }
 .nav__link:hover {
   color: #05080b;
   color: oklch(13.17% 0.0092 248deg);
   background-color: #d9dfe4;
   background-color: oklch(90.02% 0.0092 248deg);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.5333333333);
 }
 .nav__link:active {
   background-color: #7b1a88;
@@ -100,6 +102,14 @@ body {
   }
 }
 
+.nav__title {
+  animation: appear 1s 0.1s both;
+  transition: text-shadow 0.5s;
+}
+.nav__title:hover {
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.6666666667);
+}
+
 .main__login {
   font-size: 1.3em;
   padding: 80px 30px;
@@ -115,7 +125,7 @@ body {
 }
 .main__login:hover {
   scale: 1.05;
-  box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.2);
 }
 
 .login__info {
@@ -156,6 +166,14 @@ body {
   border-radius: 20px;
 }
 
+@keyframes appear {
+  from {
+    filter: blur(10px);
+  }
+  to {
+    filter: blur(0px);
+  }
+}
 @media screen and (max-width: 660px) {
   h1 {
     font-size: 2.5em;

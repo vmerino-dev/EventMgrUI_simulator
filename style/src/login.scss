@@ -75,12 +75,15 @@ body {
     position: absolute;
     top: 30px;
     right: 30px;
+    
+    transition: box-shadow 0.3s ease, color 0.3s ease;
 
     &:hover {
         color: map-get(mixins.$colors, "blx0");
         color: map-get(mixins.$colors, "bl");
         background-color: map-get(mixins.$colors, "whx0");
         background-color: map-get(mixins.$colors, "wh");
+        box-shadow: 0 0 6px #ffffff88;
     }
 
     &:active {
@@ -101,6 +104,15 @@ body {
     }
 }
 
+.nav__title {
+    animation: appear 1s 0.1s both;
+
+    transition: text-shadow 0.5s;
+    &:hover {
+        text-shadow: 0 0 4px #ffffffaa;
+    }
+}
+
 .main__login {
     font-size: 1.3em;
     padding: 80px 30px;
@@ -112,7 +124,7 @@ body {
 
     &:hover {
         scale: 1.05;
-        box-shadow: 0 0 6px 2px #00000033;
+        box-shadow: 0 0 6px 2px #ffffff33;
     }
 
     transition: box-shadow 0.5s, scale 0.5s;
@@ -162,6 +174,17 @@ body {
 // STATES_SMACSS
 
 // THEMES_SMACSS
+
+// *** Animations ***
+@keyframes appear {
+    from {
+        filter: blur(10px);
+    }
+
+    to {
+        filter: blur(0px);
+    }
+}
 
 // *** Media Queries ***
 h1 { // h1 heredaba de style.scss
