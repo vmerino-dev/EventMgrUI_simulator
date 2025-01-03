@@ -30,7 +30,7 @@ class EventMgr {
 
 class Event { // Clase pseudo-abstracta
     #files = []; // Lista de archivos
-    #videos = []; // Lista de URLs de los vídeos
+    #videos = []; // Lista de objetos Video
     #location; // Ubicación del evento
     #date; // Fecha del evento
     
@@ -137,14 +137,43 @@ class ConferenceStream { // Clase para los directos de conferencias
     }
 }
 
+class Video { // Clase para los vídeos
+    #url; // URL del vídeo
+    #title; // Título del vídeo
+    #description; // Descripción del vídeo
+    #tags = []; // Lista de etiquetas
+
+    // Constructor
+    constructor(url, title, description, tags = []){
+        this.#url = url;
+        this.#title = title;
+        this.#description = description;
+        this.#tags = tags;
+    }
+
+    // getters
+    get url(){
+        return this.#url;
+    }
+    get title(){
+        return this.#title;
+    }
+    get description(){
+        return this.#description;
+    }
+    get tags(){
+        return this.#tags;
+    }
+}
+
 class Interaction { // Interacciones con los vídeos por parte de los usuarios
-    #id; // Identificador único
-    #video; // URL del vídeo
+    #id; // Identificador único interacción
+    #urlVideo; // URL del vídeo (generalmente video.url)
     #time; // Tiempo de la interacción (float)
 
     // Constructor
-    constructor(video, time){
-        this.#video = video;
+    constructor(urlVideo, time){
+        this.#urlVideo = urlVideo;
         this.#time = time;
 
         // Generar id único
@@ -152,8 +181,11 @@ class Interaction { // Interacciones con los vídeos por parte de los usuarios
     }
 
     // getters
-    get video(){
-        return this.#video;
+    get id(){
+        return this.#id;
+    }
+    get url(){
+        return this.#urlVideo;
     }
     get time(){
         return this.#time;

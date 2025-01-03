@@ -112,6 +112,32 @@ class User {
         // Eliminamos el hilo de mensajes
         this.#msgThreads.splice(index, 1);
     }
+
+    // Métodos para interacciones
+    newVideoInteraction(url) {
+        
+        // Validamos que no haya otra interacción con la misma url
+        for(let interacAnterior of this.#interacciones) {
+            if(interacAnterior.url === url)
+                throw new VideoInteractionError("Ya existe una interacción con ese vídeo", url);
+        }
+
+        // La interacción es única, la añadimos. Esto quiere decir que el usuario no ha visitado antes el video
+        const interaction = new Interaction(url, 0);
+
+        this.#interacciones.push(interaction);
+    }
+
+    modVideoInteraction(url, time) {
+        const interaccion = this.#interacciones.find(interac => interac.url === url);
+
+        // Validamos que exista una interacción con ese vídeo
+        if(interaccion === undefined)
+            throw new VideoInteractionError("No existe una interacción con ese vídeo", url);
+
+        // Modificamos el tiempo de la interacción
+        interaccion.time = time;
+    }
 }
 
 class MessageThread {
