@@ -76,7 +76,7 @@ body {
   position: absolute;
   top: 30px;
   right: 30px;
-  transition: box-shadow 0.3s ease, color 0.3s ease;
+  transition: box-shadow 0.3s ease, color 0.3s ease, scale 0.2s ease;
 }
 .nav__link:hover {
   color: #05080b;
@@ -84,10 +84,14 @@ body {
   background-color: #d9dfe4;
   background-color: oklch(90.02% 0.0092 248deg);
   box-shadow: 0 0 6px rgba(255, 255, 255, 0.5333333333);
+  scale: 1.1;
+  transition: scale 0.4s ease;
 }
 .nav__link:active {
   background-color: #7b1a88;
   background-color: oklch(43.14% 0.1805 322.81deg);
+  scale: 0.95;
+  transition: scale 0.4s ease;
 }
 @media screen and (max-width: 768px) {
   .nav__link {
@@ -104,9 +108,10 @@ body {
 
 .nav__title {
   animation: appear 1s 0.1s both;
-  transition: text-shadow 0.5s;
+  transition: text-shadow 0.25s;
 }
 .nav__title:hover {
+  transition: text-shadow 0.4s;
   text-shadow: 0 0 4px rgba(255, 255, 255, 0.6666666667);
 }
 
@@ -121,11 +126,12 @@ body {
   justify-content: center;
   flex-direction: column;
   gap: 10px;
-  transition: box-shadow 0.5s, scale 0.5s;
+  transition: box-shadow 0.25s, scale 0.25s;
 }
 .main__login:hover {
-  scale: 1.05;
+  scale: 1.009;
   box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.2);
+  transition: box-shadow 0.5s, scale 0.5s;
 }
 
 .login__info {
@@ -148,12 +154,18 @@ body {
   background-color: oklch(13.17% 0.0092 248deg);
   width: 175px;
   cursor: pointer;
+  transition: color 0.25s, background-color 0.25s, scale 0.25s;
 }
 .login__button:hover {
   color: #05080b;
   color: oklch(13.17% 0.0092 248deg);
   background-color: #d9dfe4;
   background-color: oklch(90.02% 0.0092 248deg);
+  scale: 1.05;
+  transition: color 0.5s, background-color 0.5s, scale 0.5s;
+}
+.login__button:active {
+  scale: 0.95;
 }
 
 .login__button, .info__input {
@@ -164,6 +176,14 @@ body {
 .main__login, .info__input, .login__button {
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 20px;
+}
+
+.footer__title {
+  transition: transform 0.15s ease;
+}
+.footer__title:hover {
+  transition: transform 0.3s ease;
+  transform: rotate(10deg);
 }
 
 @keyframes appear {

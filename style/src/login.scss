@@ -76,7 +76,7 @@ body {
     top: 30px;
     right: 30px;
     
-    transition: box-shadow 0.3s ease, color 0.3s ease;
+    transition: box-shadow 0.3s ease, color 0.3s ease, scale .2s ease;
 
     &:hover {
         color: map-get(mixins.$colors, "blx0");
@@ -84,11 +84,15 @@ body {
         background-color: map-get(mixins.$colors, "whx0");
         background-color: map-get(mixins.$colors, "wh");
         box-shadow: 0 0 6px #ffffff88;
+        scale: 1.1;
+        transition: scale .4s ease;
     }
 
     &:active {
         background-color: map-get(mixins.$colors, "prx0");
         background-color: map-get(mixins.$colors, "pr");
+        scale: 0.95;
+        transition: scale .4s ease;
     }
 
     // media query
@@ -107,8 +111,10 @@ body {
 .nav__title {
     animation: appear 1s 0.1s both;
 
-    transition: text-shadow 0.5s;
+    transition: text-shadow .25s;
+
     &:hover {
+        transition: text-shadow .4s;
         text-shadow: 0 0 4px #ffffffaa;
     }
 }
@@ -122,12 +128,14 @@ body {
     @include mixins.flex(center, center, column);
     gap: 10px;
 
-    &:hover {
-        scale: 1.05;
-        box-shadow: 0 0 6px 2px #ffffff33;
-    }
+    transition: box-shadow .25s, scale .25s;
 
-    transition: box-shadow 0.5s, scale 0.5s;
+    &:hover {
+        scale: 1.009;
+        box-shadow: 0 0 6px 2px #ffffff33;
+        transition: box-shadow .5s, scale .5s;
+    }
+    
 }
 
 .login__info {
@@ -150,12 +158,20 @@ body {
     width: 175px;
     cursor: pointer;
 
+    transition: color .25s, background-color .25s, scale .25s;
     // HOVER
     &:hover {
         color: map-get(mixins.$colors, "blx0");
         color: map-get(mixins.$colors, "bl");
         background-color: map-get(mixins.$colors, "whx0");
         background-color: map-get(mixins.$colors, "wh");
+        scale: 1.05;
+        transition: color .5s, background-color .5s, scale .5s;
+    }
+
+    // ACTIVE
+    &:active {
+        scale: .95;
     }
 }
 
@@ -172,6 +188,14 @@ body {
 
 
 // STATES_SMACSS
+
+.footer__title { // Rotación h2 footer
+    transition: transform .15s ease;
+    &:hover {
+        transition: transform .3s ease;
+        transform: rotate(10deg);
+    }
+}
 
 // THEMES_SMACSS
 
