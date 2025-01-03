@@ -5,6 +5,30 @@
 ****************************************
 */
 
+class UserMgr {
+    #users = {}; // {id: user, id2: user2, ...}
+
+    // getters
+    get users() { // Devuelve un array con los usuarios. Deberá guardarse en IndexedDB
+        return this.#users;
+    }
+
+    getUser(id) { // Devuelve un usuario
+        return this.#users[id];
+    }
+
+    // Métodos
+    addUser(username, email, passwd) {
+        let user = new User(username, email, passwd);
+        let id = Utils.createId(); // Generamos un UUID
+        this.#users[id] = user;
+    }
+
+    deleteUser(id) {
+        delete this.#users[id];
+    }
+}
+
 class User {
     // Propiedades privadas
     #username;

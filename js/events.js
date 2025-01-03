@@ -27,8 +27,6 @@ class EventMgr {
     }
 }
 
-let eventMgr = new EventMgr();
-
 class Event {
 
 }
