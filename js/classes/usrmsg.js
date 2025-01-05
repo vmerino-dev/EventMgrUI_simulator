@@ -4,6 +4,10 @@
 ****************************************
         User Message Classes
 ****************************************
+
+La verbosidad se controla con la variable verbose en main.js
+Va desde v (verbose) a vvv (muy verbose)
+
 */
 
 // En una sesión de un usuario debe haber una variable que almacene el id de ese usuario
@@ -170,6 +174,10 @@ class User {
 
     // Este método se invoca desde UserMgr para validación
     createMessageThread(user_dst) { // user_dst es un objeto User
+        // Validamos que no exista ya un hilo de mensajes con user_dst
+        if(this.#msgThreads.some(thread => thread.user_dst === user_dst))
+            throw new UserError("Ya existe un hilo de mensajes con ese usuario", this.#username);
+
         let msgThread = new MessageThread(this, user_dst);
         this.#msgThreads.push(msgThread); // Hilo de msgs en user_src
         user_dst.#msgThreads.push(msgThread); // Hilo de msgs en user_dst
