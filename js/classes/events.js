@@ -86,7 +86,7 @@ class ConferenceEvent extends Event { // Evento de conferencia
     }
 
     
-    // Métodos para el stream (directo)
+    /* Métodos para el stream (directo) */
 
     // Método que lanza excepción si ya hay un directo programado
     addStream(date, durationAprox){ // Añadir un directo

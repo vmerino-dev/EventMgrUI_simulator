@@ -1,12 +1,13 @@
 "use strict";
 
+
 /*
 ****************************************
         User Message Classes
 ****************************************
 
 La verbosidad se controla con la variable verbose en main.js
-Va desde v (verbose) a vvv (muy verbose)
+Va desde v (verbose) a vvvv (muy verbose)
 
 */
 
@@ -237,6 +238,7 @@ class User {
         if(!(this.#interacciones.some(interac => interac.url === url)))
             throw new VideoInteractionError("No existe una interacción con ese vídeo", url);
 
+        let interaccion = this.#interacciones.some(interac => interac.url === url);
         // Modificamos el tiempo de la interacción
         interaccion.time = time;
     }

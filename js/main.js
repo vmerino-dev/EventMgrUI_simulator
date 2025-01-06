@@ -12,11 +12,7 @@
 *********************/
 
 
-
 // Creando gestor de usuarios y de eventos.
 // Se tienen que cargar desde IndexedDB si existen y guardarse al final
 let userMgr = new UserMgr();
 let eventMgr = new EventMgr();
-
-// Verbosidad
-let verbose = "vvv";
