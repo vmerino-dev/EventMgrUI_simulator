@@ -11,6 +11,12 @@ Va desde v (verbose) a vvvv (muy verbose)
 
 */
 
+/******************
+ * Importaciones
+ ******************/
+
+import logs from "../log.js";
+
 // En una sesión de un usuario debe haber una variable que almacene el id de ese usuario
 class UserMgr {
     #users = {}; // {id: user, id2: user2, ...}
@@ -51,6 +57,9 @@ class UserMgr {
         let user = new User(username, email, passwd);
         let id = Utils.createId(); // Generamos un UUID
         this.#users[id] = user;
+
+        // 📃 [===== LOG_V =====] 
+        if(logs.verbosity >= 1) console.info(`${logs.getLogDate()} [INFO] New user => username: ${username}, email: ${email}`);
     }
 
     // Siempre que se deba modificar nombre de usuario, invocar este metodo, no setter de User (por la validación)
@@ -59,6 +68,9 @@ class UserMgr {
         this.userExists(newUsername);
 
         this.#users[id].username = newUsername;
+        
+        // 📃 [===== LOG_V =====] 
+        if(logs.verbosity >= 1) console.info(`${logs.getLogDate()} [INFO] User modified => ID: ${id}, passwd: ${newUsername}`);
     }
 
     // Siempre que se deba modificar nombre de usuario, invocar este metodo, no setter de User (por la validación)
@@ -67,12 +79,19 @@ class UserMgr {
         this.passwdCorrect(newPasswd);
 
         this.#users[id].passwd = newPasswd;
+
+        
+        // 📃 [===== LOG_V =====] 
+        if(logs.verbosity >= 1) console.info(`${logs.getLogDate()} [INFO] Passwd modified => ID: ${id}`);
     }
 
     deleteUser(id) {
         this.userDontExists(this.#users[id].username); // Lanza excepción si el usuario no existe
 
         delete this.#users[id]; // Si existe lo eliminamos
+
+         // 📃 [===== LOG_V =====] 
+         if(logs.verbosity >= 1) console.info(`${logs.getLogDate()} [INFO] User deleted => ID: ${id}`);
     }
 
     createMessageThread(id_src, user_dst) { // Creamos un hilo de mensajes entre el usuario con id_src y el usuario user

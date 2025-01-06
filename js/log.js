@@ -21,7 +21,12 @@ class Log {
         }
         this.#verbosity = verbosity;
     }
+
+    getLogDate(){
+        return new Date().toISOString().replace("T"," ").replace("Z", "");
+    }
 }
 
-const logMgr = new Log();
-export default logMgr;
+const logs = new Log();
+console.log(logs.verbosity);
+export default logs;

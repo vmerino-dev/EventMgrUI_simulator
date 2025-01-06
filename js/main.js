@@ -11,7 +11,6 @@
 *   Importaciones
 *********************/
 
-
 // Creando gestor de usuarios y de eventos.
 // Se tienen que cargar desde IndexedDB si existen y guardarse al final
 let userMgr = new UserMgr();

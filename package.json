@@ -1,6 +1,7 @@
 {
   "name": "eventmgr-ui-simulator",
   "version": "1.0.0",
+  "type": "module",
   "description": "An Event Manager for simulate frontend",
   "main": "index.js",
   "directories": {
