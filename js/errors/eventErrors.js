@@ -12,7 +12,7 @@ class UserError extends Error {
     #email;
     #passwd;
 
-    constructor(message, username, email = undefined, passwd = undefined){
+    constructor(message, username = undefined, email = undefined, passwd = undefined){
         super(message); // Propiedad message de Error
 
         this.#username = username;
@@ -28,6 +28,27 @@ class UserError extends Error {
     }
     get passwd(){
         return this.#passwd;
+    }
+}
+
+// Error con un hilo de msg
+class MsgThreadError extends Error {
+    #username
+    #msgInThread
+
+    constructor(message, username = undefined, msgInThread = undefined){
+        super(message); // Propiedad message de Error
+
+        this.#username = username;
+        this.#msgInThread = msgInThread;
+    }
+
+    get username(){
+        return this.#username;
+    }
+    
+    get msgInThread(){
+        return this.#msgInThread;
     }
 }
 

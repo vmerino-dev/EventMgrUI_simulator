@@ -20,10 +20,18 @@ class UserMgr {
     }
 
     getUserId(id) { // Devuelve un usuario por su id
+        // Validamos que exista user con ese id
+        if(!Object.keys(this.#users).some(iden => iden === id))
+            throw new UserError(`El usuario con ID ${id} no existe`);
+
+
         return this.#users[id];
     }
 
     getUser(username) { // Devuelve un usuario por su nombre de usuario (username)
+        // Validamos que exista user con ese nombre
+        this.userDontExists(username);
+
         return Object.values(this.#users).find(user => user.username === username);
     }
 
@@ -45,7 +53,7 @@ class UserMgr {
     }
 
     // Siempre que se deba modificar nombre de usuario, invocar este metodo, no setter de User (por la validación)
-    modUsername(id, newUsername){
+    modUsername(id, newUsername){ // Usuario con ${id} tiene nombre nuevo ${newUsername} 
         // Validamos que el nuevo nombre de usuario no exista
         this.userExists(newUsername);
 
@@ -77,12 +85,12 @@ class UserMgr {
     // Métodos de validación
     userExists(username) { // Comprueba si el usuario ya existe con su nombre
         if(Object.values(this.#users).some(user => user.username === username))
-            throw new UserError("El usuario ya existe", username);
+            throw new UserError(`El usuario con username ${username} ya existe`, username);
     }
 
     userDontExists(username) { // Comprueba si el usuario no existe con su nombre
         if(!(Object.values(this.#users).some(user => user.username === username)))
-            throw new UserError("El usuario no existe", username);
+            throw new UserError(`El usuario con username ${username} no existe`, username);
     }
 
     passwdCorrect(passwd) {
@@ -153,12 +161,14 @@ class User {
     }
 
     // setters
+
+    // NO SE DEBE LLAMAR a este setter directamente. La validación se hace en UserMgr
     set username(username) { // Modificar el nombre de usuario
-        // NO SE DEBE LLAMAR a este setter directamente. La validación se hace en UserMgr
         this.#username = username;
     }
+
+    // NO SE DEBE LLAMAR a este setter directamente. La validación se hace en UserMgr
     set passwd(passwd) { // Modificar la contraseña
-        // NO SE DEBE LLAMAR a este setter directamente. La validación se hace en UserMgr
         this.#passwd = passwd;
     }
 
@@ -174,15 +184,29 @@ class User {
 
     // Este método se invoca desde UserMgr para validación
     createMessageThread(user_dst) { // user_dst es un objeto User
+
+        // Generalmente user_dst se obtendrá a partir de UserMgr, no debería lanzarse este error
+        if(!(user_dst instanceof User)) // Si usuario destino no es instancia User, lanzar error
+            throw new UserError("El usuario no existe (user_dst no es instancia de User)")
+
         // Validamos que no exista ya un hilo de mensajes con user_dst
         if(this.#msgThreads.some(thread => thread.user_dst === user_dst))
-            throw new UserError("Ya existe un hilo de mensajes con ese usuario", this.#username);
+            throw new MsgThreadError("Ya existe un hilo de mensajes con ese usuario", this.#username);
 
         let msgThread = new MessageThread(this, user_dst);
         this.#msgThreads.push(msgThread); // Hilo de msgs en user_src
         user_dst.#msgThreads.push(msgThread); // Hilo de msgs en user_dst
     }
     deleteMessageThread(user_dst) {
+
+        // Generalmente user_dst se obtendrá a partir de UserMgr, no debería lanzarse este error
+        if(!(user_dst instanceof User)) // Si usuario destino no es instancia User, lanzar error
+            throw new UserError("El usuario no existe (user_dst no es instancia de User)")
+
+        // Validamos que existe un hilo de mensajes con user_dst
+        if(!this.#msgThreads.some(thread => thread.user_dst === user_dst))
+            throw new MsgThreadError("No existe un hilo de mensajes con ese usuario", this.#username);
+
         // Filtramos la conversación con el usuario user_dst
         let msgThread = this.#msgThreads.find(thread => thread.user_dst === user_dst);
         
@@ -209,10 +233,8 @@ class User {
     }
 
     modVideoInteraction(url, time) {
-        const interaccion = this.#interacciones.find(interac => interac.url === url);
-
         // Validamos que exista una interacción con ese vídeo
-        if(interaccion === undefined)
+        if(!(this.#interacciones.some(interac => interac.url === url)))
             throw new VideoInteractionError("No existe una interacción con ese vídeo", url);
 
         // Modificamos el tiempo de la interacción
@@ -226,7 +248,10 @@ class MessageThread {
     #messages = [];
 
     // Constructor
-    constructor(user_src, user_dst) {
+    constructor(user_src, user_dst) { // Instancias de User
+        if(!(user_src instanceof User) || !(user_dst instanceof User))
+            throw new UserError("Hay usuarios que no son instancia de User");
+
         this.#user_src = user_src;
         this.#user_dst = user_dst;
     }
@@ -245,20 +270,46 @@ class MessageThread {
     }
 
     // Métodos
-    addMessage(message, user) {
+    addMessage(message, user) { // "user" es el propio usuario que envía/añade un mensaje
         if(user === this.#user_src) {
-            message = 's'+message;
-        }
-        else if(user === this.#user_dst) {
-            message = 'd'+message;
+            message = 's' + message;
+
+        } else if(user === this.#user_dst) {
+            message = 'd' + message;
+
+        } else { // El usuario no coincide con el user_src ni el user_dst. El parámetro no se ha pasado correctamente
+            throw new MsgThreadError(`
+                El usuario no coincide con user_src ni user_dst. El segundo parámetro debe ser el propio usuario.
+            `, user.username);
         }
 
         this.#messages.push(message);
     }
     
-    deleteMessage(message) {
-       // Buscamos el mensaje en la lista de mensajes
+    // "user" ES EL USUARIO PROPIETARIO DEL MENSAJE A ELIMINAR
+    deleteMessage(message, user) {
+        /**
+         * Una forma de implementar la eliminación de un mensaje es seleccionarlo de la UI,
+         * obtener el texto del contenido HTML de ese mensaje y pasarlo como parámetro a
+         * este método.
+         */
+        if(user === this.#user_src) {
+            message = 's' + message;
+
+        } else if(user === this.#user_dst) {
+            message = 'd' + message;
+
+        } else { // El usuario no coincide con el user_src ni el user_dst. El parámetro no se ha pasado correctamente
+            throw new MsgThreadError(`
+                El usuario no coincide con user_src ni user_dst. El segundo parámetro debe ser el propio usuario.
+            `, user.username);
+        }
+
+        // Buscamos el mensaje en la lista de mensajes
         let index = this.#messages.indexOf(message);
+
+        if(index === -1)
+            throw new MsgThreadError("El mensaje no se ha encontrado", user.username, message);
 
         // Eliminamos el mensaje
         this.#messages.splice(index, 1);
