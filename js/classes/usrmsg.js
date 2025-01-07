@@ -17,9 +17,20 @@ Va desde v (verbose) a vvvv (muy verbose)
 
 import logs from "../log.js";
 
+// 📃 [===== LOG_VV =====] 
+if(logs.verbosity >= 2){
+    logs.vv_warn("La feature de logs ha sido cargada")
+    logs.vv_warn("La API crypto será necesaria para un correcto funcionamiento")
+    logs.vv_warn("Los datos serán guardados mediante IndexedDB y Web Storage")
+    logs.vv_warn("El almacenamiento de los datos será local. No existe backend")
+    logs.vv_warn("Esto es un simulador de UI, no un gestor de eventos real")
+}
+
+
 // En una sesión de un usuario debe haber una variable que almacene el id de ese usuario
 class UserMgr {
     #users = {}; // {id: user, id2: user2, ...}
+
 
     // getters
     get users() { // Devuelve un array con los usuarios. Deberá guardarse en IndexedDB
@@ -64,6 +75,10 @@ class UserMgr {
 
     // Siempre que se deba modificar nombre de usuario, invocar este metodo, no setter de User (por la validación)
     modUsername(id, newUsername){ // Usuario con ${id} tiene nombre nuevo ${newUsername} 
+
+        // 📃 [===== LOG_VV =====] 
+        if(logs.verbosity >= 2) logs.vv_warn("This method will modify the username", `${id}`);
+        
         // Validamos que el nuevo nombre de usuario no exista
         this.userExists(newUsername);
 
@@ -75,6 +90,10 @@ class UserMgr {
 
     // Siempre que se deba modificar nombre de usuario, invocar este metodo, no setter de User (por la validación)
     modPasswd(id, newPasswd){
+        
+        // 📃 [===== LOG_VV =====] 
+        if(logs.verbosity >= 2) logs.vv_warn("This method will modify the passwd");
+
         // Validamos que el nuevo nombre de usuario no exista
         this.passwdCorrect(newPasswd);
 
@@ -82,10 +101,13 @@ class UserMgr {
 
         
         // 📃 [===== LOG_V =====] 
-        if(logs.verbosity >= 1) logs.v_info("User modified", `ID: ${id}`)
+        if(logs.verbosity >= 1) logs.v_info("Passwd modified", `ID: ${id}`)
     }
 
     deleteUser(id) {
+        // 📃 [===== LOG_VV =====] 
+        if(logs.verbosity >= 2) logs.vv_warn("This method will delete the user");
+
         this.userDontExists(this.#users[id].username); // Lanza excepción si el usuario no existe
 
         delete this.#users[id]; // Si existe lo eliminamos
@@ -102,16 +124,38 @@ class UserMgr {
         this.#users[id_src].createMessageThread(user_dst);
 
         // 📃 [===== LOG_V =====] 
-        if(logs.verbosity >= 1) logs.v_info("Msg Thread Created", `ID_src: ${id_src}, ID_dst: ${user_dst}`)
+        if(logs.verbosity >= 1) logs.v_info("Msg Thread created", `ID_src: ${id_src}, ID_dst: ${user_dst}`)
+    }
+
+    deleteMessageThread(id_src, user_dst) {
+       // 📃 [===== LOG_VV =====] 
+       if(logs.verbosity >= 2) logs.vv_warn("This method will delete a MessageThread");
+
+       // Validamos que el usuario destino exista. De lo contrario, devolvemos excepción
+       this.userDontExists(user_dst.username);
+
+       // Si existe se eliminará el hilo de mensajes con user_dst
+       this.#users[id_src].deleteMessageThread(user_dst);
+
+       // 📃 [===== LOG_V =====] 
+       if(logs.verbosity >= 1) logs.v_info("Msg Thread deleted", `ID_src: ${id_src}, ID_dst: ${user_dst}`)
     }
 
     // Métodos de validación
     userExists(username) { // Comprueba si el usuario ya existe con su nombre
+        
+        // 📃 [===== LOG_VV =====] 
+        if(logs.verbosity >= 2) logs.vv_info("Validación de existencia de username", `username: ${username}`);
+        
         if(Object.values(this.#users).some(user => user.username === username))
             throw new UserError(`El usuario con username ${username} ya existe`, username);
     }
 
     userDontExists(username) { // Comprueba si el usuario no existe con su nombre
+        
+        // 📃 [===== LOG_VV =====] 
+        if(logs.verbosity >= 2) logs.vv_info("Validación de no existencia de username", `username: ${username}`);
+        
         if(!(Object.values(this.#users).some(user => user.username === username)))
             throw new UserError(`El usuario con username ${username} no existe`, username);
     }
@@ -130,6 +174,9 @@ class UserMgr {
         } else if(!/[!@#$%^&*(),.?":{}|<>]/.test(passwd)){
             throw new UserError("La contraseña debe contener al menos un carácter especial", undefined, undefined, passwd);
         }
+    
+        // 📃 [===== LOG_VV =====]
+        if(logs.verbosity >= 2) logs.vv_info("Validación de passwd correcta", `passwd: ${passwd}`);
     }
 }
 
@@ -199,20 +246,20 @@ class User {
     addConfEvent(conferenceEvent) {
         this.#conferenceEvents.push(conferenceEvent);
         eventMgr.addConfEvent(conferenceEvent, this.#username); // Debe crearse el objeto para eventMgr (EventMgr)
+        
+        // 📃 [===== LOG_V =====] 
         if(logs.verbosity >= 1) logs.v_info("Conference event added", `username: ${this.#username}, email: ${this.#email}`)
     }
     addWorkEvent(workshopEvent) {
         this.#worskhopEvents.push(workshopEvent);
         eventMgr.addWorkEvent(workshopEvent, this.#username); // Debe crearse el objeto para eventMgr (EventMgr)
+        
+        // 📃 [===== LOG_V =====] 
         if(logs.verbosity >= 1) logs.v_info("Workshop event added", `username: ${this.#username}, email: ${this.#email}`)
     }
 
     // Este método se invoca desde UserMgr para validación
     createMessageThread(user_dst) { // user_dst es un objeto User
-
-        // Generalmente user_dst se obtendrá a partir de UserMgr, no debería lanzarse este error
-        if(!(user_dst instanceof User)) // Si usuario destino no es instancia User, lanzar error
-            throw new UserError("El usuario no existe (user_dst no es instancia de User)")
 
         // Validamos que no exista ya un hilo de mensajes con user_dst
         if(this.#msgThreads.some(thread => thread.user_dst === user_dst))
@@ -255,6 +302,9 @@ class User {
         const interaction = new Interaction(url, 0);
 
         this.#interacciones.push(interaction);
+
+        // 📃 [===== LOG_VV =====] 
+        if(logs.verbosity >= 2) logs.vv_info("Interacción de video añadida", `url: ${url}`);
     }
 
     modVideoInteraction(url, time) {
@@ -265,6 +315,7 @@ class User {
         let interaccion = this.#interacciones.some(interac => interac.url === url);
         // Modificamos el tiempo de la interacción
         interaccion.time = time;
+
     }
 }
 

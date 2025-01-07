@@ -30,8 +30,16 @@ class Log {
         ; // Acción a realizar para los logs
     }
 
-    v_info(msg, params){
+    v_info(msg, params = 0){
         console.info(`${logs.getLogDate()} [INFO] ${msg} => ${params}`, this.logAction());
+    }
+
+    vv_info(msg, params = 0){
+        console.info(`${logs.getLogDate()} [INFO] ${msg} => ${params}`, this.logAction());
+    }
+
+    vv_warn(msg, params = 0){
+        console.warn(`${logs.getLogDate()} [WARNING] ${msg} => ${params}`, this.logAction());
     }
 }
 
