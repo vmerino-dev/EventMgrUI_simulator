@@ -1,3 +1,5 @@
+"use strict";
+
 /* log.js */
 
 class Log {
@@ -27,7 +29,7 @@ class Log {
     }
 
     logAction(){
-        ; // Acción a realizar para los logs
+        ; // Acción a realizar para los logs (almacenamiento en browser)
     }
 
     v_info(msg, params = 0){

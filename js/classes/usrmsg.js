@@ -11,22 +11,6 @@ Va desde v (verbose) a vvvv (muy verbose)
 
 */
 
-/******************
- * Importaciones
- ******************/
-
-import logs from "../log.js";
-
-// 📃 [===== LOG_VV =====] 
-if(logs.verbosity >= 2){
-    logs.vv_warn("La feature de logs ha sido cargada")
-    logs.vv_warn("La API crypto será necesaria para un correcto funcionamiento")
-    logs.vv_warn("Los datos serán guardados mediante IndexedDB y Web Storage")
-    logs.vv_warn("El almacenamiento de los datos será local. No existe backend")
-    logs.vv_warn("Esto es un simulador de UI, no un gestor de eventos real")
-}
-
-
 // En una sesión de un usuario debe haber una variable que almacene el id de ese usuario
 class UserMgr {
     #users = {}; // {id: user, id2: user2, ...}
