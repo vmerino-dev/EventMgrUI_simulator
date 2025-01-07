@@ -16,7 +16,7 @@ class Log {
     }
 
     setVerbosity(verbosity) {
-        if (typeof verbosity !== 'string' || (verbosity !== "v" && verbosity !== "vv" && verbosity !== "vvv" && verbosity !== "vvvv")) {
+        if (typeof verbosity !== 'string' || (verbosity !== "" || verbosity !== "v" && verbosity !== "vv" && verbosity !== "vvv" && verbosity !== "vvvv")) {
             throw new Error("El nivel de verbosidad debe estar entre 1 y 4");
         }
         this.#verbosity = verbosity;
@@ -24,6 +24,14 @@ class Log {
 
     getLogDate(){
         return new Date().toISOString().replace("T"," ").replace("Z", "");
+    }
+
+    logAction(){
+        ; // Acción a realizar para los logs
+    }
+
+    v_info(msg, params){
+        console.info(`${logs.getLogDate()} [INFO] ${msg} => ${params}`, this.logAction());
     }
 }
 

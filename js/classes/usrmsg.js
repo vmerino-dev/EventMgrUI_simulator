@@ -59,7 +59,7 @@ class UserMgr {
         this.#users[id] = user;
 
         // 📃 [===== LOG_V =====] 
-        if(logs.verbosity >= 1) console.info(`${logs.getLogDate()} [INFO] New user => username: ${username}, email: ${email}`);
+        if(logs.verbosity >= 1) logs.v_info("New user", `username: ${username}, email: ${email}`)
     }
 
     // Siempre que se deba modificar nombre de usuario, invocar este metodo, no setter de User (por la validación)
@@ -70,7 +70,7 @@ class UserMgr {
         this.#users[id].username = newUsername;
         
         // 📃 [===== LOG_V =====] 
-        if(logs.verbosity >= 1) console.info(`${logs.getLogDate()} [INFO] User modified => ID: ${id}, passwd: ${newUsername}`);
+        if(logs.verbosity >= 1) logs.v_info("User modified", `ID: ${id}, newUsername: ${newUsername}`)
     }
 
     // Siempre que se deba modificar nombre de usuario, invocar este metodo, no setter de User (por la validación)
@@ -82,7 +82,7 @@ class UserMgr {
 
         
         // 📃 [===== LOG_V =====] 
-        if(logs.verbosity >= 1) console.info(`${logs.getLogDate()} [INFO] Passwd modified => ID: ${id}`);
+        if(logs.verbosity >= 1) logs.v_info("User modified", `ID: ${id}`)
     }
 
     deleteUser(id) {
@@ -91,7 +91,7 @@ class UserMgr {
         delete this.#users[id]; // Si existe lo eliminamos
 
          // 📃 [===== LOG_V =====] 
-         if(logs.verbosity >= 1) console.info(`${logs.getLogDate()} [INFO] User deleted => ID: ${id}`);
+         if(logs.verbosity >= 1) logs.v_info("User deleted", `ID: ${id}`)
     }
 
     createMessageThread(id_src, user_dst) { // Creamos un hilo de mensajes entre el usuario con id_src y el usuario user
@@ -100,6 +100,9 @@ class UserMgr {
         
         // Si existe se creará el hilo de mensajes con user_dst
         this.#users[id_src].createMessageThread(user_dst);
+
+        // 📃 [===== LOG_V =====] 
+        if(logs.verbosity >= 1) logs.v_info("Msg Thread Created", `ID_src: ${id_src}, ID_dst: ${user_dst}`)
     }
 
     // Métodos de validación
@@ -196,10 +199,12 @@ class User {
     addConfEvent(conferenceEvent) {
         this.#conferenceEvents.push(conferenceEvent);
         eventMgr.addConfEvent(conferenceEvent, this.#username); // Debe crearse el objeto para eventMgr (EventMgr)
+        if(logs.verbosity >= 1) logs.v_info("Conference event added", `username: ${this.#username}, email: ${this.#email}`)
     }
     addWorkEvent(workshopEvent) {
         this.#worskhopEvents.push(workshopEvent);
         eventMgr.addWorkEvent(workshopEvent, this.#username); // Debe crearse el objeto para eventMgr (EventMgr)
+        if(logs.verbosity >= 1) logs.v_info("Workshop event added", `username: ${this.#username}, email: ${this.#email}`)
     }
 
     // Este método se invoca desde UserMgr para validación
