@@ -130,14 +130,18 @@ class ConferenceEvent extends Event { // Evento de conferencia
         if(durationAprox < 0 && durationAprox < 1440)
             throw new ConferenceStreamError("El directo debe durar entre 1 minuto y 24 horas", this.#hayDirecto, this.#stream);
 
-        this.#stream = new ConferenceStream(date, durationAprox);
-        console.log(`Directo añadido con fecha ${date} y duración aproximada de ${durationAprox} minutos`);
-        
+        this.#stream = new ConferenceStream(date, durationAprox);        
         this.#hayDirecto = true;
+
+        // 📃 [===== LOG_V =====] 
+        if(logs.verbosity >= 1) logs.v_info("Stream added", `date: ${date}, durationAprox: ${durationAprox}`)
     }
 
     // Modificar un directo. Si no se especifica fecha o duración se mantiene la actual
     modifyStream(date = this.#stream.date, durationAproxMin = this.#stream.duration){
+
+        // 📃 [===== LOG_VV =====] 
+        if(logs.verbosity >= 2) logs.vv_warn(`The stream ${this.#id} will be modified`, `date: ${date}, durationAprox: ${durationAproxMin}`);
 
         // Validamos si la fecha es correcta (superior a la actual)
         const validateDate = Object.values(Utils.valFutureDate(date));
@@ -151,6 +155,9 @@ class ConferenceEvent extends Event { // Evento de conferencia
 
         this.#stream.date = date;
         this.#stream.duration = durationAproxMin;
+
+        // 📃 [===== LOG_V =====] 
+        if(logs.verbosity >= 1) logs.v_info("Stream modified", `date: ${date}, durationAprox: ${durationAproxMin}`)
     }
 }
 
@@ -172,6 +179,9 @@ class WorkshopEvent extends Event { // Evento de taller
         if(instructors.some(instructor => instructor.length > 50 || instructor.length < 3))
             throw new WorkshopError("El nombre de los instructores no puede ser superior a 50 caracteres ni inferior a 3", this, undefined, instructors);
 
+        // 📃 [===== LOG_VV =====] 
+        if(logs.verbosity >= 2) logs.vv_info("Workshop fields validated", `topic: ${topic}, instructors: ${instructors.join("; ")}`);
+
         this.#topic = topic;
         this.#instructors = instructors;
 
@@ -181,7 +191,6 @@ class WorkshopEvent extends Event { // Evento de taller
     get id(){
         return this.#id;
     }
-
     get topic(){
         return this.#topic;
     }
@@ -242,10 +251,16 @@ class Video { // Clase para los vídeos
         if(/^(#[a-zA-Z0-9]{1,30})(\s#[a-zA-Z0-9]{1,30}){0,9}$/.test(tags)) // 10 tags de 30 caracteres cada uno
             throw new VideoError("Deben haber 10 tags máximo y no se permiten más de 30 carac. por cada uno", this, null, title, description, tags);
 
+        // 📃 [===== LOG_VV =====] 
+        if(logs.verbosity >= 2) logs.vv_info("Video fields validated", `url: ${url}, title: ${title}`);
+
         this.#url = url;
         this.#title = title;
         this.#description = description;
         this.#tags = tags;
+
+        // 📃 [===== LOG_V =====] 
+        if(logs.verbosity >= 1) logs.v_info("Video created", `url: ${url}, title: ${title}`)
     }
 
     // getters
@@ -292,7 +307,7 @@ class Interaction { // Interacciones con los vídeos por parte de los usuarios
         return this.#time;
     }
 
-    
+
     // setters
 
     // No modificar directamente. Otros métodos realizan validación.

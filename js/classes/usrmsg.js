@@ -294,7 +294,7 @@ class User {
         this.#interacciones.push(interaction);
 
         // 📃 [===== LOG_VV =====] 
-        if(logs.verbosity >= 2) logs.vv_info("Interacción de video añadida", `url: ${url}`);
+        if(logs.verbosity >= 2) logs.vv_info("Video Interaction created", `url: ${url}`);
     }
 
     /**
