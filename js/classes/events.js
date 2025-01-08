@@ -39,6 +39,16 @@ class Event { // Clase pseudo-abstracta
 
     // Constructor
     constructor(files, videos, location, date, estado = true, users_selected = []){
+
+        // Valida si algún elemento video no es instancia de Video
+        if(!videos.every(video => video instanceof Video))
+            throw new VideoError("Hay algún elemento que no es un video", videos);
+
+        // Validamos la fecha
+        const validateDate = Object.values(Utils.valFutureDate(date));
+        if(!validateDate[0])
+            throw new DateError(validateDate[1], date);
+
         this.#files = files;
         this.#videos = videos;
         this.#location = location;
@@ -79,13 +89,23 @@ class ConferenceEvent extends Event { // Evento de conferencia
     #hayDirecto = false; // true: hay directo, false: no hay directo
     #stream; // Objeto ConferenceStream. SOLO PUEDE HABER UNO POR EVENTO
 
-    constructor(files, videos, location, date, estado = true, users_selected = [], hayDirecto = false){
+    constructor(files, videos, location, date, estado = true, users_selected = []){
         super(files, videos, location, date, estado, users_selected);
 
-        if(hayDirecto)
-            this.#hayDirecto = true;
-
         this.#id = Utils.createId();
+    }
+
+    // getters
+    get hayDirecto(){
+        return this.#hayDirecto;
+    }
+
+    get id(){
+        return this.#id;
+    }
+
+    get stream(){
+        return this.#stream;
     }
 
     
@@ -94,23 +114,37 @@ class ConferenceEvent extends Event { // Evento de conferencia
     // Método que lanza excepción si ya hay un directo programado
     addStream(date, durationAprox){ // Añadir un directo
 
-        // Validamos si la fecha es correcta (superior a la actual)
-        const validateDate = Object.values(Utils.valFutureDate(date));
-        if(validateDate[0]) // Si la fecha no es válida
-            throw new DateError(validateDate[1], date); // validateDate[1] es el mensaje que indica por qué no es válida
-
         if(this.#hayDirecto)
             throw new ConferenceStreamError("Ya hay un directo programado", this.#hayDirecto, this.#stream);
 
+        // Validamos si la fecha es correcta (superior a la actual)
+        const validateDate = Object.values(Utils.valFutureDate(date));
+        if(!validateDate[0]) // Si la fecha no es válida
+            throw new DateError(validateDate[1], date); // validateDate[1] es el mensaje que indica por qué no es válida
+
+        // Validamos duración aproximada del stream
         if(durationAprox < 0 && durationAprox < 1440)
             throw new ConferenceStreamError("El directo debe durar entre 1 minuto y 24 horas", this.#hayDirecto, this.#stream);
 
         this.#stream = new ConferenceStream(date, durationAprox);
         console.log(`Directo añadido con fecha ${date} y duración aproximada de ${durationAprox} minutos`);
+        
+        this.#hayDirecto = true;
     }
 
     // Modificar un directo. Si no se especifica fecha o duración se mantiene la actual
     modifyStream(date = this.#stream.date, durationAproxMin = this.#stream.duration){
+
+        // Validamos si la fecha es correcta (superior a la actual)
+        const validateDate = Object.values(Utils.valFutureDate(date));
+        if(!validateDate[0]) // Si la fecha no es válida
+            throw new DateError(validateDate[1], date); // validateDate[1] es el mensaje que indica por qué no es válida
+
+        // Validamos duración aproximada del stream
+        if(durationAprox < 0 && durationAprox < 1440)
+            throw new ConferenceStreamError("El directo debe durar entre 1 minuto y 24 horas", this.#hayDirecto, this.#stream);
+
+
         this.#stream.date = date;
         this.#stream.duration = durationAproxMin;
     }
@@ -128,6 +162,10 @@ class WorkshopEvent extends Event { // Evento de taller
         this.#instructors = instructors;
 
         this.#id = Utils.createId();
+    }
+
+    get id(){
+        return this.#id;
     }
 
     get topic(){

@@ -72,6 +72,26 @@ class ConferenceStreamError extends Error {
     }
 }
 
+class VideoError extends Error {
+    #video; // Obj. Video
+    #videos; // Array de Video
+
+    constructor(msg, video = undefined, videos = null){
+        super(msg);
+
+        this.#video = video;
+        this.#videos = videos || [];
+    }
+
+    get video(){
+        return this.#video;
+    }
+
+    get videos(){
+        return this.#videos
+    }
+}
+
 // Error al interactuar con un vídeo
 class VideoInteractionError extends Error {
     #url;
