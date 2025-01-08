@@ -86,3 +86,18 @@ class VideoInteractionError extends Error {
         return this.#url;
     }
 }
+
+// Error en una fecha
+class DateError extends Error {
+    #date;
+    
+    constructor(msg, date){
+        super(msg);
+
+        this.#date = date;
+    }
+
+    get date(){
+        return this.#date;
+    }
+}
