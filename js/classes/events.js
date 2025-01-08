@@ -55,9 +55,13 @@ class Event { // Clase pseudo-abstracta
         this.#date = date;
         this.#estado = estado;
 
-        if(!estado) // Si es privado se asignan usuarios seleccionados
-            this.#users_selected = users_selected;
+        if(!estado){ // Si es privado se asignan usuarios seleccionados
+            
+            if(users_selected.some(user => !Object.values(userMgr.users()).includes(user)))
+                throw new UserError("El usuario no existe."); // Se ha seleccionado un usuario que no existe
 
+            this.#users_selected = users_selected;
+        }
     }
 
     // getters
@@ -155,8 +159,18 @@ class WorkshopEvent extends Event { // Evento de taller
     #topic; // Tema del taller
     #instructors = []; // Lista de nombres de los instructores (string array)
 
-    constructor(files, videos, location, date, estado = true, users_selected = [], topic, instructors){
+    constructor(files, videos, location, date, estado = true, users_selected = [], topic, instructors = []){
         super(files, videos, location, date, estado, users_selected);
+
+        // Se valida el tema e instructores
+        if(topic.length > 80) // Longitud del string
+            throw new WorkshopError("El tema del taller supera el límite marcado de 80 caracteres", this, topic);
+
+        if(instructors.length > 20) // Longitud del array
+            throw new WorkshopError("No pueden haber más de 20 instructores", this, undefined, instructors);
+
+        if(instructors.some(instructor => instructor.length > 50 || instructor.length < 3))
+            throw new WorkshopError("El nombre de los instructores no puede ser superior a 50 caracteres ni inferior a 3", this, undefined, instructors);
 
         this.#topic = topic;
         this.#instructors = instructors;
@@ -181,6 +195,8 @@ class ConferenceStream { // Clase para los directos de conferencias
     #durationAproxMin; // Duración aproximada del directo en MINUTOS
 
     constructor(date, durationAprox){
+
+        // La validación ya se realiza en ConferenceEvent
         this.#date = date;
         this.#durationAproxMin = durationAprox;
     }
@@ -193,7 +209,10 @@ class ConferenceStream { // Clase para los directos de conferencias
         return this.#durationAproxMin;
     }
 
+
     // setters
+
+    // IMPORTANTE. Estos 2 setters no deben invocarse directamente. Se invocan mediante ConferenceEvent que también valida
     set date(date){
         this.#date = date;
     }
@@ -204,12 +223,25 @@ class ConferenceStream { // Clase para los directos de conferencias
 
 class Video { // Clase para los vídeos
     #url; // URL del vídeo
-    #title; // Título del vídeo
+    #title; // Título del vídeo (string)
     #description; // Descripción del vídeo
-    #tags = []; // Lista de etiquetas
+    #tags; // Lista de etiquetas
 
     // Constructor
-    constructor(url, title, description, tags = []){
+    constructor(url, title, description, tags){
+        
+        // Validación campos
+        if(title.length > 100)
+            throw new VideoError("El título es demasiado largo (max: 100 carac.)", this, null, title);
+        else if(title.length < 3)
+            throw new VideoError("El título es demasiado corto (min: 3 carac.)", this, null, title);
+
+        if(description.length > 500)
+            throw new VideoError("La descripción no puede superar los 500 caracteres", this, null, title, description);
+
+        if(/^(#[a-zA-Z0-9]{1,30})(\s#[a-zA-Z0-9]{1,30}){0,9}$/.test(tags)) // 10 tags de 30 caracteres cada uno
+            throw new VideoError("Deben haber 10 tags máximo y no se permiten más de 30 carac. por cada uno", this, null, title, description, tags);
+
         this.#url = url;
         this.#title = title;
         this.#description = description;
@@ -234,10 +266,14 @@ class Video { // Clase para los vídeos
 class Interaction { // Interacciones con los vídeos por parte de los usuarios
     #id; // Identificador único interacción
     #urlVideo; // URL del vídeo (generalmente video.url)
-    #time; // Tiempo de la interacción (float)
+    #time; // Tiempo de la interacción (float) en segundos
 
     // Constructor
     constructor(urlVideo, time){
+        
+        if(time > 86400 || time < 0) // time debe ser superior a "-1" e inferior a 24 horas
+            throw new VideoInteractionError("El tiempo de la interacción no es válido", urlVideo);
+
         this.#urlVideo = urlVideo;
         this.#time = time;
 
@@ -256,7 +292,10 @@ class Interaction { // Interacciones con los vídeos por parte de los usuarios
         return this.#time;
     }
 
+    
     // setters
+
+    // No modificar directamente. Otros métodos realizan validación.
     set time(time){
         this.#time = time;
     }

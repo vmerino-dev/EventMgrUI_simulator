@@ -52,6 +52,34 @@ class MsgThreadError extends Error {
     }
 }
 
+// Error con los Workshop Events
+class WorkshopError extends Error {
+    #topic;
+    #instructors;
+    #wkspObj;
+
+    constructor(msg, wskObj, topic = undefined, instructors = []){
+        super(msg);
+
+        this.#wkspObj = wskObj;
+        this.#topic = topic;
+        this.#instructors = instructors;
+    }
+
+    get topic(){
+        return this.#topic;
+    }
+
+    get instructors(){
+        return this.#instructors;
+    }
+
+    get workshop(){
+        return this.#wkspObj;
+    }
+}
+
+
 // Error al añadir stream
 class ConferenceStreamError extends Error {
     #hayDirecto;
@@ -75,12 +103,19 @@ class ConferenceStreamError extends Error {
 class VideoError extends Error {
     #video; // Obj. Video
     #videos; // Array de Video
+    
+    #title; // Título del vídeo
+    #description; // Descripción del vídeo
+    #tags; // Tags del vídeo
 
-    constructor(msg, video = undefined, videos = null){
+    constructor(msg, video = undefined, videos = null, title = undefined, description = undefined, tags = undefined){
         super(msg);
 
         this.#video = video;
         this.#videos = videos || [];
+        this.#title = title;
+        this.#description = description;
+        this.#tags = tags;
     }
 
     get video(){
@@ -88,7 +123,19 @@ class VideoError extends Error {
     }
 
     get videos(){
-        return this.#videos
+        return this.#videos;
+    }
+
+    get title(){
+        return this.#title;
+    }
+
+    get description(){
+        return this.#description;
+    }
+
+    get tags(){
+        return this.#tags;
     }
 }
 

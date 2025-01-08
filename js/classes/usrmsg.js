@@ -17,7 +17,7 @@ class UserMgr {
 
 
     // getters
-    get users() { // Devuelve un array con los usuarios. Deberá guardarse en IndexedDB
+    get users() { // Devuelve un objeto con los usuarios. Deberá guardarse en IndexedDB
         return this.#users;
     }
 
@@ -274,6 +274,12 @@ class User {
     }
 
     // Métodos para interacciones
+
+    /**
+     * Crea una interacción de vídeo
+     * 
+     * @param {string} url - La url de un objeto Video 
+     */
     newVideoInteraction(url) {
         
         // Validamos que no haya otra interacción con la misma url
@@ -291,12 +297,20 @@ class User {
         if(logs.verbosity >= 2) logs.vv_info("Interacción de video añadida", `url: ${url}`);
     }
 
+    /**
+     * Crea una interacción de vídeo
+     * 
+     * @param {string} url - La url de un objeto Video
+     * @param {float} time - El tiempo de la interacción en segundos, del objeto Video
+     */
+
     modVideoInteraction(url, time) {
         // Validamos que exista una interacción con ese vídeo
         if(!(this.#interacciones.some(interac => interac.url === url)))
             throw new VideoInteractionError("No existe una interacción con ese vídeo", url);
 
-        let interaccion = this.#interacciones.some(interac => interac.url === url);
+        let interaccion = this.#interacciones.find(interac => interac.url === url);
+        
         // Modificamos el tiempo de la interacción
         interaccion.time = time;
 
