@@ -1,0 +1,22 @@
+/*
+Using SMACSS Architecture & BEM
+*/
+/*
+*****************************************
+                Mixins
+*****************************************
+*/
+.field__info--passwd {
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+}
+
+.field__info--passwd.field__info--pshow {
+  opacity: 1;
+  visibility: visible;
+  position: static;
+  transition: position 2s ease, opacity 2s ease 2s;
+}

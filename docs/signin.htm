@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <!-- Metadata & SEO -->
+        <meta charset="UTF-8">
+        <meta name="theme-color" content="#006256">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="keywords" content="SignIn EventMgr Event Manager simulator">
+        <meta name="author" content="victor_merino">
+        <meta name="description" content="A comprehensive Event Manager UI simulator for efficient event handling and user login management.">
+        <meta name="copyright" content="Distribución libre">
+        <meta name="robots" content="noindex">
+        <meta http-equiv="cache-control" content="no-cache" > <!-- No almacenamos contenido en servidores de caché -->
+        <meta http-equiv="content-language" content="es">
+        <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'> <!-- Internet Explorer -->
+        <!-- Facebook -->
+        <meta property="og:title" content="Event Manager simulator">
+        <meta property="og:description" content="A Event Manager UI simulator">
+        <!-- Twitter/X -->
+        <meta name="twitter:card" content="Event Manager simulator">
+        <meta name="twitter:title" content="A Event Manager UI simulator">
+
+        <title>Sign In | Event Mgr</title>
+        <link rel="icon" href="../assets/img/favicon.ico" type="image/x-icon" sizes="16x16">
+        <link rel="stylesheet" href="../style/normalize/normalize.css" type="text/css">
+        <link rel="stylesheet" href="../style/dst/style.css" type="text/css">
+        <link rel="stylesheet" href="../style/dst/login_signin.css" type="text/css">
+        <link rel="stylesheet" href="../style/dst/signin.css" type="text/css">
+        <!-- Estas etiquetas, alternate y canonical, no son funcionales -->
+        <link rel="alternate" href="https://victormerino.net/eventmgrsim/en" hreflang="en">
+        <link rel="canonical" href="https://victormerino.net/eventmgrsim/es" hreflang="es">
+        <!-- Scripts. Podemos cargar en main.js el resto de módulos -->
+        <script src="../js/main.js" type="module" defer></script>
+        <script src="../js/signin.js" type="application/javascript" defer></script>
+    </head>
+    <body>
+        <nav class="nav">
+            <h1 class="nav__title">Event Manager simulator</h1>
+            <a class="nav__link" href="login.htm">Log In</a>
+        </nav>
+        <main class="main">
+            <h2>Registrarse</h2>
+            <form action="dashboard.html" target="_self" method="post">
+                <fieldset class="main__field">
+                    <label class="field__info" for="user">Introduce un nombre de usuario
+                        <input id="user" class="info__input" type="text" minlength="3" maxlength="16" placeholder="Nuevo usuario" required>
+                    </label>
+                    <label class="field__info" for="email">Introduce tu email
+                        <input id="email" class="info__input" type="email" minlength="3" maxlength="16" placeholder="Email" required>
+                    </label>
+                    <label id="passwd-1" class="field__info" for="passwd-1">Introduce una contraseña
+                        <input id="passwd1-input" class="info__input" type="password" minlength="3" maxlength="20" placeholder="Contraseña" required>
+                    </label>
+                    <label id="passwd-2" class="field__info field__info--passwd" for="passwd-2">Repite la contraseña
+                        <input class="info__input" type="password" minlength="3" maxlength="20" placeholder="Contraseña" required>
+                    </label>
+                    <button class="field__button">Registrar usuario</button>
+                </fieldset>
+            </form>
+        </main>
+        <footer class="footer">
+            <h2 class="footer__title">Created by Víctor Merino</h2>            
+        </footer>
+    </body>
+</html>
