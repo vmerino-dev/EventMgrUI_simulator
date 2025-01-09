@@ -43,6 +43,14 @@ class Log {
     vv_warn(msg, params = 0){
         console.warn(`${logs.getLogDate()} [WARNING] ${msg} => ${params}`, this.logAction());
     }
+
+    vvv_info(msg, params = 0){
+        console.info(`${logs.getLogDate()} [INFO] ${msg} => ${params}`, this.logAction());
+    }
+
+    vvv_error(msg, params = 0){
+        console.error(`${log.getLogDate()} [ERROR] ${msg} => ${params}`, this.logAction());
+    }
 }
 
 const logs = new Log();
