@@ -7,16 +7,16 @@ Using SMACSS Architecture & BEM
 *****************************************
 */
 .field__info--passwd {
+  position: fixed;
   opacity: 0;
   visibility: hidden;
-  position: absolute;
-  top: -9999px;
-  left: -9999px;
+  transform: translateY(-60px);
 }
 
 .field__info--passwd.field__info--pshow {
+  position: static;
   opacity: 1;
   visibility: visible;
-  position: static;
-  transition: position 2s ease, opacity 2s ease 2s;
+  transform: translateY(0px);
+  transition: opacity 1s ease, transform 1s ease;
 }
