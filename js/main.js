@@ -11,7 +11,9 @@
 *   Importaciones
 *********************/
 
-import logs from "../log.js";
+import logs from "log.js";
+import { UserMgr } from "classes/usrmsg.js";
+import { EventMgr } from "classes/events.js";
 
 
 // 📃 [===== LOG_VV =====] 

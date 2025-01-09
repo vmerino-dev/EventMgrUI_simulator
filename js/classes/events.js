@@ -17,7 +17,7 @@ Va desde v (verbose) a vvvv (muy verbose)
 import logs from "../log.js";
 
 
-class EventMgr {
+export class EventMgr {
     #confEventUsers = {}; // {user: [confev1, confev2, ...]}
     #wrkshpEventUsers = {}; // {user: [wrkshp1, wrkshp2, ...]}
 
@@ -39,7 +39,7 @@ class EventMgr {
     }
 }
 
-class Event { // Clase pseudo-abstracta
+export class Event { // Clase pseudo-abstracta
     #files = []; // Lista de archivos
     #videos = []; // Lista de objetos Video
     #location; // Ubicación del evento
@@ -109,7 +109,7 @@ class Event { // Clase pseudo-abstracta
     }
 }
 
-class ConferenceEvent extends Event { // Evento de conferencia
+export class ConferenceEvent extends Event { // Evento de conferencia
     #id;
     #hayDirecto = false; // true: hay directo, false: no hay directo
     #stream; // Objeto ConferenceStream. SOLO PUEDE HABER UNO POR EVENTO
@@ -193,7 +193,7 @@ class ConferenceEvent extends Event { // Evento de conferencia
     }
 }
 
-class WorkshopEvent extends Event { // Evento de taller
+export class WorkshopEvent extends Event { // Evento de taller
     #id;
     #topic; // Tema del taller
     #instructors = []; // Lista de nombres de los instructores (string array)
@@ -231,7 +231,7 @@ class WorkshopEvent extends Event { // Evento de taller
     }
 }
 
-class ConferenceStream { // Clase para los directos de conferencias
+export class ConferenceStream { // Clase para los directos de conferencias
     #date; // Hora de inicio del directo
     #durationAproxMin; // Duración aproximada del directo en MINUTOS
 
@@ -262,7 +262,7 @@ class ConferenceStream { // Clase para los directos de conferencias
     }
 }
 
-class Video { // Clase para los vídeos
+export class Video { // Clase para los vídeos
     #url; // URL del vídeo
     #title; // Título del vídeo (string)
     #description; // Descripción del vídeo
@@ -310,7 +310,7 @@ class Video { // Clase para los vídeos
     }
 }
 
-class Interaction { // Interacciones con los vídeos por parte de los usuarios
+export class Interaction { // Interacciones con los vídeos por parte de los usuarios
     #id; // Identificador único interacción
     #urlVideo; // URL del vídeo (generalmente video.url)
     #time; // Tiempo de la interacción (float) en segundos

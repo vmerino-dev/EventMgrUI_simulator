@@ -19,7 +19,7 @@ import logs from "../log.js";
 
 
 // En una sesión de un usuario debe haber una variable que almacene el id de ese usuario
-class UserMgr {
+export class UserMgr {
     #users = {}; // {id: user, id2: user2, ...}
 
 
@@ -191,7 +191,7 @@ class UserMgr {
     }
 }
 
-class User {
+export class User {
     // Propiedades privadas
     #username;
     #email;
@@ -362,7 +362,7 @@ class User {
     }
 }
 
-class MessageThread {
+export class MessageThread {
     #user_src;
     #user_dst;
     #messages = [];

@@ -10,8 +10,24 @@ Using SMACSS Architecture & BEM
 
 // LAYOUT_SMACSS
 
-// MODULES_SMACSS
+.main {
+    padding: 20px 0;
 
+    /* media querys => ajustes generales que modifican estilos heredados
+    del diseño de login para una correcta responsividad */
+    @include mixins.mq-width(768px) {
+        justify-content: center;
+    }
+
+    @include mixins.mq-width(660px) {
+        min-height: unset;
+    }
+}
+
+// MODULES_SMACSS
+.main__field {
+    padding: 50px 30px;
+}
 .field__info--passwd {
     position: fixed;
     opacity: 0;
@@ -27,6 +43,17 @@ Using SMACSS Architecture & BEM
     transition: opacity 1s ease, transform 1s ease;
 }
 
+.footer {
+    min-height: 80px;
+}
+
 // STATES_SMACSS
 
 // THEMES_SMACSS
+
+// Media query 520px
+@media screen and (max-width: 520px) {
+    .field__button {
+        font-size: 0.8em;
+    }
+}
