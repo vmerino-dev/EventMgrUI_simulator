@@ -23,7 +23,6 @@ body {
 .nav {
   color: #d9dfe4;
   color: oklch(90.02% 0.0092 248deg);
-  background-image: url("../../assets/img/bg-jigar-panchal.jpg");
   min-height: 200px;
   position: relative;
 }

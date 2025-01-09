@@ -1,6 +1,6 @@
 "use strict";
 
-class Utils{
+export default class Utils{
     static createId(){
         return crypto.randomUUID();
     }

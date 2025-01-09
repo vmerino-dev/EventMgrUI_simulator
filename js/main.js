@@ -11,10 +11,12 @@
 *   Importaciones
 *********************/
 
-import logs from "log.js";
-import { UserMgr } from "classes/usrmsg.js";
-import { EventMgr } from "classes/events.js";
+import logs from "./log.js";
+import { UserMgr } from "./classes/usrmsg.js";
+import { EventMgr } from "./classes/events.js";
 
+
+logs.verbosity = "vvv"; // TEST
 
 // 📃 [===== LOG_VV =====] 
 if(logs.verbosity >= 2){
@@ -29,3 +31,8 @@ if(logs.verbosity >= 2){
 // Se tienen que cargar desde IndexedDB si existen y guardarse al final
 let userMgr = new UserMgr();
 let eventMgr = new EventMgr();
+
+// TEST
+userMgr.addUser("holaquetal", "victor@asdf.com", "063Vv.")
+userMgr.addUser("victor", "victormerino@gmail.com", "0630011020Vv.")
+console.log(userMgr.users);

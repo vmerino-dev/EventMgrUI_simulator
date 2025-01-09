@@ -16,7 +16,7 @@ Va desde v (verbose) a vvvv (muy verbose)
 *********************/
 
 import logs from "../log.js";
-
+import Utils from "../utils.js";
 
 // En una sesión de un usuario debe haber una variable que almacene el id de ese usuario
 export class UserMgr {

@@ -18,7 +18,7 @@ class Log {
     }
 
     setVerbosity(verbosity) {
-        if (typeof verbosity !== 'string' || (verbosity !== "" || verbosity !== "v" && verbosity !== "vv" && verbosity !== "vvv" && verbosity !== "vvvv")) {
+        if (typeof verbosity !== 'string' && (verbosity !== "" && verbosity !== "v" && verbosity && "vv" && verbosity && "vvv" && verbosity !== "vvvv")) {
             throw new Error("El nivel de verbosidad debe estar entre 1 y 4");
         }
         this.#verbosity = verbosity;
@@ -49,7 +49,7 @@ class Log {
     }
 
     vvv_error(msg, params = 0){
-        console.error(`${log.getLogDate()} [ERROR] ${msg} => ${params}`, this.logAction());
+        console.error(`${logs.getLogDate()} [ERROR] ${msg} => ${params}`, this.logAction());
     }
 }
 

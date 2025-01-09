@@ -20,3 +20,4 @@ passwd1Input.addEventListener("focus", ()=>addClass_pshow(passwd2));
 // Listeners para eliminar campo password
 navbar.addEventListener("click", ()=>removeClass_pshow(passwd2));
 footer.addEventListener("click", ()=>removeClass_pshow(passwd2));
+

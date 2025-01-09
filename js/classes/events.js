@@ -15,7 +15,7 @@ Va desde v (verbose) a vvvv (muy verbose)
 *********************/
 
 import logs from "../log.js";
-
+import Utils from "../utils.js";
 
 export class EventMgr {
     #confEventUsers = {}; // {user: [confev1, confev2, ...]}
