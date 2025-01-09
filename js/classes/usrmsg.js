@@ -32,7 +32,7 @@ class UserMgr {
         // Validamos que exista user con ese id
         if(!Object.keys(this.#users).some(iden => iden === id)){
             // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) vvv_error("The user doesn't exist", `ID: ${id}`);
+            if(logs.verbosity >= 3) logs.vvv_error("The user doesn't exist", `ID: ${id}`);
             throw new UserError(`El usuario con ID ${id} no existe`);
         }
             
@@ -54,7 +54,7 @@ class UserMgr {
 
         if(Object.values(this.#users).some(user => user.email === email)){
             // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) vvv_error("The email is already in use", `email: ${email}`);
+            if(logs.verbosity >= 3) logs.vvv_error("The email is already in use", `email: ${email}`);
             throw new UserError("El email ya está en uso", username, email, passwd);
         }
             
@@ -145,7 +145,7 @@ class UserMgr {
         
         if(Object.values(this.#users).some(user => user.username === username)){
             // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) vvv_error("User already exists", `username: ${username}`);
+            if(logs.verbosity >= 3) logs.vvv_error("User already exists", `username: ${username}`);
             throw new UserError(`El usuario con username ${username} ya existe`, username);
         }
             
@@ -158,7 +158,7 @@ class UserMgr {
         
         if(!(Object.values(this.#users).some(user => user.username === username))){
             // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) vvv_error("User doesn't exist", `username: ${username}`);
+            if(logs.verbosity >= 3) logs.vvv_error("User doesn't exist", `username: ${username}`);
             throw new UserError(`El usuario con username ${username} no existe`, username);
         }
     }
@@ -167,22 +167,22 @@ class UserMgr {
         // Validamos la contraseña con errores personalizados según el caso
         if(!/[A-Z]/.test(passwd)){
             // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) vvv_error("Passwd need uppercase", `passwd: ${passwd}`);
+            if(logs.verbosity >= 3) logs.vvv_error("Passwd need uppercase", `passwd: ${passwd}`);
             throw new UserError("La contraseña debe contener al menos una letra mayúscula", undefined, undefined, passwd);
         
         } else if(!/[a-z]/.test(passwd)){
             // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) vvv_error("Passwd need lowercase", `passwd: ${passwd}`);
+            if(logs.verbosity >= 3) logs.vvv_error("Passwd need lowercase", `passwd: ${passwd}`);
             throw new UserError("La contraseña debe contener al menos una letra minúscula", undefined, undefined, passwd);
         
         } else if(!/[0-9]/.test(passwd)){
             // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) vvv_error("Passwd need a number", `passwd: ${passwd}`);
+            if(logs.verbosity >= 3) logs.vvv_error("Passwd need a number", `passwd: ${passwd}`);
             throw new UserError("La contraseña debe contener al menos un número", undefined, undefined, passwd);
         
         } else if(!/[!@#$%^&*(),.?":{}|<>]/.test(passwd)){
             // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) vvv_error("Passwd need a special char", `passwd: ${passwd}`);
+            if(logs.verbosity >= 3) logs.vvv_error("Passwd need a special char", `passwd: ${passwd}`);
             throw new UserError("La contraseña debe contener al menos un carácter especial", undefined, undefined, passwd);
         }
     
@@ -275,7 +275,7 @@ class User {
         // Validamos que no exista ya un hilo de mensajes con user_dst
         if(this.#msgThreads.some(thread => thread.user_dst === user_dst)){
             // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) vvv_error("MsgThread already exists", `username: ${this.#username}`);
+            if(logs.verbosity >= 3) logs.vvv_error("MsgThread already exists", `username: ${this.#username}`);
             throw new MsgThreadError("Ya existe un hilo de mensajes con ese usuario", this.#username);
         }
             
@@ -289,14 +289,14 @@ class User {
         // Generalmente user_dst se obtendrá a partir de UserMgr, no debería lanzarse este error
         if(!(user_dst instanceof User)){ // Si usuario destino no es instancia User, lanzar error
             // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) vvv_error("user_dst is not an instance of User", `user_dst: ${user_dst}`);
+            if(logs.verbosity >= 3) logs.vvv_error("user_dst is not an instance of User", `user_dst: ${user_dst}`);
             throw new UserError("El usuario no existe (user_dst no es instancia de User)")
         }
 
         // Validamos que existe un hilo de mensajes con user_dst
         if(!this.#msgThreads.some(thread => thread.user_dst === user_dst)){
             // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) vvv_error("MsgThread don't exist with that user", `username: ${this.#username}`);
+            if(logs.verbosity >= 3) logs.vvv_error("MsgThread don't exist with that user", `username: ${this.#username}`);
             throw new MsgThreadError("No existe un hilo de mensajes con ese usuario", this.#username);
         }
             
@@ -323,7 +323,7 @@ class User {
         for(let interacAnterior of this.#interacciones) {
             if(interacAnterior.url === url){
                 // 📃 [===== LOG_VVV =====] 
-                if(logs.verbosity >= 3) vvv_error("Interaction already exists with the actual video", `url: ${url}`);
+                if(logs.verbosity >= 3) logs.vvv_error("Interaction already exists with the actual video", `url: ${url}`);
                 throw new VideoInteractionError("Ya existe una interacción con ese vídeo", url);    
             }
                 
@@ -349,7 +349,7 @@ class User {
         // Validamos que exista una interacción con ese vídeo
         if(!(this.#interacciones.some(interac => interac.url === url))){
             // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) vvv_error("Interaction doesn't exist with the actual video", `url: ${url}}`);
+            if(logs.verbosity >= 3) logs.vvv_error("Interaction doesn't exist with the actual video", `url: ${url}}`);
         
             throw new VideoInteractionError("No existe una interacción con ese vídeo", url);
         }
@@ -371,7 +371,7 @@ class MessageThread {
     constructor(user_src, user_dst) { // Instancias de User
         if(!(user_src instanceof User) || !(user_dst instanceof User)){
             // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) vvv_error("There are users that are not instance of User", `url: ${url}`);
+            if(logs.verbosity >= 3) logs.vvv_error("There are users that are not instance of User");
             throw new UserError("Hay usuarios que no son instancia de User");
         }
 
@@ -402,7 +402,7 @@ class MessageThread {
 
         } else { // El usuario no coincide con el user_src ni el user_dst. El parámetro no se ha pasado correctamente
             // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) vvv_error("The user does not match user_src or user_dst", `username (local user): ${user.username}`);
+            if(logs.verbosity >= 3) logs.vvv_error("The user does not match user_src or user_dst", `username (local user): ${user.username}`);
             
             throw new MsgThreadError(`
                 El usuario no coincide con user_src ni user_dst. El segundo parámetro debe ser el propio usuario.
@@ -427,7 +427,7 @@ class MessageThread {
 
         } else { // El usuario no coincide con el user_src ni el user_dst. El parámetro no se ha pasado correctamente
             // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) vvv_error("The user does not match user_src or user_dst", `username (local user): ${user.username}`);
+            if(logs.verbosity >= 3) logs.vvv_error("The user does not match user_src or user_dst", `username (local user): ${user.username}`);
             
             throw new MsgThreadError(`
                 El usuario no coincide con user_src ni user_dst. El segundo parámetro debe ser el propio usuario.
@@ -439,7 +439,7 @@ class MessageThread {
 
         if(index === -1){
          // 📃 [===== LOG_VVV =====] 
-         if(logs.verbosity >= 3) vvv_error("Message not found", `username: ${user.username}, message: ${message}`);    
+         if(logs.verbosity >= 3) logs.vvv_error("Message not found", `username: ${user.username}, message: ${message}`);    
             throw new MsgThreadError("El mensaje no se ha encontrado", user.username, message);
         }
 

@@ -4,7 +4,18 @@
 ****************************************
             Events Classes
 ****************************************
+
+La verbosidad se controla con la variable verbose en main.js
+Va desde v (verbose) a vvvv (muy verbose)
+
 */
+
+/*********************
+*   Importaciones
+*********************/
+
+import logs from "../log.js";
+
 
 class EventMgr {
     #confEventUsers = {}; // {user: [confev1, confev2, ...]}
@@ -43,7 +54,7 @@ class Event { // Clase pseudo-abstracta
         // Valida si algún elemento video no es instancia de Video
         if(!videos.every(video => video instanceof Video)){
             // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) vvv_error("Some element is not a video", `videos: ${videos}`);
+            if(logs.verbosity >= 3) logs.vvv_error("Some element is not a video", `videos: ${videos}`);
             
             throw new VideoError("Hay algún elemento que no es un video", videos);
         }
@@ -52,7 +63,7 @@ class Event { // Clase pseudo-abstracta
         const validateDate = Object.values(Utils.valFutureDate(date));
         if(!validateDate[0]){
             // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) vvv_error("Invalid date", `date: ${date}}`);
+            if(logs.verbosity >= 3) logs.vvv_error("Invalid date", `date: ${date}}`);
             throw new DateError(validateDate[1], date);
         }
 
@@ -66,7 +77,7 @@ class Event { // Clase pseudo-abstracta
             
             if(users_selected.some(user => !Object.values(userMgr.users()).includes(user))){
                 // 📃 [===== LOG_VVV =====] 
-                if(logs.verbosity >= 3) vvv_error("The user does not exist");
+                if(logs.verbosity >= 3) logs.vvv_error("The user does not exist");
                 throw new UserError("El usuario no existe."); // Se ha seleccionado un usuario que no existe
             }
 
@@ -130,7 +141,7 @@ class ConferenceEvent extends Event { // Evento de conferencia
 
         if(this.#hayDirecto){
             // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) vvv_error("There are a stream scheduled");
+            if(logs.verbosity >= 3) logs.vvv_error("There are a stream scheduled");
             throw new ConferenceStreamError("Ya hay un directo programado", this.#hayDirecto, this.#stream);
         }
 
@@ -142,7 +153,7 @@ class ConferenceEvent extends Event { // Evento de conferencia
         // Validamos duración aproximada del stream
         if(durationAprox < 0 && durationAprox < 1440){
             // 📃 [===== LOG_VVV =====]
-            if(logs.verbosity >= 3) vvv_error("The stream does not last between 1 minute and 24 hours", `hayDirecto: ${this.#hayDirecto}, stream: ${stream}`);
+            if(logs.verbosity >= 3) logs.vvv_error("The stream does not last between 1 minute and 24 hours", `hayDirecto: ${this.#hayDirecto}, stream: ${this.#stream}`);
             throw new ConferenceStreamError("El directo debe durar entre 1 minuto y 24 horas", this.#hayDirecto, this.#stream);
         }
 
@@ -163,14 +174,14 @@ class ConferenceEvent extends Event { // Evento de conferencia
         const validateDate = Object.values(Utils.valFutureDate(date));
         if(!validateDate[0]){ // Si la fecha no es válida
             // 📃 [===== LOG_VVV =====]
-            if(logs.verbosity >= 3) vvv_error("Invalid date", `date: ${date}`);
+            if(logs.verbosity >= 3) logs.vvv_error("Invalid date", `date: ${date}`);
             throw new DateError(validateDate[1], date); // validateDate[1] es el mensaje que indica por qué no es válida
         }
 
         // Validamos duración aproximada del stream
-        if(durationAprox < 0 && durationAprox < 1440){
+        if(durationAproxMin < 0 && durationAproxMin < 1440){
             // 📃 [===== LOG_VVV =====]
-            if(logs.verbosity >= 3) vvv_error("The stream does not last between 1 minute and 24 hours", `hayDirecto: ${this.#hayDirecto}, stream: ${stream}`);
+            if(logs.verbosity >= 3) logs.vvv_error("The stream does not last between 1 minute and 24 hours", `hayDirecto: ${this.#hayDirecto}, stream: ${this.#stream}`);
             throw new ConferenceStreamError("El directo debe durar entre 1 minuto y 24 horas", this.#hayDirecto, this.#stream);
         }
 
@@ -309,7 +320,7 @@ class Interaction { // Interacciones con los vídeos por parte de los usuarios
         
         if(time > 86400 || time < 0){ // time debe ser superior a "-1" e inferior a 24 horas
             // 📃 [===== LOG_VVV =====]
-            if(logs.verbosity >= 3) vvv_error("Interaction time do not valid", `urlVideo: ${urlVideo}`);
+            if(logs.verbosity >= 3) logs.vvv_error("Interaction time do not valid", `urlVideo: ${urlVideo}`);
             throw new VideoInteractionError("El tiempo de la interacción no es válido", urlVideo);
         }
 
