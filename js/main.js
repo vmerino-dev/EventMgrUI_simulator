@@ -34,5 +34,5 @@ let eventMgr = new EventMgr();
 
 // TEST
 userMgr.addUser("holaquetal", "victor@asdf.com", "063Vv.")
-userMgr.addUser("victor", "victormerino@gmail.com", "0630011020Vv.")
+userMgr.addUser("victor", "victormerino@gmail.com", "passwdD1.")
 console.log(userMgr.users);
