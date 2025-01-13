@@ -17,7 +17,7 @@ Va desde v (verbose) a vvvv (muy verbose)
 
 import logs from "../log.js";
 import Utils from "../utils.js";
-import { UserError, PasswdError } from "../errors/eventErrors.js";
+import { UserError, EmailError, PasswdError } from "../errors/eventErrors.js";
 
 // En una sesión de un usuario debe haber una variable que almacene el id de ese usuario
 export class UserMgr {
@@ -182,7 +182,7 @@ export class UserMgr {
         if(Object.values(this.#users).some(user => user.email === email)){
             // 📃 [===== LOG_VVV =====] 
             if(logs.verbosity >= 3) logs.vvv_error("The email is already in use", `email: ${email}`);
-            throw new UserError("El email ya está en uso", username, email, passwd);
+            throw new EmailError("El email ya está en uso", username, email, passwd);
         }
     }
 

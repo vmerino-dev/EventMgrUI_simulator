@@ -31,6 +31,12 @@ export class UserError extends Error {
     }
 }
 
+export class EmailError extends UserError { // Clase hija de UserError
+    constructor(message, username = undefined, email = undefined, passwd = undefined){
+        super(message, username, email, passwd);
+    }
+}
+
 export class PasswdError extends UserError { // Clase hija de UserError
     constructor(message, username = undefined, email = undefined, passwd = undefined){
         super(message, username, email, passwd);
