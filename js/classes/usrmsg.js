@@ -48,39 +48,27 @@ export class UserMgr {
     }
 
     // Métodos
+    addUser(username, email, passwd) { // Si validacion = true, no se retorna ni se añade el usuario
 
-    // Al crear un parámetro para la validación, podemos utilizar este método solo para validar sin crear un usuario
-    addUser(username, email, passwd, validacion = false) { // Si validacion = true, no se retorna ni se añade el usuario
+        // Validamos el usuario
+        this.userCorrect(username);
 
-        if(username === ""){
-            // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) logs.vvv_error("The user is undefined", `username: ${username}`);
-            throw new UserError("El usuario es undefined", username, email, passwd);    
-        }
-
-        // Validamos que exista el usuario y el email
-        this.userExists(username); // Lanza excepción si el usuario ya existe
-
-        if(Object.values(this.#users).some(user => user.email === email)){
-            // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) logs.vvv_error("The email is already in use", `email: ${email}`);
-            throw new UserError("El email ya está en uso", username, email, passwd);
-        }
+        // Validamos que exista el email
+        this.emailCorrect(email);
             
         // Validamos la contraseña
         this.passwdCorrect(passwd); // Lanza excepción si la contraseña no es válida
 
-        if(!validacion){
-            let user = new User(username, email, passwd);
-            let id = Utils.createId(); // Generamos un UUID
-            this.#users[id] = user;
+        // Si todo es correcto crea el usuario
+        let user = new User(username, email, passwd);
+        let id = Utils.createId(); // Generamos un UUID
+        this.#users[id] = user;
     
-            // 📃 [===== LOG_V =====] 
-            if(logs.verbosity >= 1) logs.v_info("New user", `username: ${username}, email: ${email}`)
+        // 📃 [===== LOG_V =====] 
+        if(logs.verbosity >= 1) logs.v_info("New user", `username: ${username}, email: ${email}`)
     
     
-            return user; // Retornamos el usuario User
-        }
+        return user; // Retornamos el usuario User
     }
 
     // Siempre que se deba modificar nombre de usuario, invocar este metodo, no setter de User (por la validación)
@@ -174,6 +162,27 @@ export class UserMgr {
             // 📃 [===== LOG_VVV =====] 
             if(logs.verbosity >= 3) logs.vvv_error("User doesn't exist", `username: ${username}`);
             throw new UserError(`El usuario con username ${username} no existe`, username);
+        }
+    }
+
+    // Métodos de validación de campos individuales
+    userCorrect(username){
+        if(username === ""){
+            // 📃 [===== LOG_VVV =====] 
+            if(logs.verbosity >= 3) logs.vvv_error("The user is undefined", `username: ${username}`);
+            throw new UserError("El usuario es undefined", username, email, passwd);    
+        }
+
+        // Validamos que exista el usuario
+        this.userExists(username); // Lanza excepción si el usuario ya existe
+    }
+
+    emailCorrect(email){
+        // Validamos que exista el email
+        if(Object.values(this.#users).some(user => user.email === email)){
+            // 📃 [===== LOG_VVV =====] 
+            if(logs.verbosity >= 3) logs.vvv_error("The email is already in use", `email: ${email}`);
+            throw new UserError("El email ya está en uso", username, email, passwd);
         }
     }
 

@@ -9,7 +9,6 @@ import { userMgr, eventMgr } from "./main.js";
 import { UserMgr, User } from "./classes/usrmsg.js";
 import { UserError, PasswdError } from "./errors/eventErrors.js";
 
-logs.verbosity = "vvv"; // TEST
 
 const navbar = document.getElementsByTagName("nav")[0]; // nav
 const footer = document.getElementsByTagName("footer")[0]; // footer
@@ -39,10 +38,12 @@ let validarInputs = (fields) => {
     let [username, email, passwd, passwdRepeat] = Array.from(fields).map(field => field.value);
 
     if(passwd !== passwdRepeat){ // Se compara passwd con passwd repeat
-        throw new UserError("La contraseña no coincide", fields[0].value, fields[1].value,);
+        throw new PasswdError("La contraseña no coincide", fields[0].value, fields[1].value,);
     }
 
-    userMgr.addUser(username, email, passwd, true); // Se intenta validar el usuario
+    userMgr.userCorrect(username);
+    userMgr.emailCorrect(email);
+    userMgr.passwdCorrect(passwd);
 }
 
 for(let input of inputs){
@@ -56,11 +57,11 @@ for(let input of inputs){
         } catch(error){
             // Se tratarán los errores de UserError si algún campo no está vacío
             if (error instanceof UserError && !inputs.every(input => input.value !== "")){
-                console.warn("MESG", error.message);
+                console.error("MESG", error.message);
 
             // Se tratarán los errores de passwd si el campo no está vacío
             } else if (error instanceof PasswdError && inputs[3].value !== "") {
-                console.warn("MESG", error.message);
+                console.error("MESG", error.message);
             }
         }
     });
