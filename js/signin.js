@@ -54,9 +54,9 @@ for(let input of inputs){
             validarInputs(inputs); // Solo queremos validar, no obtener el usuario
      
         } catch(error){
-            if(error instanceof UserError){
-                console.error(error.message, error.username, error.email, error.passwd);
-            }
+            
+            console.error("MENSAJE", error.message);
+            
         } finally {
             console.log(input.value);
         }
