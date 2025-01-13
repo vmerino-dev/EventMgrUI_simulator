@@ -49,6 +49,12 @@ export class UserMgr {
     // Métodos
     addUser(username, email, passwd) {
 
+        if(username === ""){
+            // 📃 [===== LOG_VVV =====] 
+            if(logs.verbosity >= 3) logs.vvv_error("The user is undefined", `username: ${username}`);
+            throw new UserError("El usuario es undefined", username, email, passwd);    
+        }
+
         // Validamos que exista el usuario y el email
         this.userExists(username); // Lanza excepción si el usuario ya existe
 
@@ -67,6 +73,8 @@ export class UserMgr {
 
         // 📃 [===== LOG_V =====] 
         if(logs.verbosity >= 1) logs.v_info("New user", `username: ${username}, email: ${email}`)
+
+        return user; // Retornamos el usuario User
     }
 
     // Siempre que se deba modificar nombre de usuario, invocar este metodo, no setter de User (por la validación)

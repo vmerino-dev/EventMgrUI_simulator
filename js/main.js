@@ -14,6 +14,7 @@
 import logs from "./log.js";
 import { UserMgr } from "./classes/usrmsg.js";
 import { EventMgr } from "./classes/events.js";
+import { UserError } from "./errors/eventErrors.js";
 
 
 logs.verbosity = "vvv"; // TEST
@@ -29,8 +30,8 @@ if(logs.verbosity >= 2){
 
 // Creando gestor de usuarios y de eventos.
 // Se tienen que cargar desde IndexedDB si existen y guardarse al final
-let userMgr = new UserMgr();
-let eventMgr = new EventMgr();
+export let userMgr = new UserMgr();
+export let eventMgr = new EventMgr();
 
 // TEST
 userMgr.addUser("holaquetal", "victor@asdf.com", "063Vv.")

@@ -7,7 +7,7 @@
 */
 
 // Error al crear usuario
-class UserError extends Error {
+export class UserError extends Error {
     #username;
     #email;
     #passwd;
@@ -32,7 +32,7 @@ class UserError extends Error {
 }
 
 // Error con un hilo de msg
-class MsgThreadError extends Error {
+export class MsgThreadError extends Error {
     #username
     #msgInThread
 
@@ -53,7 +53,7 @@ class MsgThreadError extends Error {
 }
 
 // Error con los Workshop Events
-class WorkshopError extends Error {
+export class WorkshopError extends Error {
     #topic;
     #instructors;
     #wkspObj;
@@ -81,7 +81,7 @@ class WorkshopError extends Error {
 
 
 // Error al añadir stream
-class ConferenceStreamError extends Error {
+export class ConferenceStreamError extends Error {
     #hayDirecto;
     #stream;
 
@@ -100,7 +100,7 @@ class ConferenceStreamError extends Error {
     }
 }
 
-class VideoError extends Error {
+export class VideoError extends Error {
     #video; // Obj. Video
     #videos; // Array de Video
     
@@ -140,7 +140,7 @@ class VideoError extends Error {
 }
 
 // Error al interactuar con un vídeo
-class VideoInteractionError extends Error {
+export class VideoInteractionError extends Error {
     #url;
 
     constructor(message, url){
@@ -155,7 +155,7 @@ class VideoInteractionError extends Error {
 }
 
 // Error en una fecha
-class DateError extends Error {
+export class DateError extends Error {
     #date;
     
     constructor(msg, date){
