@@ -17,7 +17,7 @@ Va desde v (verbose) a vvvv (muy verbose)
 
 import logs from "../log.js";
 import Utils from "../utils.js";
-import { UserError } from "../errors/eventErrors.js";
+import { UserError, PasswdError } from "../errors/eventErrors.js";
 
 // En una sesión de un usuario debe haber una variable que almacene el id de ese usuario
 export class UserMgr {
@@ -48,7 +48,9 @@ export class UserMgr {
     }
 
     // Métodos
-    addUser(username, email, passwd) {
+
+    // Al crear un parámetro para la validación, podemos utilizar este método solo para validar sin crear un usuario
+    addUser(username, email, passwd, validacion = false) { // Si validacion = true, no se retorna ni se añade el usuario
 
         if(username === ""){
             // 📃 [===== LOG_VVV =====] 
@@ -68,14 +70,17 @@ export class UserMgr {
         // Validamos la contraseña
         this.passwdCorrect(passwd); // Lanza excepción si la contraseña no es válida
 
-        let user = new User(username, email, passwd);
-        let id = Utils.createId(); // Generamos un UUID
-        this.#users[id] = user;
-
-        // 📃 [===== LOG_V =====] 
-        if(logs.verbosity >= 1) logs.v_info("New user", `username: ${username}, email: ${email}`)
-
-        return user; // Retornamos el usuario User
+        if(!validacion){
+            let user = new User(username, email, passwd);
+            let id = Utils.createId(); // Generamos un UUID
+            this.#users[id] = user;
+    
+            // 📃 [===== LOG_V =====] 
+            if(logs.verbosity >= 1) logs.v_info("New user", `username: ${username}, email: ${email}`)
+    
+    
+            return user; // Retornamos el usuario User
+        }
     }
 
     // Siempre que se deba modificar nombre de usuario, invocar este metodo, no setter de User (por la validación)
@@ -177,22 +182,22 @@ export class UserMgr {
         if(!/[A-Z]/.test(passwd)){
             // 📃 [===== LOG_VVV =====] 
             if(logs.verbosity >= 3) logs.vvv_error("Passwd need uppercase", `passwd: ${passwd}`);
-            throw new UserError("La contraseña debe contener al menos una letra mayúscula", undefined, undefined, passwd);
+            throw new PasswdError("La contraseña debe contener al menos una letra mayúscula", undefined, undefined, passwd);
         
         } else if(!/[a-z]/.test(passwd)){
             // 📃 [===== LOG_VVV =====] 
             if(logs.verbosity >= 3) logs.vvv_error("Passwd need lowercase", `passwd: ${passwd}`);
-            throw new UserError("La contraseña debe contener al menos una letra minúscula", undefined, undefined, passwd);
+            throw new PasswdError("La contraseña debe contener al menos una letra minúscula", undefined, undefined, passwd);
         
         } else if(!/[0-9]/.test(passwd)){
             // 📃 [===== LOG_VVV =====] 
             if(logs.verbosity >= 3) logs.vvv_error("Passwd need a number", `passwd: ${passwd}`);
-            throw new UserError("La contraseña debe contener al menos un número", undefined, undefined, passwd);
+            throw new PasswdError("La contraseña debe contener al menos un número", undefined, undefined, passwd);
         
         } else if(!/[!@#$%^&*(),.?":{}|<>]/.test(passwd)){
             // 📃 [===== LOG_VVV =====] 
             if(logs.verbosity >= 3) logs.vvv_error("Passwd need a special char", `passwd: ${passwd}`);
-            throw new UserError("La contraseña debe contener al menos un carácter especial", undefined, undefined, passwd);
+            throw new PasswdError("La contraseña debe contener al menos un carácter especial", undefined, undefined, passwd);
         }
     
         // 📃 [===== LOG_VV =====]
