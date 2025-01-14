@@ -7,7 +7,7 @@
 import logs from "./log.js";
 import { userMgr, eventMgr } from "./main.js";
 import { UserMgr, User } from "./classes/usrmsg.js";
-import { UserError, PasswdError } from "./errors/eventErrors.js";
+import { UserError, EmailError, PasswdError } from "./errors/eventErrors.js";
 
 
 const navbar = document.getElementsByTagName("nav")[0]; // nav
@@ -81,7 +81,8 @@ for(let i=0;i<fields_string.length;i++){
             // Se tratarán los errores de passwd si el campo no está vacío
             } else if (error instanceof PasswdError && inputs[3].value !== "") {
                 console.error("MESG", error.message);
-            }
+            
+            } else if(error instanceof EmailError) //etc
         }
     });
 }

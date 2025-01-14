@@ -9,3 +9,6 @@ La flexibilidad utilizada en la arquitectura y metodología CSS es notable a vec
 Pretendo practicar con APIs importantes de JS y utilizo ESLint para validar mi código, como haré uso también de Vite. Todo ello con la finalidad de acercarme a la implementación de un proyecto frontend real.
 
 El código JS se estructura en clases repartidas en 2 ficheros, junto a una clase Log para el tratamiento de trazas y varias excepciones personalizadas. Respecto a las trazas se introducen distintas capas de verbosidad (4 en total).
+
+## HTML
+Los documentos se estructuran principalmente en un login.htm, signin.htm y dashboard.htm. El dashboard mostraría el gestor de eventos mediante celdas gracias a gridbox. Estas celdas serían personalizables en cuanto a tamaño y podrían añadirse y eliminarse elementos.
