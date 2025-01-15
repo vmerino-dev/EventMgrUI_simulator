@@ -70,6 +70,8 @@ for(let i=0;i<inputs.length;i++){
             return 0;
         }
         
+        let isError = false;
+
         try {
             // Validamos con el input value recibido e indicamos el número de campo en 2o param.
             if(inputs[i].id === "passwd2-input"){ // Campo passwdRepeat
@@ -80,17 +82,14 @@ for(let i=0;i<inputs.length;i++){
             }
             
         } catch(error){
+            isError = true;
 
-            if(error instanceof EmailError){
+            inputs[i].style.background = "#c46062";
+            inputs[i].style.background = "oklch(60.94% 0.1288 19.99)";
 
-            // Se tratarán los errores de passwd si el campo no está vacío
-            } else if(error instanceof PasswdError){
-                inputs[i].style.background = "red";
-
-            // Se tratarán los errores de UserError si algún campo no está vacío
-            } else if(error instanceof UserError){
-            
-            }
+        } finally {
+            if(!isError)
+                inputs[i].style.background = "";
         }
     });
 }
