@@ -36,6 +36,7 @@ const inputs = document.getElementsByTagName("input");
 
 const [USERN, EMAIL, PASSWD, PASSWDREP] = [0, 1, 2, 3]; // Correspondencia de campos con orden numérico
 
+const ERROR_COLOR = "#c46062";
 
 /**
  * validarInputs()
@@ -82,14 +83,34 @@ for(let i=0;i<inputs.length;i++){ // Eventos input
             }
             
         } catch(error){
-            isError = true;
+            isError = true; // Se ha lanzado un error
 
-            inputs[i].style.background = "#c46062";
-            inputs[i].style.background = "oklch(60.94% 0.1288 19.99)";
+            // Obtenemos el elem. label y le añadimos el msg de error
+            let inputLabel = inputs[i].parentElement;
+            let errorElem = document.createElement("p");
+            errorElem.style.color = ERROR_COLOR;
+            errorElem.style.fontSize = ".6em";
+            errorElem.style.margin = "0 0 10px 0";
+            errorElem.innerHTML = `${error.message}`;
+
+            inputLabel.appendChild(errorElem);
+
+
+            // Cambio de color del background a rojo
+            inputs[i].style.background = ERROR_COLOR;
+
+            
 
         } finally {
-            if(!isError)
-                inputs[i].style.background = "";
+            if(!isError){
+                inputs[i].style.background = ""; // El fondo vuelve a estar en blanco
+
+                // Borrado del msg de error
+                let errorElem = inputs[i].nextSibling; // Elemento con msg de error
+
+                if(errorElem)
+                    inputs[i].parentElement.removeChild(errorElem); // Lo borramos
+            }
         }
     });
 }

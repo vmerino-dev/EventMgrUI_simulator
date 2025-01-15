@@ -148,7 +148,7 @@ export class UserMgr {
         if(Object.values(this.#users).some(user => user.username === username)){
             // 📃 [===== LOG_VVV =====] 
             if(logs.verbosity >= 3) logs.vvv_error("User already exists", `username: ${username}`);
-            throw new UserError(`El usuario con username ${username} ya existe`, username);
+            throw new UserError(`El usuario con username "${username}" ya existe`, username);
         }
             
     }
