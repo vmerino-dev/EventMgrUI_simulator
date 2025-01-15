@@ -182,7 +182,15 @@ export class UserMgr {
         if(Object.values(this.#users).some(user => user.email === email)){
             // 📃 [===== LOG_VVV =====] 
             if(logs.verbosity >= 3) logs.vvv_error("The email is already in use", `email: ${email}`);
-            throw new EmailError("El email ya está en uso", username, email, passwd);
+            throw new EmailError("El email ya está en uso", undefined, email, undefined);
+        }
+
+        let emailFormat = /^[a-zA-z]\w{2,20}@[a-zA-z]\w{2,15}\.\w{2,15}$/; // Creamos el regex de validación de formato de email
+        
+        if(!emailFormat.test(email)){
+            // 📃 [===== LOG_VVV =====] 
+            if(logs.verbosity >= 3) logs.vvv_error("The email is not correct", `email: ${email}`);
+            throw new EmailError("El email no es correcto", undefined, email, undefined);
         }
     }
 

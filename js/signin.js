@@ -63,7 +63,7 @@ let validarInputs = (field, numField, passwd = undefined) => {
     }    
 }
 
-for(let i=0;i<inputs.length;i++){
+for(let i=0;i<inputs.length;i++){ // Eventos input
     inputs[i].addEventListener("blur", ()=>{ // Evento de validación cuando se pierde el foco en un input
         if(inputs[i].value === ""){ // Si el input está vacío, no validar
             inputs[i].style.background = "";
@@ -93,3 +93,8 @@ for(let i=0;i<inputs.length;i++){
         }
     });
 }
+
+document.getElementsByTagName("button")[0]
+    .addEventListener("click", (event)=>{ // Eventos button
+    event.preventDefault();
+});
