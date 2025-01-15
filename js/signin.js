@@ -42,8 +42,9 @@ const [USERN, EMAIL, PASSWD, PASSWDREP] = [0, 1, 2, 3]; // Correspondencia de ca
  * 
  * @param {*} field: input value (string)
  * @param {*} numField: num. de input basado en el orden username, email, passwd, passwd_repeat
+ * @param {*} passwd: Campo passwd en caso de estar validando passwdRepeat
  */
-let validarInputs = (field, numField) => {
+let validarInputs = (field, numField, passwd = undefined) => {
 
     switch(numField){
         case USERN:
@@ -53,36 +54,43 @@ let validarInputs = (field, numField) => {
             userMgr.emailCorrect(field); break;
         
         case PASSWD:
+            userMgr.passwdCorrect(field); break; // Validación passwd
+
         case PASSWDREP:
-            if(passwd !== passwdRepeat) // Se compara passwd con passwd repeat
-            throw new PasswdError("La contraseña no coincide", fields[0].value, fields[1].value,);   
+            if(field !== passwd) // Se compara passwd con passwd repeat
+                throw new PasswdError("La contraseña no coincide", passwd, field);   
         
-            userMgr.passwdCorrect(passwd); // Validación passwd
     }    
 }
 
-// Obtención de los valores de los campos (input value)
-let fields_string = Array.from(inputs).map(input => input.value);
-
-for(let i=0;i<fields_string.length;i++){
+for(let i=0;i<inputs.length;i++){
     inputs[i].addEventListener("blur", ()=>{ // Evento de validación cuando se pierde el foco en un input
-        if(inputs[i].value === "") // Si el input está vacío, no validar
+        if(inputs[i].value === ""){ // Si el input está vacío, no validar
+            inputs[i].style.background = "";
             return 0;
-
+        }
+        
         try {
             // Validamos con el input value recibido e indicamos el número de campo en 2o param.
-            validarInputs(fields_string[i], i);
-     
+            if(inputs[i].id === "passwd2-input"){ // Campo passwdRepeat
+                validarInputs(inputs[i].value, i, inputs[2].value); // 3er param -> passwd field
+    
+            } else {
+                validarInputs(inputs[i].value, i);
+            }
+            
         } catch(error){
-            // Se tratarán los errores de UserError si algún campo no está vacío
-            if (error instanceof UserError && !inputs.every(input => input.value !== "")){
-                console.error("MESG", error.message);
+
+            if(error instanceof EmailError){
 
             // Se tratarán los errores de passwd si el campo no está vacío
-            } else if (error instanceof PasswdError && inputs[3].value !== "") {
-                console.error("MESG", error.message);
+            } else if(error instanceof PasswdError){
+                inputs[i].style.background = "red";
+
+            // Se tratarán los errores de UserError si algún campo no está vacío
+            } else if(error instanceof UserError){
             
-            } else if(error instanceof EmailError) //etc
+            }
         }
     });
 }
