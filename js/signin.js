@@ -36,7 +36,9 @@ const inputs = document.getElementsByTagName("input");
 
 const [USERN, EMAIL, PASSWD, PASSWDREP] = [0, 1, 2, 3]; // Correspondencia de campos con orden numérico
 
-const ERROR_COLOR = "#c46062";
+const ERROR_COLOR = "#f0533a";
+
+const errorAntVal = [false, false, false, false]; // Array que indica si en la anterior validación inmediata de un campo hubo error
 
 /**
  * validarInputs()
@@ -64,10 +66,21 @@ let validarInputs = (field, numField, passwd = undefined) => {
     }    
 }
 
+function deleteErrorMessageDOM(input){
+    // Borrado del msg de error
+    let errorElem = input.nextElementSibling; // Elemento con msg de error
+
+    if(errorElem)
+        input.parentElement.removeChild(errorElem); // Lo borramos
+}
+
 for(let i=0;i<inputs.length;i++){ // Eventos input
     inputs[i].addEventListener("blur", ()=>{ // Evento de validación cuando se pierde el foco en un input
         if(inputs[i].value === ""){ // Si el input está vacío, no validar
             inputs[i].style.background = "";
+            deleteErrorMessageDOM(inputs[i]); // Borramos msg de error del dom si existe
+            
+            errorAntVal[i] = false // En esta validación no ha habido errores.
             return 0;
         }
         
@@ -82,34 +95,34 @@ for(let i=0;i<inputs.length;i++){ // Eventos input
                 validarInputs(inputs[i].value, i);
             }
             
+            errorAntVal[i] = false; // En esta validación no ha habido errores.
+
         } catch(error){
             isError = true; // Se ha lanzado un error
+            errorAntVal[i] = true; // En esta validación ha habido errores.
 
-            // Obtenemos el elem. label y le añadimos el msg de error
-            let inputLabel = inputs[i].parentElement;
-            let errorElem = document.createElement("p");
-            errorElem.style.color = ERROR_COLOR;
-            errorElem.style.fontSize = ".6em";
-            errorElem.style.margin = "0 0 10px 0";
-            errorElem.innerHTML = `${error.message}`;
+            if(!inputs[i].nextElementSibling){ // Si ya existe un elemento error no lo creamos
+                // Obtenemos el elem. label y le añadimos el msg de error
+                let inputLabel = inputs[i].parentElement;
+                let errorElem = document.createElement("p");
+                errorElem.style.color = ERROR_COLOR;
+                errorElem.style.fontSize = ".65em";
+                errorElem.style.margin = "0 0 10px 10px";
+                errorElem.innerHTML = `${error.message}`;
 
-            inputLabel.appendChild(errorElem);
+                inputLabel.appendChild(errorElem);
 
+                
+                // Cambio de color del background a rojo
+                inputs[i].style.background = ERROR_COLOR;
 
-            // Cambio de color del background a rojo
-            inputs[i].style.background = ERROR_COLOR;
-
+            }
             
-
         } finally {
             if(!isError){
                 inputs[i].style.background = ""; // El fondo vuelve a estar en blanco
+                deleteErrorMessageDOM(inputs[i]); // Borramos mensaje del HTML
 
-                // Borrado del msg de error
-                let errorElem = inputs[i].nextSibling; // Elemento con msg de error
-
-                if(errorElem)
-                    inputs[i].parentElement.removeChild(errorElem); // Lo borramos
             }
         }
     });
@@ -118,4 +131,12 @@ for(let i=0;i<inputs.length;i++){ // Eventos input
 document.getElementsByTagName("button")[0]
     .addEventListener("click", (event)=>{ // Eventos button
     event.preventDefault();
+
+    if(errorAntVal.every(hayError => !hayError)){
+        window.location.href = "dashboard.html";
+    
+    } else {
+        console.log("HAY ERRORESSSS");
+    }
+        
 });

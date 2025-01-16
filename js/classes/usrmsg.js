@@ -171,6 +171,11 @@ export class UserMgr {
             // 📃 [===== LOG_VVV =====] 
             if(logs.verbosity >= 3) logs.vvv_error("The user is undefined", `username: ${username}`);
             throw new UserError("El usuario es undefined", username, email, passwd);    
+
+        } else if(username.length < 3 || username.length > 40){
+            // 📃 [===== LOG_VVV =====] 
+            if(logs.verbosity >= 3) logs.vvv_error("username is less than 3 characters or more than 40", `username: ${username}`);
+            throw new UserError("El nombre de usuario debe tener al menos 3 caracteres", username, email, passwd);    
         }
 
         // Validamos que exista el usuario

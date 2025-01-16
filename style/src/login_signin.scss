@@ -131,10 +131,9 @@ body {
     @include mixins.flex(center, center, column);
     gap: 10px;
 
-    transition: box-shadow .25s, scale .25s;
+    transition: box-shadow .25s;
 
     &:hover {
-        scale: 1.009;
         box-shadow: 0 0 6px 2px #ffffff33;
         transition: box-shadow .5s, scale .5s;
     }
@@ -150,6 +149,12 @@ body {
     margin: 8px 0 12px 0;
     cursor: pointer;
 
+    transition: scale 0.15s;
+
+    &:hover {
+        transition: scale 0.25s;
+        scale: 1.03;
+    }
 }
 
 .field__button { // Button

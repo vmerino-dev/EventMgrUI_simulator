@@ -125,10 +125,9 @@ body {
   justify-content: center;
   flex-direction: column;
   gap: 10px;
-  transition: box-shadow 0.25s, scale 0.25s;
+  transition: box-shadow 0.25s;
 }
 .main__field:hover {
-  scale: 1.009;
   box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.2);
   transition: box-shadow 0.5s, scale 0.5s;
 }
@@ -144,6 +143,11 @@ body {
   width: 400px;
   margin: 8px 0 12px 0;
   cursor: pointer;
+  transition: scale 0.15s;
+}
+.info__input:hover {
+  transition: scale 0.25s;
+  scale: 1.03;
 }
 
 .field__button {

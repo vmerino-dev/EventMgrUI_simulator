@@ -58,3 +58,16 @@ h2 {
   font-weight: bold;
   font-style: italic;
 }
+::-webkit-scrollbar {
+  width: 14px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(0, 0, 0);
+  border-radius: 20px;
+  border: 1px solid azure;
+}
+
+::-webkit-scrollbar-track {
+  background: azure;
+}
