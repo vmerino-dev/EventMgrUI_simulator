@@ -36,9 +36,10 @@ const inputs = document.getElementsByTagName("input");
 
 const [USERN, EMAIL, PASSWD, PASSWDREP] = [0, 1, 2, 3]; // Correspondencia de campos con orden numérico
 
-const ERROR_COLOR = "#f0533a";
+const ERROR_COLOR = "#f0533a"; // Color utilizado en fuente y fondo de campos para los errores
 
-const errorAntVal = [false, false, false, false]; // Array que indica si en la anterior validación inmediata de un campo hubo error
+const erroresPrevios = [false, false, false, false]; // Indica si en la anterior validación inmediata de un campo hubo error
+const camposVacios = [true, true, true, true]; // Indica si existen campos vacíos (true -> campo vacío)
 
 /**
  * validarInputs()
@@ -75,12 +76,20 @@ function deleteErrorMessageDOM(input){
 }
 
 for(let i=0;i<inputs.length;i++){ // Eventos input
+    switch(i){
+        case 0: inputs[i].setCustomValidity("Introduce un nombre de usuario"); break;
+        case 1: inputs[i].setCustomValidity("Introduce un email"); break;
+        case 2: inputs[i].setCustomValidity("Introduce una contraseña"); break;
+        case 3: inputs[i].setCustomValidity("Repite la contraseña"); break;
+    }
+
     inputs[i].addEventListener("blur", ()=>{ // Evento de validación cuando se pierde el foco en un input
         if(inputs[i].value === ""){ // Si el input está vacío, no validar
             inputs[i].style.background = "";
             deleteErrorMessageDOM(inputs[i]); // Borramos msg de error del dom si existe
             
-            errorAntVal[i] = false // En esta validación no ha habido errores.
+            erroresPrevios[i] = false // En esta validación no ha habido errores.
+            camposVacios[i] = true; // El campo está vacío
             return 0;
         }
         
@@ -95,11 +104,14 @@ for(let i=0;i<inputs.length;i++){ // Eventos input
                 validarInputs(inputs[i].value, i);
             }
             
-            errorAntVal[i] = false; // En esta validación no ha habido errores.
+            erroresPrevios[i] = false; // En esta validación no ha habido errores.
+            camposVacios[i] = false; // El campo no era vacío
 
         } catch(error){
             isError = true; // Se ha lanzado un error
-            errorAntVal[i] = true; // En esta validación ha habido errores.
+            erroresPrevios[i] = true; // En esta validación ha habido errores.
+
+            camposVacios[i] = false; // El campo no era vacío
 
             if(!inputs[i].nextElementSibling){ // Si ya existe un elemento error no lo creamos
                 // Obtenemos el elem. label y le añadimos el msg de error
@@ -130,13 +142,20 @@ for(let i=0;i<inputs.length;i++){ // Eventos input
 
 document.getElementsByTagName("button")[0]
     .addEventListener("click", (event)=>{ // Eventos button
+
     event.preventDefault();
 
-    if(errorAntVal.every(hayError => !hayError)){
+    if(erroresPrevios.every(hayError => !hayError) && camposVacios.every(campoVacio => !campoVacio)){
+        // Obtenemos el string de los inputs y creamos el usuario
+        let { username, email, passwd } = inputs.map(input => input.value);
+        userMgr.addUser(username, email, passwd)
+
+        // Accedemos al dashboard
         window.location.href = "dashboard.html";
+        
     
     } else {
-        console.log("HAY ERRORESSSS");
+        console.log("ERROR DE VALIDACIÓN DE USUARIO");
     }
         
 });
