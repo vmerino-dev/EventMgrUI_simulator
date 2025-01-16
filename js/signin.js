@@ -108,27 +108,28 @@ for(let i=0;i<inputs.length;i++){ // Eventos input
             camposVacios[i] = false; // El campo no era vacío
 
         } catch(error){
+
             isError = true; // Se ha lanzado un error
             erroresPrevios[i] = true; // En esta validación ha habido errores.
 
             camposVacios[i] = false; // El campo no era vacío
 
-            if(!inputs[i].nextElementSibling){ // Si ya existe un elemento error no lo creamos
-                // Obtenemos el elem. label y le añadimos el msg de error
-                let inputLabel = inputs[i].parentElement;
-                let errorElem = document.createElement("p");
-                errorElem.style.color = ERROR_COLOR;
-                errorElem.style.fontSize = ".65em";
-                errorElem.style.margin = "0 0 10px 10px";
-                errorElem.innerHTML = `${error.message}`;
 
-                inputLabel.appendChild(errorElem);
-
-                
-                // Cambio de color del background a rojo
-                inputs[i].style.background = ERROR_COLOR;
-
+            if(inputs[i].nextElementSibling){ // Si ya existe un elemento error lo borramos
+                deleteErrorMessageDOM(inputs[i]); // Borramos mensaje del HTML
             }
+            // Obtenemos el elem. label y le añadimos el msg de error
+            let inputLabel = inputs[i].parentElement;
+            let errorElem = document.createElement("p");
+            errorElem.style.color = ERROR_COLOR;
+            errorElem.style.fontSize = ".65em";
+            errorElem.style.margin = "0 0 10px 10px";
+            errorElem.innerHTML = `${error.message}`;
+            
+            inputLabel.appendChild(errorElem);
+            
+            // Cambio de color del background a rojo
+            inputs[i].style.background = ERROR_COLOR;
             
         } finally {
             if(!isError){
@@ -147,8 +148,8 @@ document.getElementsByTagName("button")[0]
 
     if(erroresPrevios.every(hayError => !hayError) && camposVacios.every(campoVacio => !campoVacio)){
         // Obtenemos el string de los inputs y creamos el usuario
-        let { username, email, passwd } = inputs.map(input => input.value);
-        userMgr.addUser(username, email, passwd)
+        let [ username, email, passwd ] = Array.from(inputs).map(input => input.value);
+        userMgr.addUser(username, email, passwd);
 
         // Accedemos al dashboard
         window.location.href = "dashboard.html";
