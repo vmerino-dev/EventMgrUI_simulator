@@ -84,7 +84,7 @@ for(let i=0;i<inputs.length;i++){ // Eventos input
     }
 
     inputs[i].addEventListener("blur", ()=>{ // Evento de validación cuando se pierde el foco en un input
-        if(inputs[i].value === ""){ // Si el input está vacío, no validar
+        if(inputs[i].validity.valueMissing){ // Si el input está vacío, no validar
             inputs[i].style.background = "";
             deleteErrorMessageDOM(inputs[i]); // Borramos msg de error del dom si existe
             
