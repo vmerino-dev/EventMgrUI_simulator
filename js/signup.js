@@ -151,6 +151,8 @@ document.getElementsByTagName("button")[0]
         let [ username, email, passwd ] = Array.from(inputs).map(input => input.value);
         userMgr.addUser(username, email, passwd);
 
+        localStorage.setItem("userSession", inputs[0].value);
+
         // Accedemos al dashboard
         window.location.href = "dashboard.html";
         
