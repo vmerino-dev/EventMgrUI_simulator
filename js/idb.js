@@ -2,7 +2,7 @@
 
 import { UserMgr } from "./classes/usrmsg.js";
 import { EventMgr } from "./classes/events.js";
-
+import { DB_NAME } from "./utils.js";
 import { IDBError } from "./errors/idbErrors.js";
 
 /**
@@ -17,11 +17,11 @@ export class IDBUsersEvents {
     #oldVersion = null;
 
     // Constructor
-    constructor(dbName, dbVersion){
+    constructor(dbVersion){
         let userMgr; // Almacenará el gestor de usuarios
         let eventMgr; // Almacenará el gestor de eventos
 
-        let request = window.indexedDB.open(dbName, dbVersion);
+        let request = window.indexedDB.open(DB_NAME, dbVersion);
 
         request.onerror = () => {
             throw new IDBError('Error al abrir la base de datos', request);
@@ -96,4 +96,32 @@ export class IDBUsersEvents {
     get db(){
         return this.#db;
     }
+
+    // Métodos
+
+    /**
+     * Cierra la conexión con la base de datos
+     */
+    closeDB(){
+        this.#db.close();
+    }
+
+
+
+    /**
+     * Carga los usuarios en el gestor de usuarios
+     * @param {UserMgr} userMgr Gestor de usuarios
+     */
+    loadUsers()){
+
+    }
+
+    /**
+     * Carga los eventos en el gestor de eventos
+     * @param {EventMgr} eventMgr Gestor de eventos
+     */
+    loadEvents(){
+    
+    }
+
 }

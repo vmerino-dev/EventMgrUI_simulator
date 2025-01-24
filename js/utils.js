@@ -1,6 +1,8 @@
 "use strict";
 
-export default class Utils{
+export const DB_NAME = "userEventMgr";
+
+export default class Utils {
     static createId(){
         return crypto.randomUUID();
     }

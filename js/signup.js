@@ -31,6 +31,32 @@ navbar.addEventListener("click", ()=>removeClass_pshow(passwd2));
 footer.addEventListener("click", ()=>removeClass_pshow(passwd2));
 
 
+/**********
+ *  IDB   *
+ **********/
+
+let idbUsrEvnt; // Objeto IDBUsersEvents con la db
+let usrMgr; // Contendrá el usrMgr con los usuarios
+
+try{
+    idbUsrEvnt = new IDBUsersEvents(1); // Creación de la base de datos IndexedDB
+
+    // Carga de usuarios y eventos
+    usrMgr = idbUsrEvnt.loadUsers();
+
+    // Cierre de la base de datos
+    idbUsrEvnt.closeDB();
+
+} catch(error){
+    if(error instanceof IDBError){
+        console.error("IDB_ERROR", error.message);
+    } else {
+        console.error(error.message)
+    }
+
+            
+}
+
 // *** Validación de inputs ***
 const inputs = document.getElementsByTagName("input");
 
@@ -153,12 +179,7 @@ document.getElementsByTagName("button")[0]
 
         localStorage.setItem("userSession", idUser); // Almacenamos el usuario en sesión (id)
 
-        // IDB
-        try{
-
-        } catch(error){
-            console.log(error.message);
-        }
+        idbUsrEvnt.storeUsers(usrMgr); // Almacenamos los usuarios en la base de datos
 
         // Accedemos al dashboard
         window.location.href = "dashboard.html";
