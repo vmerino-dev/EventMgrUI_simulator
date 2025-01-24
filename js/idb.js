@@ -3,7 +3,7 @@
 import { UserMgr } from "./classes/usrmsg.js";
 import { EventMgr } from "./classes/events.js";
 
-import { IDBError } from "./errors/eventErrors.js";
+import { IDBError } from "./errors/idbErrors.js";
 
 /**
  * IDB
@@ -19,6 +19,7 @@ export class IDBUsersEvents {
     // Constructor
     constructor(dbName, dbVersion){
         let userMgr; // Almacenará el gestor de usuarios
+        let eventMgr; // Almacenará el gestor de eventos
 
         let request = window.indexedDB.open(dbName, dbVersion);
 
@@ -31,12 +32,14 @@ export class IDBUsersEvents {
 
             if(event.oldVersion === 0){ // Si la bbdd no existe, creamos el objeto gestor de usuarios
                 userMgr = new UserMgr();
+                eventMgr = new EventMgr();
+
                 this.#oldVersion = 0;
             }
                 
 
-            if(!db.objectStoreNames.contains('userMgr')){
-                db.createObjectStore('userMgr', {keyPath: "id"});
+            if(!db.objectStoreNames.contains('userEventMgr')){
+                db.createObjectStore('userEventMgr', {keyPath: "id"});
             }
         }
 
@@ -51,8 +54,8 @@ export class IDBUsersEvents {
             // Si oldVersion = 0 añade userMgr al db
             if(this.#oldVersion === 0){
                 // Transacciones
-                let transaccion = db.transaction('userMgr', 'readwrite');
-                let userMgrObjSt = transaccion.objectStore('userMgr'); // Obtenemos almacen objetos de users
+                let transaccion = db.transaction('userEventMgr', 'readwrite');
+                let userMgrObjSt = transaccion.objectStore('userEventMgr'); // Obtenemos almacen objetos de users
 
 
                 let usermgrIDB = {
@@ -60,14 +63,20 @@ export class IDBUsersEvents {
                     userMgr: userMgr
                 }
 
-                let requestTransaccion = userMgrObjSt.add(usermgrIDB);
+                let eventmgrIDB = {
+                    id: 'eventMgr',
+                    eventMgr: eventMgr
+                }
 
-                requestTransaccion.onsuccess = () => {
-                    console.log('UserMgr añadido');
+                let requestTransaccion = userMgrObjSt.add(usermgrIDB);
+                requestTransaccion = userMgrObjSt.add(eventmgrIDB);
+
+                requestTransaccion.onsuccess = (event) => {
+                    console.log(`${event.target.result} añadido`);
                 }
 
                 requestTransaccion.onerror = () => {
-                    console.log('Error al añadir el UserMgr');
+                    console.log('Error al añadir los objetos');
                 }
 
             }
