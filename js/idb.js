@@ -11,7 +11,7 @@ import { IDBError } from "./errors/eventErrors.js";
  * Clase que se encarga de gestionar las bases de datos IndexedDB de los usuarios
  * Si #request o #db son null, no se ha abierto aún la bbdd o ha habido un error
  */
-export class IDB_Users {
+export class IDBUsersEvents {
     #request = null;
     #db = null;
     #oldVersion = null;
@@ -20,17 +20,16 @@ export class IDB_Users {
     constructor(dbName, dbVersion){
         let userMgr; // Almacenará el gestor de usuarios
 
-        request = window.indexedDB.open(dbName, dbVersion);
+        let request = window.indexedDB.open(dbName, dbVersion);
 
         request.onerror = () => {
-            console.log('Error al abrir la base de datos');
             throw new IDBError('Error al abrir la base de datos', request);
         }
 
         request.onupgradeneeded = (event) => {
             let db = request.result;
 
-            if(!event.oldVersion){ // Si la bbdd no existe, creamos el objeto gestor de usuarios
+            if(event.oldVersion === 0){ // Si la bbdd no existe, creamos el objeto gestor de usuarios
                 userMgr = new UserMgr();
                 this.#oldVersion = 0;
             }
@@ -48,11 +47,13 @@ export class IDB_Users {
                 db.close(); // Si ha habido cambio de versión, cerramos la conexión
             }
 
-            // Transacciones
-            let transaccion = db.transaction('userMgr', 'readwrite');
 
-            if(!this.#oldVersion){ // Si oldVersion = 0 añade userMgr al db
+            // Si oldVersion = 0 añade userMgr al db
+            if(this.#oldVersion === 0){
+                // Transacciones
+                let transaccion = db.transaction('userMgr', 'readwrite');
                 let userMgrObjSt = transaccion.objectStore('userMgr'); // Obtenemos almacen objetos de users
+
 
                 let usermgrIDB = {
                     id: 'userMgr',
@@ -69,11 +70,9 @@ export class IDB_Users {
                     console.log('Error al añadir el UserMgr');
                 }
 
-            } else {
-
             }
 
-
+            // Guardamos el db y el request para poder ser accedidos y manipulados desde fuera
             this.#request = request;
             this.#db = db;
         }
