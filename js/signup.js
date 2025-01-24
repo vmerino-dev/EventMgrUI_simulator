@@ -150,8 +150,15 @@ document.getElementsByTagName("button")[0]
         // Obtenemos el string de los inputs y creamos el usuario
         let [ username, email, passwd ] = Array.from(inputs).map(input => input.value);
         let [idUser] = userMgr.addUser(username, email, passwd);
-        
+
         localStorage.setItem("userSession", idUser); // Almacenamos el usuario en sesión (id)
+
+        // IDB
+        try{
+
+        } catch(error){
+            console.log(error.message);
+        }
 
         // Accedemos al dashboard
         window.location.href = "dashboard.html";
