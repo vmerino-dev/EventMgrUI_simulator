@@ -55,7 +55,7 @@ export class UserMgr {
 
         // Validamos que exista el email
         this.emailCorrect(email);
-            
+        
         // Validamos la contraseña
         this.passwdCorrect(passwd); // Lanza excepción si la contraseña no es válida
 
@@ -68,7 +68,7 @@ export class UserMgr {
         if(logs.verbosity >= 1) logs.v_info("New user", `username: ${username}, email: ${email}`)
     
     
-        return user; // Retornamos el usuario User
+        return [id, user]; // Retornamos el usuario User y su id
     }
 
     // Siempre que se deba modificar nombre de usuario, invocar este metodo, no setter de User (por la validación)

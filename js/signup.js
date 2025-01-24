@@ -149,9 +149,9 @@ document.getElementsByTagName("button")[0]
     if(erroresPrevios.every(hayError => !hayError) && camposVacios.every(campoVacio => !campoVacio)){
         // Obtenemos el string de los inputs y creamos el usuario
         let [ username, email, passwd ] = Array.from(inputs).map(input => input.value);
-        userMgr.addUser(username, email, passwd);
-
-        localStorage.setItem("userSession", inputs[0].value);
+        let [idUser] = userMgr.addUser(username, email, passwd);
+        
+        localStorage.setItem("userSession", idUser); // Almacenamos el usuario en sesión (id)
 
         // Accedemos al dashboard
         window.location.href = "dashboard.html";
