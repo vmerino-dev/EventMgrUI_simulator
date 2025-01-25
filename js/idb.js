@@ -106,22 +106,71 @@ export class IDBUsersEvents {
         this.#db.close();
     }
 
+    /**
+     * Almacena el gestor de usuarios (probablemente actualizado)
+     */
+    storeUsers(usrMgr){
+        if(db === null)
+            throw new IDBError('No se ha abierto la base de datos');
 
+        let transaccion = db.transaction('userEventMgr', 'readwrite'); // Transacción de lectura/escritura
+        let userMgrObjSt = transaccion.objectStore('userEventMgr'); // Obtenemos almacen objetos de users
+
+        let usermgrIDB = {
+            id: 'userMgr',
+            userMgr: usrMgr
+        }
+
+        let requestTransaccion = userMgrObjSt.put(usermgrIDB);
+
+        requestTransaccion.onsuccess = (event) => {
+            console.log(`${event.target.result} añadido`);
+        }
+
+        requestTransaccion.onerror = () => {
+            console.log('Error al añadir los objetos');
+        }
+    }
 
     /**
-     * Carga los usuarios en el gestor de usuarios
+     * Almacena el gestor de eventos (probablemente actualizado)
+     */
+    storeEvents(eventMgr){
+        if(db === null)
+            throw new IDBError('No se ha abierto la base de datos');
+
+        let transaccion = db.transaction('userEventMgr', 'readwrite'); // Transacción de lectura/escritura
+        let eventMgrObjSt = transaccion.objectStore('userEventMgr'); // Obtenemos almacen objetos de users
+
+        let eventmgrIDB = {
+            id: 'userMgr',
+            userMgr: eventMgr
+        }
+
+        let requestTransaccion = eventMgrObjSt.put(eventmgrIDB);
+
+        requestTransaccion.onsuccess = (event) => {
+            console.log(`${event.target.result} añadido`);
+        }
+
+        requestTransaccion.onerror = () => {
+            console.log('Error al añadir los objetos');
+        }   
+    }
+
+    /**
+     * Carga el gestor de usuarios
      * @param {UserMgr} userMgr Gestor de usuarios
      */
-    loadUsers()){
+    loadUsers(){
 
     }
 
     /**
-     * Carga los eventos en el gestor de eventos
+     * Carga el gestor de eventos
      * @param {EventMgr} eventMgr Gestor de eventos
      */
     loadEvents(){
     
     }
-
 }
