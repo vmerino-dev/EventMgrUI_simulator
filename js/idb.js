@@ -23,69 +23,80 @@ export class IDBUsersEvents {
 
         let request = window.indexedDB.open(DB_NAME, dbVersion);
 
-        request.onerror = () => {
-            throw new IDBError('Error al abrir la base de datos', request);
-        }
-
-        request.onupgradeneeded = (event) => {
-            let db = request.result;
-
-            if(event.oldVersion === 0){ // Si la bbdd no existe, creamos el objeto gestor de usuarios
-                userMgr = new UserMgr();
-                eventMgr = new EventMgr();
-
-                this.#oldVersion = 0;
-            }
-                
-
-            if(!db.objectStoreNames.contains('userEventMgr')){
-                db.createObjectStore('userEventMgr', {keyPath: "id"});
-            }
-        }
-
-        request.onsuccess = () => {
-            let db = request.result;
-
-            db.onversionchange = () => {
-                db.close(); // Si ha habido cambio de versión, cerramos la conexión
+        return new Promise((resolve, reject) => {
+            request.onerror = () => {
+                reject('Error al abrir la base de datos' + request);
             }
 
+            request.onupgradeneeded = (event) => {
+                let db = request.result;
 
-            // Si oldVersion = 0 añade userMgr al db
-            if(this.#oldVersion === 0){
-                // Transacciones
-                let transaccion = db.transaction('userEventMgr', 'readwrite');
-                let userMgrObjSt = transaccion.objectStore('userEventMgr'); // Obtenemos almacen objetos de users
+                if(event.oldVersion === 0){ // Si la bbdd no existe, creamos el objeto gestor de usuarios
+                    userMgr = new UserMgr();
+                    eventMgr = new EventMgr();
 
-
-                let usermgrIDB = {
-                    id: 'userMgr',
-                    userMgr: userMgr
+                    this.#oldVersion = 0;
                 }
+                    
 
-                let eventmgrIDB = {
-                    id: 'eventMgr',
-                    eventMgr: eventMgr
+                if(!db.objectStoreNames.contains('userEventMgr')){
+                    db.createObjectStore('userEventMgr', {keyPath: "id"});
                 }
-
-                let requestTransaccion = userMgrObjSt.add(usermgrIDB);
-                requestTransaccion = userMgrObjSt.add(eventmgrIDB);
-
-                requestTransaccion.onsuccess = (event) => {
-                    console.log(`${event.target.result} añadido`);
-                }
-
-                requestTransaccion.onerror = () => {
-                    console.log('Error al añadir los objetos');
-                }
-
             }
 
-            // Guardamos el db y el request para poder ser accedidos y manipulados desde fuera
-            this.#request = request;
-            this.#db = db;
-        }
+            request.onsuccess = () => {
+                let db = request.result;
 
+                db.onversionchange = () => {
+                    db.close(); // Si ha habido cambio de versión, cerramos la conexión
+                }
+
+
+                // Si oldVersion = 0 añade userMgr al db
+                if(this.#oldVersion === 0){
+                    // Transacciones
+                    let transaccion = db.transaction('userEventMgr', 'readwrite');
+                    let userMgrObjSt = transaccion.objectStore('userEventMgr'); // Obtenemos almacen objetos de users
+
+
+                    let usermgrIDB = {
+                        id: 'userMgr',
+                        userMgr: userMgr
+                    }
+
+                    let eventmgrIDB = {
+                        id: 'eventMgr',
+                        eventMgr: eventMgr
+                    }
+
+                    let requestTransaccionUser = userMgrObjSt.add(usermgrIDB);
+                    let requestTransaccionEvent = userMgrObjSt.add(eventmgrIDB);
+
+                    requestTransaccionUser.onsuccess = (event) => {
+                        console.log(`${event.target.result} añadido`);
+                    }
+
+                    requestTransaccionUser.onerror = () => {
+                        console.log('Error al añadir userMgr');
+                    }
+
+                    requestTransaccionEvent.onsuccess = (event) => {
+                        console.log(`${event.target.result} añadido`);
+                    }
+
+                    requestTransaccionEvent.onerror = () => {
+                        console.log('Error al añadir userMgr');
+                    }
+
+                }
+
+                // Guardamos el db y el request para poder ser accedidos y manipulados desde fuera
+                this.#request = request;
+                this.#db = db;
+
+                resolve(db);
+            }
+        });
     }
 
     // getters
@@ -112,7 +123,7 @@ export class IDBUsersEvents {
      * @param {*} userMgr true si es userMgr, false si es eventMgrs
      * @param {*} mgr El segundo parámetro es el objeto a almacenar
      */
-    store(userMgr = true, mgr){
+    #store(userMgr = true, mgr){
         if(this.#db === null)
             throw new IDBError('No se ha abierto la base de datos');
 
@@ -144,29 +155,30 @@ export class IDBUsersEvents {
             requestTransaccion = ObjSt.put(usermgrIDB); // Se actualiza el gestor de usuarios
 
         }
-        
 
-        requestTransaccion.onsuccess = (event) => {
-            console.log(`${event.target.result} añadido`);
-        }
+        return new Promise((resolve, reject) => { // Se resuelve al actualizar el objeto o se rechaza si hay error
+            requestTransaccion.onsuccess = (event) => {
+                resolve(event.target.result);
+            }
 
-        requestTransaccion.onerror = () => {
-            console.log('Error al añadir los objetos');
-        }
+            requestTransaccion.onerror = (event) => {
+                reject(event.target.error);
+            }
+        });
     }
 
     /**
      * Almacena el gestor de usuarios (probablemente actualizado)
      */
     storeUsers(userMgr){
-        this.store(true, userMgr);
+        return this.#store(true, userMgr); // Retornamos la promesa para ser tratada desde fuera
     }
 
     /**
      * Almacena el gestor de eventos (probablemente actualizado)
      */
     storeEvents(eventMgr){
-        this.store(true, eventMgr);
+        return this.#store(true, eventMgr); // Retornamos la promesa para ser tratada desde fuera
     }
 
 
@@ -175,7 +187,7 @@ export class IDBUsersEvents {
      * 
      * @param {*} objectToLoad Objeto a cargar (userMgr o eventMgr) en string
      */
-    load(objectToLoad){
+    #load(objectToLoad){
         if(this.#db === null)
             throw new IDBError('No se ha abierto la base de datos');
         
@@ -184,15 +196,17 @@ export class IDBUsersEvents {
 
         let requestTransaccion = userMgrObjSt.get(objectToLoad);
 
-        requestTransaccion.onsuccess = (event) => {
-            console.log(`${event.target.result} cargado`);
+        return new Promise((resolve, reject) => {
+            requestTransaccion.onsuccess = (event) => {
+                resolve(event.target.result);
 
-            return event.target.result;
-        }
+            }
+    
+            requestTransaccion.onerror = (event) => {
+                reject(event.target.error);
 
-        requestTransaccion.onerror = () => {
-            console.log('Error al cargar los objetos');
-        }
+            }
+        });
     }
 
     /**
@@ -200,7 +214,7 @@ export class IDBUsersEvents {
      * @param {UserMgr} userMgr Gestor de usuarios
      */
     loadUsers(){
-        return this.load('userMgr');
+        return this.#load('userMgr');
     }
 
     /**
@@ -208,6 +222,6 @@ export class IDBUsersEvents {
      * @param {EventMgr} eventMgr Gestor de eventos
      */
     loadEvents(){
-        return this.load('eventMgr');
+        return this.#load('eventMgr');
     }
 }
