@@ -107,21 +107,44 @@ export class IDBUsersEvents {
     }
 
     /**
-     * Almacena el gestor de usuarios (probablemente actualizado)
+     * Función que generaliza el almacenamiento de objetos en la base de datos
+     * 
+     * @param {*} userMgr true si es userMgr, false si es eventMgrs
+     * @param {*} mgr El segundo parámetro es el objeto a almacenar
      */
-    storeUsers(usrMgr){
+    store(userMgr = true, mgr){
         if(this.#db === null)
             throw new IDBError('No se ha abierto la base de datos');
 
-        let transaccion = this.#db.transaction('userEventMgr', 'readwrite'); // Transacción de lectura/escritura
-        let userMgrObjSt = transaccion.objectStore('userEventMgr'); // Obtenemos almacen objetos de users
+        let eventmgrIDB;
+        let usermgrIDB;
 
-        let usermgrIDB = {
-            id: 'userMgr',
-            userMgr: usrMgr
+        if(!userMgr){ // Si se desea almacenar el gestor de eventos
+            eventmgrIDB = {
+                id: 'userMgr',
+                userMgr: mgr
+            }
+
+        } else {
+            usermgrIDB = {
+                id: 'userMgr',
+                userMgr: mgr
+            }
         }
 
-        let requestTransaccion = userMgrObjSt.put(usermgrIDB);
+        const transaccion = this.#db.transaction('userEventMgr', 'readwrite'); // Transacción de lectura/escritura
+        const ObjSt = transaccion.objectStore('userEventMgr'); // Obtenemos almacen objetos de users
+
+        let requestTransaccion;
+
+        if(!userMgr){
+            requestTransaccion = ObjSt.put(eventmgrIDB); // Se actualiza el gestor de eventos
+
+        } else {
+            requestTransaccion = ObjSt.put(usermgrIDB); // Se actualiza el gestor de usuarios
+
+        }
+        
 
         requestTransaccion.onsuccess = (event) => {
             console.log(`${event.target.result} añadido`);
@@ -133,29 +156,43 @@ export class IDBUsersEvents {
     }
 
     /**
+     * Almacena el gestor de usuarios (probablemente actualizado)
+     */
+    storeUsers(userMgr){
+        this.store(true, userMgr);
+    }
+
+    /**
      * Almacena el gestor de eventos (probablemente actualizado)
      */
     storeEvents(eventMgr){
+        this.store(true, eventMgr);
+    }
+
+
+    /**
+     * Función que generaliza la carga de objetos de la base de datos
+     * 
+     * @param {*} objectToLoad Objeto a cargar (userMgr o eventMgr) en string
+     */
+    load(objectToLoad){
         if(this.#db === null)
             throw new IDBError('No se ha abierto la base de datos');
+        
+        let transaccion = this.#db.transaction('userEventMgr', 'readonly'); // Transacción de lectura
+        let userMgrObjSt = transaccion.objectStore('userEventMgr'); // Obtenemos almacen objetos de users
 
-        let transaccion = this.#db.transaction('userEventMgr', 'readwrite'); // Transacción de lectura/escritura
-        let eventMgrObjSt = transaccion.objectStore('userEventMgr'); // Obtenemos almacen objetos de users
-
-        let eventmgrIDB = {
-            id: 'userMgr',
-            userMgr: eventMgr
-        }
-
-        let requestTransaccion = eventMgrObjSt.put(eventmgrIDB);
+        let requestTransaccion = userMgrObjSt.get(objectToLoad);
 
         requestTransaccion.onsuccess = (event) => {
-            console.log(`${event.target.result} añadido`);
+            console.log(`${event.target.result} cargado`);
+
+            return event.target.result;
         }
 
         requestTransaccion.onerror = () => {
-            console.log('Error al añadir los objetos');
-        }   
+            console.log('Error al cargar los objetos');
+        }
     }
 
     /**
@@ -163,21 +200,7 @@ export class IDBUsersEvents {
      * @param {UserMgr} userMgr Gestor de usuarios
      */
     loadUsers(){
-        if(this.#db === null)
-            throw new IDBError('No se ha abierto la base de datos');
-        
-        let transaccion = this.#db.transaction('userEventMgr', 'readonly'); // Transacción de lectura
-        let userMgrObjSt = transaccion.objectStore('userEventMgr'); // Obtenemos almacen objetos de users
-
-        let requestTransaccion = userMgrObjSt.get('userMgr');
-
-        requestTransaccion.onsuccess = (event) => {
-            console.log(`${event.target.result} cargado`);
-        }
-
-        requestTransaccion.onerror = () => {
-            console.log('Error al cargar los objetos');
-        }
+        return this.load('userMgr');
     }
 
     /**
@@ -185,20 +208,6 @@ export class IDBUsersEvents {
      * @param {EventMgr} eventMgr Gestor de eventos
      */
     loadEvents(){
-        if(this.#db === null)
-            throw new IDBError('No se ha abierto la base de datos');
-        
-        let transaccion = this.#db.transaction('userEventMgr', 'readonly'); // Transacción de lectura
-        let userMgrObjSt = transaccion.objectStore('userEventMgr'); // Obtenemos almacen objetos de users
-
-        let requestTransaccion = userMgrObjSt.get('eventMgr');
-
-        requestTransaccion.onsuccess = (event) => {
-            console.log(`${event.target.result} cargado`);
-        }
-
-        requestTransaccion.onerror = () => {
-            console.log('Error al cargar los objetos');
-        } 
+        return this.load('eventMgr');
     }
 }
