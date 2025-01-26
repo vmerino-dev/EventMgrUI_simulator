@@ -69,32 +69,57 @@ export class IDBUsersEvents {
                         eventMgr: eventMgr
                     }
 
-                    let requestTransaccionUser = userMgrObjSt.add(usermgrIDB);
-                    let requestTransaccionEvent = userMgrObjSt.add(eventmgrIDB);
+                    Promise.all([
+                        this.#addUserMgr(userMgrObjSt, usermgrIDB),
+                        this.#addEventMgr(userMgrObjSt, eventmgrIDB)
+                    ])
+                    .then(
+                        this.#request = request,
+                        this.#db = db,
+    
+                        resolve(db)
+                    )
+                    .catch((error) => {
+                        reject(error)
+                    });
 
-                    requestTransaccionUser.onsuccess = (event) => {
-                        console.log(`${event.target.result} añadido`);
-                    }
+                } else {
+                    // Guardamos el db y el request para poder ser accedidos y manipulados desde fuera
+                    this.#request = request;
+                    this.#db = db;
 
-                    requestTransaccionUser.onerror = () => {
-                        console.log('Error al añadir userMgr');
-                    }
-
-                    requestTransaccionEvent.onsuccess = (event) => {
-                        console.log(`${event.target.result} añadido`);
-                    }
-
-                    requestTransaccionEvent.onerror = () => {
-                        console.log('Error al añadir userMgr');
-                    }
-
+                    resolve(db);
                 }
+            }
+        });
+    }
 
-                // Guardamos el db y el request para poder ser accedidos y manipulados desde fuera
-                this.#request = request;
-                this.#db = db;
+    #addUserMgr(userMgrObjSt, userMgr){
+        let requestTransaccionUser = userMgrObjSt.add(userMgr);
 
-                resolve(db);
+        return new Promise((resolve, reject) => {
+            requestTransaccionUser.onsuccess = (event) => {
+                resolve(event.target.result);
+
+            }
+
+            requestTransaccionUser.onerror = (event) => {
+                reject(event.target.error);
+
+            }
+        });
+    }
+
+    #addEventMgr(userMgrObjSt, eventMgr){
+        let requestTransaccionEvent = userMgrObjSt.add(eventMgr);
+
+        return new Promise((resolve, reject) => {
+            requestTransaccionEvent.onsuccess = (event) => {
+                resolve(event.target.result);
+            }
+    
+            requestTransaccionEvent.onerror = (event) => {
+                reject(event.target.error);
             }
         });
     }
