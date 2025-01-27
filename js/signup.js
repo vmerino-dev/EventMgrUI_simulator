@@ -173,17 +173,19 @@ async function ldDB_ValidInputs(){
                 let [idUser] = userMgr.addUser(username, email, passwd);
 
                 localStorage.setItem("userSession", idUser); // Almacenamos el usuario en sesión (id)
-
-                idbUsrEvnt.storeUsers(userMgr); // Almacenamos los usuarios en la base de datos
-
-
-                userMgr.closeDB(); // Se cierra la conexión con la DB antes de acceder al dashboard
-                // Accedemos al dashboard
-                window.location.href = "dashboard.html";
                 
-            
+                
+                idbUsrEvnt.storeUsers(userMgr) // Almacenamos los usuarios en la base de datos
+                    .then(
+                        idbUsrEvnt.closeDB(), // Se cierra la conexión con la DB antes de acceder al dashboard
+                        window.location.href = "dashboard.html" // Accedemos al dashboard
+                    )
+                    .catch(
+                        console.error(`${logs.getLogDate()} [DB ERROR] Error al almacenar los usuarios en la base de datos`)
+                    )
+
             } else {
-                console.log("ERROR DE VALIDACIÓN DE USUARIO");
+                console.error("ERROR DE VALIDACIÓN DE USUARIO");
             }
                 
         });

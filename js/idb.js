@@ -32,6 +32,8 @@ export class IDBUsersEvents {
      * @returns {Promise} Promesa que se resuelve al abrir la base de datos o se rechaza si hay error
     */
     init(){
+        window.indexedDB.deleteDatabase(DB_NAME); // TEST TEST TEST
+
         let userMgr; // Almacenará el gestor de usuarios
         let eventMgr; // Almacenará el gestor de eventos
 
@@ -48,6 +50,11 @@ export class IDBUsersEvents {
                 if(event.oldVersion === 0){ // Si la bbdd no existe, creamos el objeto gestor de usuarios
                     userMgr = new UserMgr();
                     eventMgr = new EventMgr();
+
+                    userMgr.addUser("holaquetal", "victor@asdf.com", "063Vv.")
+                    userMgr.addUser("victor", "victormerino@gmail.com", "passwdD1.")
+
+                    console.log("GESTOR USUARIOS creado", userMgr); // TEST TEST TEST
 
                     this.#oldVersion = 0;
                 }
@@ -250,6 +257,7 @@ export class IDBUsersEvents {
 
         return new Promise((resolve, reject) => {
             requestTransaccion.onsuccess = (event) => {
+                console.log("GESTOR DE USUARIOS", event.target.result.userMgr); // TEST TEST TEST
                 resolve(event.target.result);
 
             }

@@ -21,30 +21,30 @@ import { UserError, EmailError, PasswdError } from "../errors/eventErrors.js";
 
 // En una sesión de un usuario debe haber una variable que almacene el id de ese usuario
 export class UserMgr {
-    #users = {}; // {id: user, id2: user2, ...}
+    users = {}; // {id: user, id2: user2, ...}
 
 
     // getters
     get users() { // Devuelve un objeto con los usuarios. Deberá guardarse en IndexedDB
-        return this.#users;
+        return this.users;
     }
 
     getUserId(id) { // Devuelve un usuario por su id
         // Validamos que exista user con ese id
-        if(!Object.keys(this.#users).some(iden => iden === id)){
+        if(!Object.keys(this.users).some(iden => iden === id)){
             // 📃 [===== LOG_VVV =====] 
             if(logs.verbosity >= 3) logs.vvv_error("The user doesn't exist", `ID: ${id}`);
             throw new UserError(`El usuario con ID ${id} no existe`);
         }
             
-        return this.#users[id];
+        return this.users[id];
     }
 
     getUser(username) { // Devuelve un usuario por su nombre de usuario (username)
         // Validamos que exista user con ese nombre
         this.userDontExists(username);
 
-        return Object.values(this.#users).find(user => user.username === username);
+        return Object.values(this.users).find(user => user.username === username);
     }
 
     // Métodos
@@ -62,7 +62,7 @@ export class UserMgr {
         // Si todo es correcto crea el usuario
         let user = new User(username, email, passwd);
         let id = Utils.createId(); // Generamos un UUID
-        this.#users[id] = user;
+        this.users[id] = user;
     
         // 📃 [===== LOG_V =====] 
         if(logs.verbosity >= 1) logs.v_info("New user", `username: ${username}, email: ${email}`)
@@ -80,7 +80,7 @@ export class UserMgr {
         // Validamos que el nuevo nombre de usuario no exista
         this.userExists(newUsername);
 
-        this.#users[id].username = newUsername;
+        this.users[id].username = newUsername;
         
         // 📃 [===== LOG_V =====] 
         if(logs.verbosity >= 1) logs.v_info("User modified", `ID: ${id}, newUsername: ${newUsername}`)
@@ -95,7 +95,7 @@ export class UserMgr {
         // Validamos que el nuevo nombre de usuario no exista
         this.passwdCorrect(newPasswd);
 
-        this.#users[id].passwd = newPasswd;
+        this.users[id].passwd = newPasswd;
 
         
         // 📃 [===== LOG_V =====] 
@@ -106,9 +106,9 @@ export class UserMgr {
         // 📃 [===== LOG_VV =====] 
         if(logs.verbosity >= 2) logs.vv_warn("This method will delete the user");
 
-        this.userDontExists(this.#users[id].username); // Lanza excepción si el usuario no existe
+        this.userDontExists(this.users[id].username); // Lanza excepción si el usuario no existe
 
-        delete this.#users[id]; // Si existe lo eliminamos
+        delete this.users[id]; // Si existe lo eliminamos
 
          // 📃 [===== LOG_V =====] 
          if(logs.verbosity >= 1) logs.v_info("User deleted", `ID: ${id}`)
@@ -119,7 +119,7 @@ export class UserMgr {
         this.userDontExists(user_dst.username);
         
         // Si existe se creará el hilo de mensajes con user_dst
-        this.#users[id_src].createMessageThread(user_dst);
+        this.users[id_src].createMessageThread(user_dst);
 
         // 📃 [===== LOG_V =====] 
         if(logs.verbosity >= 1) logs.v_info("Msg Thread created", `ID_src: ${id_src}, ID_dst: ${user_dst}`)
@@ -133,7 +133,7 @@ export class UserMgr {
        this.userDontExists(user_dst.username);
 
        // Si existe se eliminará el hilo de mensajes con user_dst
-       this.#users[id_src].deleteMessageThread(user_dst);
+       this.users[id_src].deleteMessageThread(user_dst);
 
        // 📃 [===== LOG_V =====] 
        if(logs.verbosity >= 1) logs.v_info("Msg Thread deleted", `ID_src: ${id_src}, ID_dst: ${user_dst}`)
@@ -145,7 +145,7 @@ export class UserMgr {
         // 📃 [===== LOG_VV =====] 
         if(logs.verbosity >= 2) logs.vv_info("Validación de existencia de username", `username: ${username}`);
         
-        if(Object.values(this.#users).some(user => user.username === username)){
+        if(Object.values(this.users).some(user => user.username === username)){
             // 📃 [===== LOG_VVV =====] 
             if(logs.verbosity >= 3) logs.vvv_error("User already exists", `username: ${username}`);
             throw new UserError(`El usuario con username "${username}" ya existe`, username);
@@ -158,7 +158,7 @@ export class UserMgr {
         // 📃 [===== LOG_VV =====] 
         if(logs.verbosity >= 2) logs.vv_info("Validación de no existencia de username", `username: ${username}`);
         
-        if(!(Object.values(this.#users).some(user => user.username === username))){
+        if(!(Object.values(this.users).some(user => user.username === username))){
             // 📃 [===== LOG_VVV =====] 
             if(logs.verbosity >= 3) logs.vvv_error("User doesn't exist", `username: ${username}`);
             throw new UserError(`El usuario con username ${username} no existe`, username);
@@ -184,7 +184,7 @@ export class UserMgr {
 
     emailCorrect(email){
         // Validamos que exista el email
-        if(Object.values(this.#users).some(user => user.email === email)){
+        if(Object.values(this.users).some(user => user.email === email)){
             // 📃 [===== LOG_VVV =====] 
             if(logs.verbosity >= 3) logs.vvv_error("The email is already in use", `email: ${email}`);
             throw new EmailError("El email ya está en uso", undefined, email, undefined);
@@ -228,8 +228,8 @@ export class UserMgr {
 }
 
 export class User {
-    // Propiedades privadas
-    #username;
+    // Propiedades (no son privadas para ser accesibles desde IDB)
+    username;
     #email;
     #passwd;
 
@@ -243,14 +243,14 @@ export class User {
     // Constructor
     constructor(username, email, passwd) {
         // Estos 3 campos se validan en la clase UserMgr en addUser()
-        this.#username = username;
+        this.username = username;
         this.#email = email;
         this.#passwd = passwd;
     }
 
     // getters
     get username() { // Devuelve el nombre de usuario
-        return this.#username;
+        return this.username;
     }
 
     get email() { // Devuelve el email
@@ -281,7 +281,7 @@ export class User {
 
     // NO SE DEBE LLAMAR a este setter directamente. La validación se hace en UserMgr
     set username(username) { // Modificar el nombre de usuario
-        this.#username = username;
+        this.username = username;
     }
 
     // NO SE DEBE LLAMAR a este setter directamente. La validación se hace en UserMgr
@@ -292,17 +292,17 @@ export class User {
     // Métodos
     addConfEvent(conferenceEvent) {
         this.#conferenceEvents.push(conferenceEvent);
-        eventMgr.addConfEvent(conferenceEvent, this.#username); // Debe crearse el objeto para eventMgr (EventMgr)
+        eventMgr.addConfEvent(conferenceEvent, this.username); // Debe crearse el objeto para eventMgr (EventMgr)
         
         // 📃 [===== LOG_V =====] 
-        if(logs.verbosity >= 1) logs.v_info("Conference event added", `username: ${this.#username}, email: ${this.#email}`)
+        if(logs.verbosity >= 1) logs.v_info("Conference event added", `username: ${this.username}, email: ${this.#email}`)
     }
     addWorkEvent(workshopEvent) {
         this.#worskhopEvents.push(workshopEvent);
-        eventMgr.addWorkEvent(workshopEvent, this.#username); // Debe crearse el objeto para eventMgr (EventMgr)
+        eventMgr.addWorkEvent(workshopEvent, this.username); // Debe crearse el objeto para eventMgr (EventMgr)
         
         // 📃 [===== LOG_V =====] 
-        if(logs.verbosity >= 1) logs.v_info("Workshop event added", `username: ${this.#username}, email: ${this.#email}`)
+        if(logs.verbosity >= 1) logs.v_info("Workshop event added", `username: ${this.username}, email: ${this.#email}`)
     }
 
     // Este método se invoca desde UserMgr para validación
@@ -311,8 +311,8 @@ export class User {
         // Validamos que no exista ya un hilo de mensajes con user_dst
         if(this.#msgThreads.some(thread => thread.user_dst === user_dst)){
             // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) logs.vvv_error("MsgThread already exists", `username: ${this.#username}`);
-            throw new MsgThreadError("Ya existe un hilo de mensajes con ese usuario", this.#username);
+            if(logs.verbosity >= 3) logs.vvv_error("MsgThread already exists", `username: ${this.username}`);
+            throw new MsgThreadError("Ya existe un hilo de mensajes con ese usuario", this.username);
         }
             
 
@@ -332,8 +332,8 @@ export class User {
         // Validamos que existe un hilo de mensajes con user_dst
         if(!this.#msgThreads.some(thread => thread.user_dst === user_dst)){
             // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) logs.vvv_error("MsgThread don't exist with that user", `username: ${this.#username}`);
-            throw new MsgThreadError("No existe un hilo de mensajes con ese usuario", this.#username);
+            if(logs.verbosity >= 3) logs.vvv_error("MsgThread don't exist with that user", `username: ${this.username}`);
+            throw new MsgThreadError("No existe un hilo de mensajes con ese usuario", this.username);
         }
             
         // Filtramos la conversación con el usuario user_dst
