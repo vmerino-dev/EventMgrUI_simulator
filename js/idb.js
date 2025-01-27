@@ -77,7 +77,7 @@ export class IDBUsersEvents {
                         this.#request = request,
                         this.#db = db,
     
-                        resolve(db)
+                        resolve(this)
                     )
                     .catch((error) => {
                         reject(error)
@@ -88,12 +88,18 @@ export class IDBUsersEvents {
                     this.#request = request;
                     this.#db = db;
 
-                    resolve(db);
+                    resolve(this);
                 }
             }
         });
     }
 
+    /**
+     * Permite añadir el gestor de usuarios al objeto store
+     * @param {*} userMgrObjSt 
+     * @param {*} userMgr 
+     * @returns {Promise}
+     */
     #addUserMgr(userMgrObjSt, userMgr){
         let requestTransaccionUser = userMgrObjSt.add(userMgr);
 
@@ -110,6 +116,12 @@ export class IDBUsersEvents {
         });
     }
 
+    /**
+     * Permite añadir el gestor de eventos al objeto store
+     * @param {*} userMgrObjSt
+     * @param {*} eventMgr
+     * @returns {Promise}
+     */
     #addEventMgr(userMgrObjSt, eventMgr){
         let requestTransaccionEvent = userMgrObjSt.add(eventMgr);
 
