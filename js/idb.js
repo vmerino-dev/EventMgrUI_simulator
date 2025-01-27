@@ -15,13 +15,27 @@ export class IDBUsersEvents {
     #request = null;
     #db = null;
     #oldVersion = null;
+    
+    #dbVersion = null; // versión de la DB indicada en el constructor
 
     // Constructor
     constructor(dbVersion){
+        this.#dbVersion = dbVersion;
+    }
+
+    /** 
+     * init()
+     * 
+     * Inicializa la DB y el object store. Si no existen ambos, los crea y añade el gestor de usuarios
+     * y el gestor de eventos.
+     * 
+     * @returns {Promise} Promesa que se resuelve al abrir la base de datos o se rechaza si hay error
+    */
+    init(){
         let userMgr; // Almacenará el gestor de usuarios
         let eventMgr; // Almacenará el gestor de eventos
 
-        let request = window.indexedDB.open(DB_NAME, dbVersion);
+        let request = window.indexedDB.open(DB_NAME, this.#dbVersion);
 
         return new Promise((resolve, reject) => {
             request.onerror = () => {
@@ -77,7 +91,7 @@ export class IDBUsersEvents {
                         this.#request = request,
                         this.#db = db,
     
-                        resolve(this)
+                        resolve(db)
                     )
                     .catch((error) => {
                         reject(error)
@@ -88,11 +102,12 @@ export class IDBUsersEvents {
                     this.#request = request;
                     this.#db = db;
 
-                    resolve(this);
+                    resolve(db);
                 }
             }
         });
     }
+
 
     /**
      * Permite añadir el gestor de usuarios al objeto store

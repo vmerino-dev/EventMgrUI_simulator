@@ -37,9 +37,19 @@ footer.addEventListener("click", ()=>removeClass_pshow(passwd2));
  * Función asíncrona que no permite validar inputs hasta que la base de datos haya sido cargada
  */
 
+ldDB_ValidInputs();
+
 async function ldDB_ValidInputs(){
+    /**
+     * try-catch
+     * 
+     * Se intenta ejecutar el siguiente código, si hay un error en la inicialización de la DB o la carga
+     * del gestor de usuarios, se lanzará mediante las promesas devueltas para la sincronización.
+     */
     try {
-        const idbUsrEvnt = await new IDBUsersEvents(1); // Creación de la base de datos IndexedDB
+        const idbUsrEvnt = new IDBUsersEvents(1); // Creación de la base de datos IndexedDB
+        await idbUsrEvnt.init(); // Inicialización de la base de datos
+
         const userMgr = await idbUsrEvnt.loadUsers(); // Carga del gestor de usuarios
 
         // *** Validación de inputs ***
@@ -179,9 +189,7 @@ async function ldDB_ValidInputs(){
         });
 
     } catch(error){
-        console.error(error.message);
+        console.error(`${logs.getLogDate()} [DB ERROR] ${error.message}`);
     }
 
 }
-
-ldDB_ValidInputs();
