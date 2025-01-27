@@ -50,7 +50,9 @@ async function ldDB_ValidInputs(){
         const idbUsrEvnt = new IDBUsersEvents(1); // Creación de la base de datos IndexedDB
         await idbUsrEvnt.init(); // Inicialización de la base de datos
 
-        const userMgr = await idbUsrEvnt.loadUsers(); // Carga del gestor de usuarios
+        const userMgrSerial = await idbUsrEvnt.loadUsers(); // Carga del gestor de usuarios
+        const userMgr = UserMgr.createInstanceFromIDB(userMgrSerial.users); // Instanciamos los objetos obtenidos de IDB para acceder a métodos de clase
+        console.log("GESTOR SIGNUP", userMgr) // TEST TEST TEST
 
         // *** Validación de inputs ***
         const inputs = document.getElementsByTagName("input");
@@ -129,28 +131,30 @@ async function ldDB_ValidInputs(){
                     camposVacios[i] = false; // El campo no era vacío
 
                 } catch(error){
+                    if(error instanceof UserError || error instanceof EmailError || error instanceof PasswdError){
+                        isError = true; // Se ha lanzado un error
+                        erroresPrevios[i] = true; // En esta validación ha habido errores.
 
-                    isError = true; // Se ha lanzado un error
-                    erroresPrevios[i] = true; // En esta validación ha habido errores.
-
-                    camposVacios[i] = false; // El campo no era vacío
+                        camposVacios[i] = false; // El campo no era vacío
 
 
-                    if(inputs[i].nextElementSibling){ // Si ya existe un elemento error lo borramos
-                        deleteErrorMessageDOM(inputs[i]); // Borramos mensaje del HTML
+                        if(inputs[i].nextElementSibling){ // Si ya existe un elemento error lo borramos
+                            deleteErrorMessageDOM(inputs[i]); // Borramos mensaje del HTML
+                        }
+                        // Obtenemos el elem. label y le añadimos el msg de error
+                        let inputLabel = inputs[i].parentElement;
+                        let errorElem = document.createElement("p");
+                        errorElem.style.color = ERROR_COLOR;
+                        errorElem.style.fontSize = ".65em";
+                        errorElem.style.margin = "0 0 10px 10px";
+                        errorElem.innerHTML = `${error.message}`;
+                        
+                        inputLabel.appendChild(errorElem);
+                        
+                        // Cambio de color del background a rojo
+                        inputs[i].style.background = ERROR_COLOR;
                     }
-                    // Obtenemos el elem. label y le añadimos el msg de error
-                    let inputLabel = inputs[i].parentElement;
-                    let errorElem = document.createElement("p");
-                    errorElem.style.color = ERROR_COLOR;
-                    errorElem.style.fontSize = ".65em";
-                    errorElem.style.margin = "0 0 10px 10px";
-                    errorElem.innerHTML = `${error.message}`;
-                    
-                    inputLabel.appendChild(errorElem);
-                    
-                    // Cambio de color del background a rojo
-                    inputs[i].style.background = ERROR_COLOR;
+
                     
                 } finally {
                     if(!isError){
@@ -177,7 +181,7 @@ async function ldDB_ValidInputs(){
                 
                 idbUsrEvnt.storeUsers(userMgr) // Almacenamos los usuarios en la base de datos
                     .then(
-                        idbUsrEvnt.closeDB(), // Se cierra la conexión con la DB antes de acceder al dashboard
+                        //idbUsrEvnt.closeDB(), // Se cierra la conexión con la DB antes de acceder al dashboard
                         window.location.href = "dashboard.html" // Accedemos al dashboard
                     )
                     .catch(

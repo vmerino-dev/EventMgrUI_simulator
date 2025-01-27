@@ -170,12 +170,12 @@ export class UserMgr {
         if(username === ""){
             // 📃 [===== LOG_VVV =====] 
             if(logs.verbosity >= 3) logs.vvv_error("The user is undefined", `username: ${username}`);
-            throw new UserError("El usuario es undefined", username, email, passwd);    
+            throw new UserError("El usuario es undefined", username);    
 
         } else if(username.length < 3 || username.length > 40){
             // 📃 [===== LOG_VVV =====] 
             if(logs.verbosity >= 3) logs.vvv_error("username is less than 3 characters or more than 40", `username: ${username}`);
-            throw new UserError("El nombre de usuario debe tener al menos 3 caracteres", username, email, passwd);    
+            throw new UserError("El nombre de usuario debe tener al menos 3 caracteres", username);    
         }
 
         // Validamos que exista el usuario
@@ -224,6 +224,24 @@ export class UserMgr {
     
         // 📃 [===== LOG_VV =====]
         if(logs.verbosity >= 2) logs.vv_info("Validación de passwd correcta", `passwd: ${passwd}`);
+    }
+
+    static createInstanceFromIDB(users) {
+        const userMgr = new UserMgr();
+
+        const usersProperty = Object.entries(users).reduce((acc, [key, user]) => {
+            const newUser = new User(user.username, user.email, user.passwd);
+            
+            // Asignamos la nueva instancia de User al objeto acc usando el id como clave
+            acc[key] = newUser; // key es el id del usuario
+    
+            return acc;
+        }, {});
+    
+            
+        userMgr.users = usersProperty;
+
+        return userMgr;
     }
 }
 
@@ -275,18 +293,6 @@ export class User {
 
     get interacciones() { // Devuelve las interacciones con los vídeos
         return this.interacciones;
-    }
-
-    // setters
-
-    // NO SE DEBE LLAMAR a este setter directamente. La validación se hace en UserMgr
-    set username(username) { // Modificar el nombre de usuario
-        this.username = username;
-    }
-
-    // NO SE DEBE LLAMAR a este setter directamente. La validación se hace en UserMgr
-    set passwd(passwd) { // Modificar la contraseña
-        this.passwd = passwd;
     }
 
     // Métodos
