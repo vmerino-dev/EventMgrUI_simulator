@@ -230,22 +230,22 @@ export class UserMgr {
 export class User {
     // Propiedades (no son privadas para ser accesibles desde IDB)
     username;
-    #email;
-    #passwd;
+    email;
+    passwd;
 
-    #conferenceEvents = [];
-    #worskhopEvents = [];
-    #msgThreads = [];
+    conferenceEvents = [];
+    worskhopEvents = [];
+    msgThreads = [];
 
     // Para cada obj Interaction solo puede haber una url de vídeo única por usuario
-    #interacciones = []; // Lista de obj Interaction (interacciones con los vídeos)
+    interacciones = []; // Lista de obj Interaction (interacciones con los vídeos)
 
     // Constructor
     constructor(username, email, passwd) {
         // Estos 3 campos se validan en la clase UserMgr en addUser()
         this.username = username;
-        this.#email = email;
-        this.#passwd = passwd;
+        this.email = email;
+        this.passwd = passwd;
     }
 
     // getters
@@ -254,27 +254,27 @@ export class User {
     }
 
     get email() { // Devuelve el email
-        return this.#email;
+        return this.email;
     }
 
     get passwd(){ // Devuelve la contraseña
-        return this.#passwd;
+        return this.passwd;
     }
 
     get conferenceEvents() { // Devuelve los eventos de conferencia
-        return this.#conferenceEvents;
+        return this.conferenceEvents;
     }
 
     get workshopEvents() { // Devuelve los eventos de taller
-        return this.#worskhopEvents;
+        return this.worskhopEvents;
     }
 
     get msgThreads() { // Devuelve los hilos de mensajes (conversaciones)
-        return this.#msgThreads;
+        return this.msgThreads;
     }
 
     get interacciones() { // Devuelve las interacciones con los vídeos
-        return this.#interacciones;
+        return this.interacciones;
     }
 
     // setters
@@ -286,30 +286,30 @@ export class User {
 
     // NO SE DEBE LLAMAR a este setter directamente. La validación se hace en UserMgr
     set passwd(passwd) { // Modificar la contraseña
-        this.#passwd = passwd;
+        this.passwd = passwd;
     }
 
     // Métodos
     addConfEvent(conferenceEvent) {
-        this.#conferenceEvents.push(conferenceEvent);
+        this.conferenceEvents.push(conferenceEvent);
         eventMgr.addConfEvent(conferenceEvent, this.username); // Debe crearse el objeto para eventMgr (EventMgr)
         
         // 📃 [===== LOG_V =====] 
-        if(logs.verbosity >= 1) logs.v_info("Conference event added", `username: ${this.username}, email: ${this.#email}`)
+        if(logs.verbosity >= 1) logs.v_info("Conference event added", `username: ${this.username}, email: ${this.email}`)
     }
     addWorkEvent(workshopEvent) {
-        this.#worskhopEvents.push(workshopEvent);
+        this.worskhopEvents.push(workshopEvent);
         eventMgr.addWorkEvent(workshopEvent, this.username); // Debe crearse el objeto para eventMgr (EventMgr)
         
         // 📃 [===== LOG_V =====] 
-        if(logs.verbosity >= 1) logs.v_info("Workshop event added", `username: ${this.username}, email: ${this.#email}`)
+        if(logs.verbosity >= 1) logs.v_info("Workshop event added", `username: ${this.username}, email: ${this.email}`)
     }
 
     // Este método se invoca desde UserMgr para validación
     createMessageThread(user_dst) { // user_dst es un objeto User
 
         // Validamos que no exista ya un hilo de mensajes con user_dst
-        if(this.#msgThreads.some(thread => thread.user_dst === user_dst)){
+        if(this.msgThreads.some(thread => thread.user_dst === user_dst)){
             // 📃 [===== LOG_VVV =====] 
             if(logs.verbosity >= 3) logs.vvv_error("MsgThread already exists", `username: ${this.username}`);
             throw new MsgThreadError("Ya existe un hilo de mensajes con ese usuario", this.username);
@@ -317,8 +317,8 @@ export class User {
             
 
         let msgThread = new MessageThread(this, user_dst);
-        this.#msgThreads.push(msgThread); // Hilo de msgs en user_src
-        user_dst.#msgThreads.push(msgThread); // Hilo de msgs en user_dst
+        this.msgThreads.push(msgThread); // Hilo de msgs en user_src
+        user_dst.msgThreads.push(msgThread); // Hilo de msgs en user_dst
     }
     deleteMessageThread(user_dst) {
 
@@ -330,20 +330,20 @@ export class User {
         }
 
         // Validamos que existe un hilo de mensajes con user_dst
-        if(!this.#msgThreads.some(thread => thread.user_dst === user_dst)){
+        if(!this.msgThreads.some(thread => thread.user_dst === user_dst)){
             // 📃 [===== LOG_VVV =====] 
             if(logs.verbosity >= 3) logs.vvv_error("MsgThread don't exist with that user", `username: ${this.username}`);
             throw new MsgThreadError("No existe un hilo de mensajes con ese usuario", this.username);
         }
             
         // Filtramos la conversación con el usuario user_dst
-        let msgThread = this.#msgThreads.find(thread => thread.user_dst === user_dst);
+        let msgThread = this.msgThreads.find(thread => thread.user_dst === user_dst);
         
         // Buscamos su índice dentro de la lista de hilos de mensajes
-        let index = this.#msgThreads.indexOf(msgThread);
+        let index = this.msgThreads.indexOf(msgThread);
 
         // Eliminamos el hilo de mensajes
-        this.#msgThreads.splice(index, 1);
+        this.msgThreads.splice(index, 1);
     }
 
     // Métodos para interacciones
@@ -356,7 +356,7 @@ export class User {
     newVideoInteraction(url) {
         
         // Validamos que no haya otra interacción con la misma url
-        for(let interacAnterior of this.#interacciones) {
+        for(let interacAnterior of this.interacciones) {
             if(interacAnterior.url === url){
                 // 📃 [===== LOG_VVV =====] 
                 if(logs.verbosity >= 3) logs.vvv_error("Interaction already exists with the actual video", `url: ${url}`);
@@ -368,7 +368,7 @@ export class User {
         // La interacción es única, la añadimos. Esto quiere decir que el usuario no ha visitado antes el video
         const interaction = new Interaction(url, 0);
 
-        this.#interacciones.push(interaction);
+        this.interacciones.push(interaction);
 
         // 📃 [===== LOG_VV =====] 
         if(logs.verbosity >= 2) logs.vv_info("Video Interaction added", `url: ${url}`);
@@ -383,14 +383,14 @@ export class User {
 
     modVideoInteraction(url, time) {
         // Validamos que exista una interacción con ese vídeo
-        if(!(this.#interacciones.some(interac => interac.url === url))){
+        if(!(this.interacciones.some(interac => interac.url === url))){
             // 📃 [===== LOG_VVV =====] 
             if(logs.verbosity >= 3) logs.vvv_error("Interaction doesn't exist with the actual video", `url: ${url}}`);
         
             throw new VideoInteractionError("No existe una interacción con ese vídeo", url);
         }
 
-        let interaccion = this.#interacciones.find(interac => interac.url === url);
+        let interaccion = this.interacciones.find(interac => interac.url === url);
         
         // Modificamos el tiempo de la interacción
         interaccion.time = time;
@@ -399,9 +399,9 @@ export class User {
 }
 
 export class MessageThread {
-    #user_src;
-    #user_dst;
-    #messages = [];
+    user_src;
+    user_dst;
+    messages = [];
 
     // Constructor
     constructor(user_src, user_dst) { // Instancias de User
@@ -411,29 +411,29 @@ export class MessageThread {
             throw new UserError("Hay usuarios que no son instancia de User");
         }
 
-        this.#user_src = user_src;
-        this.#user_dst = user_dst;
+        this.user_src = user_src;
+        this.user_dst = user_dst;
     }
 
     // getters
     get user_src() {
-        return this.#user_src;
+        return this.user_src;
     }
 
     get user_dst() {
-        return this.#user_dst;
+        return this.user_dst;
     }
 
     get messages() {
-        return this.#messages;
+        return this.messages;
     }
 
     // Métodos
     addMessage(message, user) { // "user" es el propio usuario que envía/añade un mensaje
-        if(user === this.#user_src) {
+        if(user === this.user_src) {
             message = 's' + message;
 
-        } else if(user === this.#user_dst) {
+        } else if(user === this.user_dst) {
             message = 'd' + message;
 
         } else { // El usuario no coincide con el user_src ni el user_dst. El parámetro no se ha pasado correctamente
@@ -445,7 +445,7 @@ export class MessageThread {
             `, user.username);
         }
 
-        this.#messages.push(message);
+        this.messages.push(message);
     }
     
     // "user" ES EL USUARIO PROPIETARIO DEL MENSAJE A ELIMINAR
@@ -455,10 +455,10 @@ export class MessageThread {
          * obtener el texto del contenido HTML de ese mensaje y pasarlo como parámetro a
          * este método.
          */
-        if(user === this.#user_src) {
+        if(user === this.user_src) {
             message = 's' + message;
 
-        } else if(user === this.#user_dst) {
+        } else if(user === this.user_dst) {
             message = 'd' + message;
 
         } else { // El usuario no coincide con el user_src ni el user_dst. El parámetro no se ha pasado correctamente
@@ -471,7 +471,7 @@ export class MessageThread {
         }
 
         // Buscamos el mensaje en la lista de mensajes
-        let index = this.#messages.indexOf(message);
+        let index = this.messages.indexOf(message);
 
         if(index === -1){
          // 📃 [===== LOG_VVV =====] 
@@ -480,6 +480,6 @@ export class MessageThread {
         }
 
         // Eliminamos el mensaje
-        this.#messages.splice(index, 1);
+        this.messages.splice(index, 1);
     }
 }

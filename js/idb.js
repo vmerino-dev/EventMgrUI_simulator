@@ -79,7 +79,6 @@ export class IDBUsersEvents {
                     let transaccion = db.transaction('userEventMgr', 'readwrite');
                     let userMgrObjSt = transaccion.objectStore('userEventMgr'); // Obtenemos almacen objetos de users
 
-
                     let usermgrIDB = {
                         id: 'userMgr',
                         userMgr: userMgr
