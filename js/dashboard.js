@@ -1,7 +1,8 @@
 "using strict";
 
-import { IDBUsersEvents } from "./idb.js";
+import logs from "./log.js";
 import { UserMgr, User } from "./classes/usrmsg.js";
+import { IDBUsersEvents, ldDB_ValidInputs, idbUsrEvnt, userMgr, userMgrSerial } from "./idb.js";
 
 
 // Carga del userMgr
@@ -9,26 +10,19 @@ let usrSessionId = localStorage.getItem("userSession");
 
 const header = document.createElement("h1");
 
-ldDB_ValidInputs();
+dbAccess();
 
-async function ldDB_ValidInputs(){
-    try{
-        const idbUsrEvnt = new IDBUsersEvents(1); // Creación de la base de datos IndexedDB
-        await idbUsrEvnt.init(); // Inicialización de la base de datos
+async function dbAccess(){
+    try {
+        await ldDB_ValidInputs();
 
-        const userMgrSerial = await idbUsrEvnt.loadUsers(); // Carga del gestor de usuarios
-        const userMgr = UserMgr.createInstanceFromIDB(userMgrSerial.users); // Instanciamos los objetos obtenidos de IDB para acceder a métodos de clase
-        
         let userObj = userMgr.getUser("victor"); //userMgr.getUserId(usrSessionId)
-
         header.innerHTML = `username: ${userObj.username}; email: ${userObj.email}; passwd: ${userObj.passwd}, msgTH: ${userObj.msgThreads[0].messages}`;
-
         document.body.appendChild(header);
-
         idbUsrEvnt.closeDB();
-
+        
     } catch(error){
-        console.error(error);
+        console.error(`${logs.getLogDate()} [DB ERROR] ${error.message}`);
     }
 }
 

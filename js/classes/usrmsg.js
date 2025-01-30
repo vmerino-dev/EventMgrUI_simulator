@@ -18,11 +18,11 @@ Va desde v (verbose) a vvvv (muy verbose)
 import logs from "../log.js";
 import Utils from "../utils.js";
 import { UserError, EmailError, PasswdError } from "../errors/eventErrors.js";
+import { userMgr } from "../idb.js";
 
 // En una sesión de un usuario debe haber una variable que almacene el id de ese usuario
 export class UserMgr {
     users = {}; // {id: user, id2: user2, ...}
-
 
     // getters
     get users() { // Devuelve un objeto con los usuarios. Deberá guardarse en IndexedDB
@@ -424,17 +424,30 @@ export class User {
 
 // MODIFICAR: LOS USUARIOS DEBEN IR POR NOMBRE, NO POR REFERENCIA
 export class MessageThread {
-    user_src;
-    user_dst;
+    user_src; // string
+    user_dst; // string
     messages = []; // Array de strings
 
     // Constructor
     constructor(user_src, user_dst, messages = null) { // Instancias de User
-        /*if(!(users.id(user_src) instanceof User) || !(user_dst instanceof User)){
-            // 📃 [===== LOG_VVV =====] 
-            if(logs.verbosity >= 3) logs.vvv_error("There are users that are not instance of User");
-            throw new UserError("Hay usuarios que no son instancia de User");
-        }*/
+
+        /*
+         if(userMgr)
+
+         Si el gestor de usuarios no es undefined o null, se validan los usuarios.
+         Esto se hace porque el constructor es llamado antes de crearse el gestor,
+         para instanciar los objetos MessageThread a raíz de los objetos planos
+         obtenidos de IDB. Al ser un proyecto de práctica y no de producción, supondré
+         que al instanciar los MessageThread los usuarios son válidos, ya que igualmente
+         se validan al crearse el objeto por primera vez.
+        */
+        if(userMgr){
+            if(!(userMgr.getUser(user_src) instanceof User) || !(userMgr.getUser(user_dst) instanceof User)){
+                // 📃 [===== LOG_VVV =====] 
+                if(logs.verbosity >= 3) logs.vvv_error("There are users that are not instance of User");
+                throw new UserError("Hay usuarios que no son instancia de User");
+            }
+        }
 
         this.user_src = user_src;
         this.user_dst = user_dst;

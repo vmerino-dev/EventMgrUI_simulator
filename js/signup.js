@@ -7,7 +7,7 @@
 import logs from "./log.js";
 import { UserMgr, User, MessageThread } from "./classes/usrmsg.js";
 import { UserError, EmailError, PasswdError } from "./errors/eventErrors.js";
-import { IDBUsersEvents } from "./idb.js";
+import { IDBUsersEvents, ldDB_ValidInputs, idbUsrEvnt, userMgr, userMgrSerial } from "./idb.js";
 
 
 const navbar = document.getElementsByTagName("nav")[0]; // nav
@@ -32,14 +32,14 @@ footer.addEventListener("click", ()=>removeClass_pshow(passwd2));
 
 
 /**
- * ldDB_ValidInputs()
+ *  dbAccess()
  * 
- * Función asíncrona que no permite validar inputs hasta que la base de datos haya sido cargada
+ *  Sincronizar procesos de IDB
  */
 
-ldDB_ValidInputs();
+dbAccess();
 
-async function ldDB_ValidInputs(){
+async function dbAccess(){
     /**
      * try-catch
      * 
@@ -47,11 +47,12 @@ async function ldDB_ValidInputs(){
      * del gestor de usuarios, se lanzará mediante las promesas devueltas para la sincronización.
      */
     try {
-        const idbUsrEvnt = new IDBUsersEvents(1); // Creación de la base de datos IndexedDB
-        await idbUsrEvnt.init(); // Inicialización de la base de datos
+        await ldDB_ValidInputs(); // Función asíncrona de idb.js para inicializar db
 
-        const userMgrSerial = await idbUsrEvnt.loadUsers(); // Carga del gestor de usuarios
-        const userMgr = UserMgr.createInstanceFromIDB(userMgrSerial.users); // Instanciamos los objetos obtenidos de IDB para acceder a métodos de clase
+        //userMgr.addUser("holaquetal", "victor@asdf.com", "063Vv.")
+        //userMgr.addUser("victor", "victormerino@gmail.com", "passwdD1.")
+        userMgr.getUser("victor").msgThreads = [new MessageThread("holaquetal", "victor", ["JAJAJ", "adios"])];
+
 
         // *** Validación de inputs ***
         const inputs = document.getElementsByTagName("input");
@@ -195,6 +196,7 @@ async function ldDB_ValidInputs(){
 
     } catch(error){
         console.error(`${logs.getLogDate()} [DB ERROR] ${error.message}`);
+        console.trace(error);
     }
 
 }

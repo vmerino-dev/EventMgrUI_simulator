@@ -5,6 +5,12 @@ import { EventMgr } from "./classes/events.js";
 import { DB_NAME } from "./utils.js";
 import { IDBError } from "./errors/idbErrors.js";
 
+
+// Exportaciones
+export let idbUsrEvnt;
+export let userMgr;
+export let userMgrSerial;
+
 /**
  * IDB
  * 
@@ -32,8 +38,6 @@ export class IDBUsersEvents {
      * @returns {Promise} Promesa que se resuelve al abrir la base de datos o se rechaza si hay error
     */
     init(){
-        window.indexedDB.deleteDatabase(DB_NAME); // TEST TEST TEST (FOR DEBUGGING)
-
         let userMgr; // Almacenará el gestor de usuarios
         let eventMgr; // Almacenará el gestor de eventos
 
@@ -50,10 +54,6 @@ export class IDBUsersEvents {
                 if(event.oldVersion === 0){ // Si la bbdd no existe, creamos el objeto gestor de usuarios
                     userMgr = new UserMgr();
                     eventMgr = new EventMgr();
-
-                    userMgr.addUser("holaquetal", "victor@asdf.com", "063Vv.")
-                    userMgr.addUser("victor", "victormErino@gmail.com", "passwdD1.")
-                    userMgr.getUser("victor").msgThreads = [new MessageThread("holaquetal", "victor", ["hola", "adios"])];
 
                     this.#oldVersion = 0;
                 }
@@ -281,4 +281,22 @@ export class IDBUsersEvents {
     loadEvents(){
         return this.#load('eventMgr');
     }
+}
+
+export async function ldDB_ValidInputs(){
+    /**
+     * try-catch
+     * 
+     * Se intenta ejecutar el siguiente código, si hay un error en la inicialización de la DB o la carga
+     * del gestor de usuarios, se lanzará mediante las promesas devueltas para la sincronización.
+     */
+    const idbUsrEvntTemp = new IDBUsersEvents(1); // Creación de la base de datos IndexedDB
+    await idbUsrEvntTemp.init(); // Inicialización de la base de datos
+    
+    const userMgrSerialTemp = await idbUsrEvntTemp.loadUsers(); // Carga del gestor de usuarios
+    const userMgrDB = UserMgr.createInstanceFromIDB(userMgrSerialTemp.users); // Instanciamos los objetos obtenidos de IDB para acceder a métodos de clase
+    
+    userMgr = userMgrDB;
+    idbUsrEvnt = idbUsrEvntTemp;
+    userMgrSerial = userMgrSerialTemp;
 }
