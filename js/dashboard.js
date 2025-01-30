@@ -21,7 +21,7 @@ async function ldDB_ValidInputs(){
         
         let userObj = userMgr.getUser("victor"); //userMgr.getUserId(usrSessionId)
 
-        header.innerHTML = `username: ${userObj.username}; email: ${userObj.email}; passwd: ${userObj.passwd}, msgTH: ${userObj.msgThreads}`;
+        header.innerHTML = `username: ${userObj.username}; email: ${userObj.email}; passwd: ${userObj.passwd}, msgTH: ${userObj.msgThreads[0].messages}`;
 
         document.body.appendChild(header);
 

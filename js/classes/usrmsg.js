@@ -430,11 +430,11 @@ export class MessageThread {
 
     // Constructor
     constructor(user_src, user_dst, messages = null) { // Instancias de User
-        if(!(user_src instanceof User) || !(user_dst instanceof User)){
+        /*if(!(users.id(user_src) instanceof User) || !(user_dst instanceof User)){
             // 📃 [===== LOG_VVV =====] 
             if(logs.verbosity >= 3) logs.vvv_error("There are users that are not instance of User");
             throw new UserError("Hay usuarios que no son instancia de User");
-        }
+        }*/
 
         this.user_src = user_src;
         this.user_dst = user_dst;
