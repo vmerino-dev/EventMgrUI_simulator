@@ -19,9 +19,9 @@ async function ldDB_ValidInputs(){
         const userMgrSerial = await idbUsrEvnt.loadUsers(); // Carga del gestor de usuarios
         const userMgr = UserMgr.createInstanceFromIDB(userMgrSerial.users); // Instanciamos los objetos obtenidos de IDB para acceder a métodos de clase
         
-        let userObj = userMgr.getUserId(usrSessionId)
+        let userObj = userMgr.getUser("victor"); //userMgr.getUserId(usrSessionId)
 
-        header.innerHTML = `username: ${userObj.username}; email: ${userObj.email}`;
+        header.innerHTML = `username: ${userObj.username}; email: ${userObj.email}; passwd: ${userObj.passwd}, msgTH: ${userObj.msgThreads}`;
 
         document.body.appendChild(header);
 

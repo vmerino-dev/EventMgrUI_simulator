@@ -5,7 +5,7 @@
 *********************/
 
 import logs from "./log.js";
-import { UserMgr, User } from "./classes/usrmsg.js";
+import { UserMgr, User, MessageThread } from "./classes/usrmsg.js";
 import { UserError, EmailError, PasswdError } from "./errors/eventErrors.js";
 import { IDBUsersEvents } from "./idb.js";
 
@@ -52,7 +52,6 @@ async function ldDB_ValidInputs(){
 
         const userMgrSerial = await idbUsrEvnt.loadUsers(); // Carga del gestor de usuarios
         const userMgr = UserMgr.createInstanceFromIDB(userMgrSerial.users); // Instanciamos los objetos obtenidos de IDB para acceder a métodos de clase
-        console.log("GESTOR SIGNUP", userMgr) // TEST TEST TEST
 
         // *** Validación de inputs ***
         const inputs = document.getElementsByTagName("input");
@@ -181,7 +180,7 @@ async function ldDB_ValidInputs(){
                 
                 idbUsrEvnt.storeUsers(userMgr) // Almacenamos los usuarios en la base de datos
                     .then(
-                        //idbUsrEvnt.closeDB(), // Se cierra la conexión con la DB antes de acceder al dashboard
+                        idbUsrEvnt.closeDB(), // Se cierra la conexión con la DB antes de acceder al dashboard
                         window.location.href = "dashboard.html" // Accedemos al dashboard
                     )
                     .catch(

@@ -1,6 +1,6 @@
 "use strict";
 
-import { UserMgr } from "./classes/usrmsg.js";
+import { UserMgr, MessageThread } from "./classes/usrmsg.js";
 import { EventMgr } from "./classes/events.js";
 import { DB_NAME } from "./utils.js";
 import { IDBError } from "./errors/idbErrors.js";
@@ -32,7 +32,7 @@ export class IDBUsersEvents {
      * @returns {Promise} Promesa que se resuelve al abrir la base de datos o se rechaza si hay error
     */
     init(){
-        //window.indexedDB.deleteDatabase(DB_NAME); // TEST TEST TEST
+        window.indexedDB.deleteDatabase(DB_NAME); // TEST TEST TEST (FOR DEBUGGING)
 
         let userMgr; // Almacenará el gestor de usuarios
         let eventMgr; // Almacenará el gestor de eventos
@@ -52,7 +52,8 @@ export class IDBUsersEvents {
                     eventMgr = new EventMgr();
 
                     userMgr.addUser("holaquetal", "victor@asdf.com", "063Vv.")
-                    userMgr.addUser("victor", "victormerino@gmail.com", "passwdD1.")
+                    userMgr.addUser("victor", "victormErino@gmail.com", "passwdD1.")
+                    userMgr.getUser("victor").msgThreads = [new MessageThread("holaquetal", "victor", ["hola", "adios"])];
 
                     this.#oldVersion = 0;
                 }

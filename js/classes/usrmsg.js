@@ -47,6 +47,13 @@ export class UserMgr {
         return Object.values(this.users).find(user => user.username === username);
     }
 
+    getIdfromUser(username){
+        // Validamos que exista user con ese nombre
+        this.userDontExists(username);
+
+        return Object.keys(this.users).find(key => users[key].username === username);
+    }
+
     // Métodos
     addUser(username, email, passwd) { // Si validacion = true, no se retorna ni se añade el usuario
 
@@ -226,12 +233,23 @@ export class UserMgr {
         if(logs.verbosity >= 2) logs.vv_info("Validación de passwd correcta", `passwd: ${passwd}`);
     }
 
+    /**
+     * createInstanceFromIDB()
+     * 
+     * Instanciamos los objetos dentro del UserMgr para poder operar con ellos
+     * 
+     * @param {{id: User}} users   Le pasamos los usuarios sin instanciar
+     * @returns userMgr   Retornamos el gestor de usuarios
+     */
     static createInstanceFromIDB(users) {
         const userMgr = new UserMgr();
 
         const usersProperty = Object.entries(users).reduce((acc, [key, user]) => {
             const newUser = new User(user.username, user.email, user.passwd);
-            
+
+            newUser.msgThreads = user.msgThreads.map(msgThOld => new MessageThread(msgThOld.user_src, msgThOld.user_dst, msgThOld.messages));
+
+
             // Asignamos la nueva instancia de User al objeto acc usando el id como clave
             acc[key] = newUser; // key es el id del usuario
     
@@ -404,13 +422,14 @@ export class User {
     }
 }
 
+// MODIFICAR: LOS USUARIOS DEBEN IR POR NOMBRE, NO POR REFERENCIA
 export class MessageThread {
     user_src;
     user_dst;
-    messages = [];
+    messages = []; // Array de strings
 
     // Constructor
-    constructor(user_src, user_dst) { // Instancias de User
+    constructor(user_src, user_dst, messages = null) { // Instancias de User
         if(!(user_src instanceof User) || !(user_dst instanceof User)){
             // 📃 [===== LOG_VVV =====] 
             if(logs.verbosity >= 3) logs.vvv_error("There are users that are not instance of User");
@@ -419,6 +438,7 @@ export class MessageThread {
 
         this.user_src = user_src;
         this.user_dst = user_dst;
+        this.messages = messages;
     }
 
     // getters
