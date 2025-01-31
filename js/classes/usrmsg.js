@@ -19,7 +19,7 @@ import logs from "../log.js";
 import Utils from "../utils.js";
 import { UserError, EmailError, PasswdError } from "../errors/eventErrors.js";
 import { userMgr } from "../idb.js";
-import EventMgr from "./events.js";
+import { EventMgr, ConferenceEvent, ConferenceStream, WorkshopEvent } from "./events.js";
 
 // En una sesión de un usuario debe haber una variable que almacene el id de ese usuario
 export class UserMgr {
@@ -246,11 +246,17 @@ export class UserMgr {
         const userMgr = new UserMgr();
         const eventMgr = new EventMgr();
 
-        const usersProperty = Object.entries(users).reduce((acc, [key, user]) => {
-            const newUser = new User(user.username, user.email, user.passwd);
+        const usersProperty = Object.entries(users).reduce((acc, [key, userOld]) => {
+            const newUser = new User(userOld.username, userOld.email, userOld.passwd);
 
-            newUser.msgThreads = user.msgThreads.map(msgThOld => new MessageThread(msgThOld.user_src, msgThOld.user_dst, msgThOld.messages));
+            newUser.msgThreads = userOld.msgThreads.map(msgThOld => new MessageThread(msgThOld.user_src, msgThOld.user_dst, msgThOld.messages));
 
+            newUser.conferenceEvents = userOld.conferenceEvents.map(confEvOld => new ConferenceEvent(confEvOld.files, confEvOld.videos,
+                confEvOld.location, confEvOld.date, confEvOld.estado, confEvOld.users_selected,
+                    confEvOld.hayDirecto, new ConferenceStream(confEvOld.stream.date, confEvOld.stream.durationAproxMin)))
+
+            newUser.workshopEvents = userOld.workshopEvents.map(wrkEvOld => new WorkshopEvent(wrkEvOld.files, wrkEvOld.videos,
+                wrkEvOld.location, wrkEvOld.date, wrkEvOld.estado, wrkEvOld.users_selected, wrkEvOld.topic, wrkEvOld.instructors, wrkEvOld.id))
 
             // Asignamos la nueva instancia de User al objeto acc usando el id como clave
             acc[key] = newUser; // key es el id del usuario

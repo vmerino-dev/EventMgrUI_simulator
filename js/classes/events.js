@@ -48,7 +48,7 @@ export class Event { // Clase pseudo-abstracta
     date; // Fecha del evento
     
     estado; // true: público, false: privado
-    users_selected = []; // Lista de usuarios seleccionados si es privado
+    users_selected = []; // Lista de usuarios seleccionados si es privado (strings)
 
     // Constructor
     constructor(files, videos, location, date, estado = true, users_selected = []){
@@ -88,7 +88,7 @@ export class Event { // Clase pseudo-abstracta
             se validan al crearse el objeto por primera vez.
             */
             if(userMgr){
-                if(users_selected.some(user => !Object.values(userMgr.users()).includes(user))){
+                if(users_selected.some(username_sel => !Object.values(userMgr.users).some(user => user.username === username_sel))){
                     // 📃 [===== LOG_VVV =====] 
                     if(logs.verbosity >= 3) logs.vvv_error("The user does not exist");
                     throw new UserError("El usuario no existe."); // Se ha seleccionado un usuario que no existe
@@ -105,8 +105,17 @@ export class ConferenceEvent extends Event { // Evento de conferencia
     hayDirecto = false; // true: hay directo, false: no hay directo
     stream; // Objeto ConferenceStream. SOLO PUEDE HABER UNO POR EVENTO
 
-    constructor(files, videos, location, date, estado = true, users_selected = []){
+    constructor(files, videos, location, date, estado = true, users_selected = [], hayDirecto = false, stream = undefined){
         super(files, videos, location, date, estado, users_selected);
+
+        this.hayDirecto = hayDirecto;
+        
+        // Si el stream se ha instanciado pero sus propiedades no están definidas, no debería instanciarse y la propiedad pasa a undefined
+        if(!stream.date && !stream.durationAproxMin){
+            this.stream = undefined;
+        } else {
+            this.stream = stream;
+        }
 
         this.id = Utils.createId();
     }
@@ -175,7 +184,7 @@ export class WorkshopEvent extends Event { // Evento de taller
     topic; // Tema del taller
     instructors = []; // Lista de nombres de los instructores (string array)
 
-    constructor(files, videos, location, date, estado = true, users_selected = [], topic, instructors = []){
+    constructor(files, videos, location, date, estado = true, users_selected = [], topic, instructors = [], id = undefined){
         super(files, videos, location, date, estado, users_selected);
 
         // Se valida el tema e instructores
@@ -195,6 +204,14 @@ export class WorkshopEvent extends Event { // Evento de taller
         this.instructors = instructors;
 
         this.id = Utils.createId();
+
+        /**
+         * Si parámetro id != undefined, se está instanciando de objeto plano a objeto de clase el evento, con
+         * lo cual se asina el id que conserva el objeto plano obtenido de IDB.
+         */
+        if(id) {
+            this.id = id
+        }
     }
 }
 
@@ -203,7 +220,7 @@ export class ConferenceStream { // Clase para los directos de conferencias
     date; // Hora de inicio del directo
     durationAproxMin; // Duración aproximada del directo en MINUTOS
 
-    constructor(date, durationAprox){
+    constructor(date = undefined, durationAprox = undefined){
 
         // La validación ya se realiza en ConferenceEvent
         this.date = date;
