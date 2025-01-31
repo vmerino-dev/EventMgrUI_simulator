@@ -25,7 +25,7 @@ export class EventMgr {
 
     // Métodos
     addConfEvent(conference, user){ // conference es un objeto ConferenceEvent
-        if(this.confEventUsers[user] == undefined){
+        if(this.confEventUsers[user] == undefined){ // user: string
             this.confEventUsers[user] = [];
         }
 
@@ -33,7 +33,7 @@ export class EventMgr {
     }
 
     addWorkEvent(workshop, user){ // workshop es un objeto WorkshopEvent
-        if(this.wrkshpEventUsers[user] == undefined){
+        if(this.wrkshpEventUsers[user] == undefined){ // user: string
             this.wrkshpEventUsers[user] = [];    
         }
         
@@ -222,6 +222,12 @@ export class ConferenceStream { // Clase para los directos de conferencias
 
     constructor(date = undefined, durationAprox = undefined){
 
+        if(!date && !durationAprox){
+            // 📃 [===== LOG_VVV =====]
+            if(logs.verbosity >= 3) logs.vvv_error("The stream is undefined", `hayDirecto: ${this.hayDirecto}, stream: ${this.sstream}`);
+            throw new ConferenceStreamError("En el stream debe definirse una hora o una duración aproximada", this.hayDirecto, this.stream);           
+        }
+
         // La validación ya se realiza en ConferenceEvent
         this.date = date;
         this.durationAproxMin = durationAprox;
@@ -268,7 +274,7 @@ export class Interaction { // Interacciones con los vídeos por parte de los usu
     time; // Tiempo de la interacción (float) en segundos
 
     // Constructor
-    constructor(urlVideo, time){
+    constructor(urlVideo, time, id = undefined){ // id = undefined cuando no se instancia desde un obj. plano
         
         if(time > 86400 || time < 0){ // time debe ser superior a "-1" e inferior a 24 horas
             // 📃 [===== LOG_VVV =====]
@@ -279,7 +285,16 @@ export class Interaction { // Interacciones con los vídeos por parte de los usu
         this.urlVideo = urlVideo;
         this.time = time;
 
-        // Generar id único
-        this.id = Utils.createId();
+        /**
+         * Si Interaction se instancia desde un objeto plano, se debe pasar su id.
+         * Si id != undefined, se asociará el id pasado como parámetro
+         */
+        if(id){
+            this.id = id;
+            
+        } else {
+            // Generar id único
+            this.id = Utils.createId();
+        }
     }
 }

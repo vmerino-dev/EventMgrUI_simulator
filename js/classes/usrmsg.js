@@ -258,6 +258,11 @@ export class UserMgr {
             newUser.workshopEvents = userOld.workshopEvents.map(wrkEvOld => new WorkshopEvent(wrkEvOld.files, wrkEvOld.videos,
                 wrkEvOld.location, wrkEvOld.date, wrkEvOld.estado, wrkEvOld.users_selected, wrkEvOld.topic, wrkEvOld.instructors, wrkEvOld.id))
 
+            if(userOld.interacciones.length > 0) // Si el array no está vacío, instanciar objetos Interaction
+                newUser.interacciones = userOld.interacciones.map(interaccOld => new Interaction(interaccOld.urlVideo, interaccOld.time, interaccOld.id))
+
+            // AÑADIR LOS EVENTOS INSTANCIADOS A eventMgr
+
             // Asignamos la nueva instancia de User al objeto acc usando el id como clave
             acc[key] = newUser; // key es el id del usuario
     
