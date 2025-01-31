@@ -9,6 +9,7 @@ import { IDBError } from "./errors/idbErrors.js";
 // Exportaciones
 export let idbUsrEvnt;
 export let userMgr;
+export let eventMgr;
 export let userMgrSerial;
 
 /**
@@ -294,9 +295,10 @@ export async function ldDB_ValidInputs(){
     await idbUsrEvntTemp.init(); // Inicialización de la base de datos
     
     const userMgrSerialTemp = await idbUsrEvntTemp.loadUsers(); // Carga del gestor de usuarios
-    const userMgrDB = UserMgr.createInstanceFromIDB(userMgrSerialTemp.users); // Instanciamos los objetos obtenidos de IDB para acceder a métodos de clase
+    const [userMgrDB, eventMgrDB] = UserMgr.createInstanceFromIDB(userMgrSerialTemp.users); // Instanciamos los objetos obtenidos de IDB para acceder a métodos de clase
     
     userMgr = userMgrDB;
+    eventMgr = eventMgrDB;
     idbUsrEvnt = idbUsrEvntTemp;
     userMgrSerial = userMgrSerialTemp;
 }

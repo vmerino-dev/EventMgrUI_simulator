@@ -18,35 +18,35 @@ import logs from "../log.js";
 import Utils from "../utils.js";
 
 export class EventMgr {
-    #confEventUsers = {}; // {user: [confev1, confev2, ...]}
-    #wrkshpEventUsers = {}; // {user: [wrkshp1, wrkshp2, ...]}
+    confEventUsers = {}; // {user: [confev1, confev2, ...]}
+    wrkshpEventUsers = {}; // {user: [wrkshp1, wrkshp2, ...]}
 
     // Métodos
     addConfEvent(conference, user){ // conference es un objeto ConferenceEvent
-        if(this.#confEventUsers[user] == undefined){
-            this.#confEventUsers[user] = [];
+        if(this.confEventUsers[user] == undefined){
+            this.confEventUsers[user] = [];
         }
 
-        this.#confEventUsers[user].push(conference);
+        this.confEventUsers[user].push(conference);
     }
 
     addWorkEvent(workshop, user){ // workshop es un objeto WorkshopEvent
-        if(this.#wrkshpEventUsers[user] == undefined){
-            this.#wrkshpEventUsers[user] = [];    
+        if(this.wrkshpEventUsers[user] == undefined){
+            this.wrkshpEventUsers[user] = [];    
         }
         
-        this.#wrkshpEventUsers[user].push(workshop);
+        this.wrkshpEventUsers[user].push(workshop);
     }
 }
 
 export class Event { // Clase pseudo-abstracta
-    #files = []; // Lista de archivos
-    #videos = []; // Lista de objetos Video
-    #location; // Ubicación del evento
-    #date; // Fecha del evento
+    files = []; // Lista de archivos
+    videos = []; // Lista de objetos Video
+    location; // Ubicación del evento
+    date; // Fecha del evento
     
-    #estado; // true: público, false: privado
-    #users_selected = []; // Lista de usuarios seleccionados si es privado
+    estado; // true: público, false: privado
+    users_selected = []; // Lista de usuarios seleccionados si es privado
 
     // Constructor
     constructor(files, videos, location, date, estado = true, users_selected = []){
@@ -67,11 +67,11 @@ export class Event { // Clase pseudo-abstracta
             throw new DateError(validateDate[1], date);
         }
 
-        this.#files = files;
-        this.#videos = videos;
-        this.#location = location;
-        this.#date = date;
-        this.#estado = estado;
+        this.files = files;
+        this.videos = videos;
+        this.location = location;
+        this.date = date;
+        this.estado = estado;
 
         if(!estado){ // Si es privado se asignan usuarios seleccionados
             
@@ -81,56 +81,40 @@ export class Event { // Clase pseudo-abstracta
                 throw new UserError("El usuario no existe."); // Se ha seleccionado un usuario que no existe
             }
 
-            this.#users_selected = users_selected;
+            this.users_selected = users_selected;
         }
     }
 
-    // getters
-    get files(){
-        return this.#files;
-    }
-    get videos(){
-        return this.#videos;
-    }
-    get location(){
-        return this.#location;
-    }
-    get date(){
-        return this.#date;
-    }
-    get estado(){
-        return this.#estado;
-    }
     get users_selected(){
-        if(this.#estado)
+        if(this.estado)
             return null;
         
-        return this.#users_selected;
+        return this.users_selected;
     }
 }
 
 export class ConferenceEvent extends Event { // Evento de conferencia
-    #id;
-    #hayDirecto = false; // true: hay directo, false: no hay directo
-    #stream; // Objeto ConferenceStream. SOLO PUEDE HABER UNO POR EVENTO
+    id;
+    hayDirecto = false; // true: hay directo, false: no hay directo
+    stream; // Objeto ConferenceStream. SOLO PUEDE HABER UNO POR EVENTO
 
     constructor(files, videos, location, date, estado = true, users_selected = []){
         super(files, videos, location, date, estado, users_selected);
 
-        this.#id = Utils.createId();
+        this.id = Utils.createId();
     }
 
     // getters
     get hayDirecto(){
-        return this.#hayDirecto;
+        return this.hayDirecto;
     }
 
     get id(){
-        return this.#id;
+        return this.id;
     }
 
     get stream(){
-        return this.#stream;
+        return this.stream;
     }
 
     
@@ -139,10 +123,10 @@ export class ConferenceEvent extends Event { // Evento de conferencia
     // Método que lanza excepción si ya hay un directo programado
     addStream(date, durationAprox){ // Añadir un directo
 
-        if(this.#hayDirecto){
+        if(this.hayDirecto){
             // 📃 [===== LOG_VVV =====] 
             if(logs.verbosity >= 3) logs.vvv_error("There are a stream scheduled");
-            throw new ConferenceStreamError("Ya hay un directo programado", this.#hayDirecto, this.#stream);
+            throw new ConferenceStreamError("Ya hay un directo programado", this.hayDirecto, this.stream);
         }
 
         // Validamos si la fecha es correcta (superior a la actual)
@@ -153,22 +137,22 @@ export class ConferenceEvent extends Event { // Evento de conferencia
         // Validamos duración aproximada del stream
         if(durationAprox < 0 && durationAprox < 1440){
             // 📃 [===== LOG_VVV =====]
-            if(logs.verbosity >= 3) logs.vvv_error("The stream does not last between 1 minute and 24 hours", `hayDirecto: ${this.#hayDirecto}, stream: ${this.#stream}`);
-            throw new ConferenceStreamError("El directo debe durar entre 1 minuto y 24 horas", this.#hayDirecto, this.#stream);
+            if(logs.verbosity >= 3) logs.vvv_error("The stream does not last between 1 minute and 24 hours", `hayDirecto: ${this.hayDirecto}, stream: ${this.sstream}`);
+            throw new ConferenceStreamError("El directo debe durar entre 1 minuto y 24 horas", this.hayDirecto, this.stream);
         }
 
-        this.#stream = new ConferenceStream(date, durationAprox);        
-        this.#hayDirecto = true;
+        this.stream = new ConferenceStream(date, durationAprox);        
+        this.hayDirecto = true;
 
         // 📃 [===== LOG_V =====] 
         if(logs.verbosity >= 1) logs.v_info("Stream added", `date: ${date}, durationAprox: ${durationAprox}`)
     }
 
     // Modificar un directo. Si no se especifica fecha o duración se mantiene la actual
-    modifyStream(date = this.#stream.date, durationAproxMin = this.#stream.duration){
+    modifyStream(date = this.stream.date, durationAproxMin = this.stream.duration){
 
         // 📃 [===== LOG_VV =====] 
-        if(logs.verbosity >= 2) logs.vv_warn(`The stream ${this.#id} will be modified`, `date: ${date}, durationAprox: ${durationAproxMin}`);
+        if(logs.verbosity >= 2) logs.vv_warn(`The stream ${this.id} will be modified`, `date: ${date}, durationAprox: ${durationAproxMin}`);
 
         // Validamos si la fecha es correcta (superior a la actual)
         const validateDate = Object.values(Utils.valFutureDate(date));
@@ -181,12 +165,12 @@ export class ConferenceEvent extends Event { // Evento de conferencia
         // Validamos duración aproximada del stream
         if(durationAproxMin < 0 && durationAproxMin < 1440){
             // 📃 [===== LOG_VVV =====]
-            if(logs.verbosity >= 3) logs.vvv_error("The stream does not last between 1 minute and 24 hours", `hayDirecto: ${this.#hayDirecto}, stream: ${this.#stream}`);
-            throw new ConferenceStreamError("El directo debe durar entre 1 minuto y 24 horas", this.#hayDirecto, this.#stream);
+            if(logs.verbosity >= 3) logs.vvv_error("The stream does not last between 1 minute and 24 hours", `hayDirecto: ${this.hayDirecto}, stream: ${this.stream}`);
+            throw new ConferenceStreamError("El directo debe durar entre 1 minuto y 24 horas", this.hayDirecto, this.stream);
         }
 
-        this.#stream.date = date;
-        this.#stream.duration = durationAproxMin;
+        this.stream.date = date;
+        this.stream.duration = durationAproxMin;
 
         // 📃 [===== LOG_V =====] 
         if(logs.verbosity >= 1) logs.v_info("Stream modified", `date: ${date}, durationAprox: ${durationAproxMin}`)

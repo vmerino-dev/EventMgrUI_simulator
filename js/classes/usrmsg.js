@@ -19,6 +19,7 @@ import logs from "../log.js";
 import Utils from "../utils.js";
 import { UserError, EmailError, PasswdError } from "../errors/eventErrors.js";
 import { userMgr } from "../idb.js";
+import EventMgr from "./events.js";
 
 // En una sesión de un usuario debe haber una variable que almacene el id de ese usuario
 export class UserMgr {
@@ -243,6 +244,7 @@ export class UserMgr {
      */
     static createInstanceFromIDB(users) {
         const userMgr = new UserMgr();
+        const eventMgr = new EventMgr();
 
         const usersProperty = Object.entries(users).reduce((acc, [key, user]) => {
             const newUser = new User(user.username, user.email, user.passwd);
@@ -259,7 +261,7 @@ export class UserMgr {
             
         userMgr.users = usersProperty;
 
-        return userMgr;
+        return [userMgr];
     }
 }
 
