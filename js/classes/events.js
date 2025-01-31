@@ -16,6 +16,8 @@ Va desde v (verbose) a vvvv (muy verbose)
 
 import logs from "../log.js";
 import Utils from "../utils.js";
+import { userMgr } from "../idb.js";
+import { UserError, VideoError, DateError, ConferenceStreamError, WorkshopError, VideoInteractionError } from "../errors/eventErrors.js";
 
 export class EventMgr {
     confEventUsers = {}; // {user: [confev1, confev2, ...]}
@@ -75,21 +77,26 @@ export class Event { // Clase pseudo-abstracta
 
         if(!estado){ // Si es privado se asignan usuarios seleccionados
             
-            if(users_selected.some(user => !Object.values(userMgr.users()).includes(user))){
-                // 📃 [===== LOG_VVV =====] 
-                if(logs.verbosity >= 3) logs.vvv_error("The user does not exist");
-                throw new UserError("El usuario no existe."); // Se ha seleccionado un usuario que no existe
+            /*
+            if(userMgr)
+
+            Si el gestor de usuarios no es undefined o null, se validan los usuarios.
+            Esto se hace porque el constructor es llamado antes de crearse el gestor,
+            para instanciar los objetos Event a raíz de los objetos planos
+            obtenidos de IDB. Al ser un proyecto de práctica y no de producción, supondré
+            que al instanciar los Event los usuarios son válidos, ya que igualmente
+            se validan al crearse el objeto por primera vez.
+            */
+            if(userMgr){
+                if(users_selected.some(user => !Object.values(userMgr.users()).includes(user))){
+                    // 📃 [===== LOG_VVV =====] 
+                    if(logs.verbosity >= 3) logs.vvv_error("The user does not exist");
+                    throw new UserError("El usuario no existe."); // Se ha seleccionado un usuario que no existe
+                }
             }
 
             this.users_selected = users_selected;
         }
-    }
-
-    get users_selected(){
-        if(this.estado)
-            return null;
-        
-        return this.users_selected;
     }
 }
 
@@ -103,20 +110,6 @@ export class ConferenceEvent extends Event { // Evento de conferencia
 
         this.id = Utils.createId();
     }
-
-    // getters
-    get hayDirecto(){
-        return this.hayDirecto;
-    }
-
-    get id(){
-        return this.id;
-    }
-
-    get stream(){
-        return this.stream;
-    }
-
     
     /* Métodos para el stream (directo) */
 
@@ -178,9 +171,9 @@ export class ConferenceEvent extends Event { // Evento de conferencia
 }
 
 export class WorkshopEvent extends Event { // Evento de taller
-    #id;
-    #topic; // Tema del taller
-    #instructors = []; // Lista de nombres de los instructores (string array)
+    id;
+    topic; // Tema del taller
+    instructors = []; // Lista de nombres de los instructores (string array)
 
     constructor(files, videos, location, date, estado = true, users_selected = [], topic, instructors = []){
         super(files, videos, location, date, estado, users_selected);
@@ -198,59 +191,31 @@ export class WorkshopEvent extends Event { // Evento de taller
         // 📃 [===== LOG_VV =====] 
         if(logs.verbosity >= 2) logs.vv_info("Workshop fields validated", `topic: ${topic}, instructors: ${instructors.join("; ")}`);
 
-        this.#topic = topic;
-        this.#instructors = instructors;
+        this.topic = topic;
+        this.instructors = instructors;
 
-        this.#id = Utils.createId();
-    }
-
-    get id(){
-        return this.#id;
-    }
-    get topic(){
-        return this.#topic;
-    }
-    get instructors(){
-        return this.#instructors;
+        this.id = Utils.createId();
     }
 }
 
 export class ConferenceStream { // Clase para los directos de conferencias
-    #date; // Hora de inicio del directo
-    #durationAproxMin; // Duración aproximada del directo en MINUTOS
+    // Estas propiedades no deben establecerse desde aquí
+    date; // Hora de inicio del directo
+    durationAproxMin; // Duración aproximada del directo en MINUTOS
 
     constructor(date, durationAprox){
 
         // La validación ya se realiza en ConferenceEvent
-        this.#date = date;
-        this.#durationAproxMin = durationAprox;
-    }
-
-    // getters
-    get date(){
-        return this.#date;
-    }
-    get duration(){
-        return this.#durationAproxMin;
-    }
-
-
-    // setters
-
-    // IMPORTANTE. Estos 2 setters no deben invocarse directamente. Se invocan mediante ConferenceEvent que también valida
-    set date(date){
-        this.#date = date;
-    }
-    set duration(durationAprox){
-        this.#durationAproxMin = durationAprox;
+        this.date = date;
+        this.durationAproxMin = durationAprox;
     }
 }
 
 export class Video { // Clase para los vídeos
-    #url; // URL del vídeo
-    #title; // Título del vídeo (string)
-    #description; // Descripción del vídeo
-    #tags; // Lista de etiquetas
+    url; // URL del vídeo
+    title; // Título del vídeo (string)
+    description; // Descripción del vídeo
+    tags; // Lista de etiquetas
 
     // Constructor
     constructor(url, title, description, tags){
@@ -270,34 +235,20 @@ export class Video { // Clase para los vídeos
         // 📃 [===== LOG_VV =====] 
         if(logs.verbosity >= 2) logs.vv_info("Video fields validated", `url: ${url}, title: ${title}`);
 
-        this.#url = url;
-        this.#title = title;
-        this.#description = description;
-        this.#tags = tags;
+        this.url = url;
+        this.title = title;
+        this.description = description;
+        this.tags = tags;
 
         // 📃 [===== LOG_V =====] 
         if(logs.verbosity >= 1) logs.v_info("Video created", `url: ${url}, title: ${title}`)
     }
-
-    // getters
-    get url(){
-        return this.#url;
-    }
-    get title(){
-        return this.#title;
-    }
-    get description(){
-        return this.#description;
-    }
-    get tags(){
-        return this.#tags;
-    }
 }
 
 export class Interaction { // Interacciones con los vídeos por parte de los usuarios
-    #id; // Identificador único interacción
-    #urlVideo; // URL del vídeo (generalmente video.url)
-    #time; // Tiempo de la interacción (float) en segundos
+    id; // Identificador único interacción
+    urlVideo; // URL del vídeo (generalmente video.url)
+    time; // Tiempo de la interacción (float) en segundos
 
     // Constructor
     constructor(urlVideo, time){
@@ -308,29 +259,10 @@ export class Interaction { // Interacciones con los vídeos por parte de los usu
             throw new VideoInteractionError("El tiempo de la interacción no es válido", urlVideo);
         }
 
-        this.#urlVideo = urlVideo;
-        this.#time = time;
+        this.urlVideo = urlVideo;
+        this.time = time;
 
         // Generar id único
-        this.#id = Utils.createId();
-    }
-
-    // getters
-    get id(){
-        return this.#id;
-    }
-    get url(){
-        return this.#urlVideo;
-    }
-    get time(){
-        return this.#time;
-    }
-
-
-    // setters
-
-    // No modificar directamente. Otros métodos realizan validación.
-    set time(time){
-        this.#time = time;
+        this.id = Utils.createId();
     }
 }

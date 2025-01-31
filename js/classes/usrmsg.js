@@ -261,7 +261,7 @@ export class UserMgr {
             
         userMgr.users = usersProperty;
 
-        return [userMgr];
+        return [userMgr, eventMgr];
     }
 }
 
