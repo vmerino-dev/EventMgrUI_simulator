@@ -285,16 +285,12 @@ export class Interaction { // Interacciones con los vídeos por parte de los usu
         this.urlVideo = urlVideo;
         this.time = time;
 
+        
         /**
          * Si Interaction se instancia desde un objeto plano, se debe pasar su id.
          * Si id != undefined, se asociará el id pasado como parámetro
          */
-        if(id){
-            this.id = id;
-            
-        } else {
-            // Generar id único
-            this.id = Utils.createId();
-        }
+        id ? this.id = id : this.id = Utils.createId();
+
     }
 }

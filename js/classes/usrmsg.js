@@ -18,7 +18,7 @@ Va desde v (verbose) a vvvv (muy verbose)
 import logs from "../log.js";
 import Utils from "../utils.js";
 import { UserError, EmailError, PasswdError } from "../errors/eventErrors.js";
-import { userMgr } from "../idb.js";
+import { userMgr, eventMgr } from "../idb.js";
 import { EventMgr, ConferenceEvent, ConferenceStream, WorkshopEvent } from "./events.js";
 
 // En una sesión de un usuario debe haber una variable que almacene el id de ese usuario
@@ -251,17 +251,19 @@ export class UserMgr {
 
             newUser.msgThreads = userOld.msgThreads.map(msgThOld => new MessageThread(msgThOld.user_src, msgThOld.user_dst, msgThOld.messages));
 
+
             newUser.conferenceEvents = userOld.conferenceEvents.map(confEvOld => new ConferenceEvent(confEvOld.files, confEvOld.videos,
                 confEvOld.location, confEvOld.date, confEvOld.estado, confEvOld.users_selected,
                     confEvOld.hayDirecto, new ConferenceStream(confEvOld.stream.date, confEvOld.stream.durationAproxMin)))
 
-            newUser.workshopEvents = userOld.workshopEvents.map(wrkEvOld => new WorkshopEvent(wrkEvOld.files, wrkEvOld.videos,
+            newUser.workshopEvents = userOld.worskhopEvents.map(wrkEvOld => new WorkshopEvent(wrkEvOld.files, wrkEvOld.videos,
                 wrkEvOld.location, wrkEvOld.date, wrkEvOld.estado, wrkEvOld.users_selected, wrkEvOld.topic, wrkEvOld.instructors, wrkEvOld.id))
 
-            if(userOld.interacciones.length > 0) // Si el array no está vacío, instanciar objetos Interaction
-                newUser.interacciones = userOld.interacciones.map(interaccOld => new Interaction(interaccOld.urlVideo, interaccOld.time, interaccOld.id))
+            newUser.interacciones = userOld.interacciones.map(interaccOld => new Interaction(interaccOld.urlVideo, interaccOld.time, interaccOld.id))
 
-            // AÑADIR LOS EVENTOS INSTANCIADOS A eventMgr
+            // Añadimos eventos instanciados a eventMgr
+            eventMgr.confEventUsers[newUser.username] = newUser.conferenceEvents;
+            eventMgr.wrkshpEventUsers[newUser.username] = newUser.workshopEvents;
 
             // Asignamos la nueva instancia de User al objeto acc usando el id como clave
             acc[key] = newUser; // key es el id del usuario
@@ -283,7 +285,7 @@ export class User {
     passwd;
 
     conferenceEvents = [];
-    worskhopEvents = [];
+    workshopEvents = [];
     msgThreads = [];
 
     // Para cada obj Interaction solo puede haber una url de vídeo única por usuario
@@ -295,35 +297,6 @@ export class User {
         this.username = username;
         this.email = email;
         this.passwd = passwd;
-    }
-
-    // getters
-    get username() { // Devuelve el nombre de usuario
-        return this.username;
-    }
-
-    get email() { // Devuelve el email
-        return this.email;
-    }
-
-    get passwd(){ // Devuelve la contraseña
-        return this.passwd;
-    }
-
-    get conferenceEvents() { // Devuelve los eventos de conferencia
-        return this.conferenceEvents;
-    }
-
-    get workshopEvents() { // Devuelve los eventos de taller
-        return this.worskhopEvents;
-    }
-
-    get msgThreads() { // Devuelve los hilos de mensajes (conversaciones)
-        return this.msgThreads;
-    }
-
-    get interacciones() { // Devuelve las interacciones con los vídeos
-        return this.interacciones;
     }
 
     // Métodos
