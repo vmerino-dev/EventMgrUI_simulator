@@ -235,6 +235,24 @@ export class UserMgr {
     }
 
     /**
+     * logIn()
+     * 
+     * Función para logIn que valida si el usuario existe y la contraseña del mismo es correcta.
+     * 
+     * @param {*} username 
+     * @param {*} passwd 
+     */
+    logIn(username, passwd) {
+        const user = getUser(username);
+
+        if(user.passwd !== passwd){
+            throw new PasswdError("La contraseña del usuario no es correcta", username, undefined, passwd);
+        }
+        
+        return true; // Validación correcta
+    }
+
+    /**
      * createInstanceFromIDB()
      * 
      * Instanciamos los objetos dentro del UserMgr para poder operar con ellos

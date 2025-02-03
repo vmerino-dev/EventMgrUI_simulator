@@ -34,7 +34,7 @@ footer.addEventListener("click", ()=>removeClass_pshow(passwd2));
 /**
  *  dbAccess()
  * 
- *  Sincronizar procesos de IDB
+ *  Sincronizar procesos de IDB con signup
  */
 
 dbAccess();
@@ -194,7 +194,7 @@ async function dbAccess(){
                 
         });
 
-    } catch(error){
+    } catch(error) {
         console.error(`${logs.getLogDate()} [DB ERROR] ${error.message}`);
         console.trace(error);
     }
