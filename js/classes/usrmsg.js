@@ -243,7 +243,7 @@ export class UserMgr {
      * @param {*} passwd 
      */
     logIn(username, passwd) {
-        const user = getUser(username);
+        const user = this.getUser(username);
 
         if(user.passwd !== passwd){
             throw new PasswdError("La contraseña del usuario no es correcta", username, undefined, passwd);

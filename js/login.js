@@ -1,11 +1,11 @@
 "use strict";
 
-import { PasswdError } from "./errors/eventErrors.js";
 /*********************
 *   Importaciones
 *********************/
 
-import logs from "./logs.js";
+import logs from "./log.js";
+import { UserError, PasswdError } from "./errors/eventErrors.js";
 import { IDBUsersEvents, ldDB_ValidInputs, idbUsrEvnt, userMgr, userMgrSerial } from "./idb.js";
 
 /**
@@ -27,6 +27,8 @@ async function dbAccessLogIn(){
         // Cargamos la db
         await ldDB_ValidInputs(); // Función asíncrona de idb.js para inicializar db
 
+        const ERROR_COLOR = "#f0533a"; // Color utilizado en fuente y fondo de campos para los errores
+
         // Obtenemos los campos input del usuario y la passwd
         const inputs = document.getElementsByTagName("input");
 
@@ -44,8 +46,29 @@ async function dbAccessLogIn(){
                 if(error instanceof UserError || error instanceof PasswdError){
                     console.error(`${logs.getLogDate()} [LOGIN ERROR] The user or passwd are not correct`);
 
+                    // Obteniendo el fieldset y modificando su borde
                     const fieldset = document.getElementsByTagName("fieldset")[0];
-                    fieldset.style.borderColor = "red";
+                    fieldset.style.borderColor = ERROR_COLOR;
+                    event.target.style.backgroundColor = ERROR_COLOR;
+
+                    // Elemento dialog para mostrar error de LogIn
+                    const dialog = document.createElement("dialog");
+                    
+                    // Modificando el estilo del dialog
+                    dialog.style.color = "azure";
+                    dialog.style.fontSize = "1.1em"
+                    dialog.style.backgroundColor = ERROR_COLOR;
+                    dialog.style.borderRadius = "13px";
+                    dialog.style.border = `0`;
+                    dialog.style.padding = "30px";
+
+                    // Posición del dialog
+                    dialog.style.position = "fixed";
+                    dialog.style.top = "300px";
+
+                    dialog.innerHTML = "El usuario o la contraseña no son correctos";
+                    document.body.appendChild(dialog);
+                    dialog.setAttribute("open", ""); // Mostrando el dialog
                 }
             }
 
