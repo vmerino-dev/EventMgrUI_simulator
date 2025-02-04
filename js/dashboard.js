@@ -10,16 +10,20 @@ let usrSessionId = localStorage.getItem("userSession");
 
 const header = document.createElement("h1");
 
+window.userObj2;
+
 dbAccess();
 
 async function dbAccess(){
     try {
         await ldDB_ValidInputs();
 
-        let userObj = userMgr.getUser("victor4"); //userMgr.getUserId(usrSessionId)
-        header.innerHTML = `username: ${userObj.username}; email: ${userObj.email}; passwd: ${userObj.passwd}, msgTH: ${userObj.msgThreads[0].messages}`;
+        let userObj = userMgr.getUserId(usrSessionId) //userMgr.getUser("victor4"); 
+        header.innerHTML = `username: ${userObj.username}; email: ${userObj.email}; passwd: ${userObj.passwd}, msgTH: ${userObj.msgThreads.length}`;
         document.body.appendChild(header);
         idbUsrEvnt.closeDB();
+
+        window.userObj2 = userObj;
         
     } catch(error){
         console.error(`${logs.getLogDate()} [DB ERROR] ${error.message}`);
