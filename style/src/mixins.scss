@@ -31,3 +31,14 @@ $colors: (
         @content;
     }
 }
+
+// Filas o columnas que ocupará un elemento en Gridbox
+@mixin span-grid ($columns2: 0, $rows2: 0) { // Si param = 1 --> 2 columnas/filas
+    @if $columns2 == 1 {
+        grid-row: span 2;
+    }
+    
+    @if $rows2 == 1 {
+        grid-column: span 2;
+    }
+}

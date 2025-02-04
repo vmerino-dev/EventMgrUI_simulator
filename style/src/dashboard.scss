@@ -1,0 +1,65 @@
+/*
+Using SMACSS Architecture & BEM
+*/
+
+// Imports
+@use 'mixins';
+
+
+// BASE_SMACSS
+
+body {
+    background: #dbdbdb;
+    background: oklch(89.13% 0 0);
+    // Flexbox
+    @include mixins.flex(center, initial, column);
+}
+
+
+// LAYOUT_SMACSS
+.header {
+    width: 100%;
+    height: 50px;
+}
+
+.main {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+}
+
+// MODULES_SMACSS
+.main__module {
+    background-color: rgb(216, 52, 52);
+    border-radius: 20px;
+    min-width: 275px;
+    min-height: 275px;
+}
+
+/*
+Modificaciones de los módulos.
+
+Una columna es un módulo de 2 filas y una columna; una fila (row) ocupa 2 columnas y 1 fila;
+un cuadrado ocupa 2 filas y 2 columnas. Un módulo puede ser simple, columna, fila y cuadrado, según
+se escoja. Por defecto se establece lo que se indica aquí.
+*/
+.main__module--column {
+    @include mixins.span-grid(1);
+    
+}
+
+.main__module--row {
+    //@include mixins.span-grid(0, 1);
+    grid-column: span 2;
+}
+
+.main__module--square {
+    @include mixins.span-grid(1, 1);
+}
+
+
+// STATES_SMACSS
+
+
+// THEMES_SMACSS
+

@@ -11,8 +11,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:css:signup": "sass style/src/signup.scss style/dst/signup.css --no-source-map && postcss style/dst/signup.css -o style/dst/signup.css",
     "build:css:login_signup": "sass style/src/login_signup.scss style/dst/login_signup.css --no-source-map && postcss style/dst/login_signup.css -o style/dst/login_signup.css",
+    "build:css:dashboard": "sass style/src/dashboard.scss style/dst/dashboard.css --no-source-map && postcss style/dst/dashboard.css -o style/dst/dashboard.css",
     "build:css:style": "sass style/src/style.scss style/dst/style.css --no-source-map && postcss style/dst/style.css -o style/dst/style.css",
-    "build:css": "npm-run-all build:css:signup build:css:login_signup build:css:style",
+    "build:css": "npm-run-all build:css:signup build:css:login_signup build:css:dashboard build:css:style",
     "watch:css": "nodemon --watch style/src --ext scss --exec \"npm run build:css\""
   },
   "keywords": [],
