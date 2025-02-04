@@ -52,7 +52,7 @@ export class UserMgr {
         // Validamos que exista user con ese nombre
         this.userDontExists(username);
 
-        return Object.keys(this.users).find(key => users[key].username === username);
+        return Object.keys(this.users).find(key => this.users[key].username === username);
     }
 
     // Métodos
@@ -274,7 +274,7 @@ export class UserMgr {
                 confEvOld.location, confEvOld.date, confEvOld.estado, confEvOld.users_selected,
                     confEvOld.hayDirecto, new ConferenceStream(confEvOld.stream.date, confEvOld.stream.durationAproxMin)))
 
-            newUser.workshopEvents = userOld.worskhopEvents.map(wrkEvOld => new WorkshopEvent(wrkEvOld.files, wrkEvOld.videos,
+            newUser.workshopEvents = userOld.workshopEvents.map(wrkEvOld => new WorkshopEvent(wrkEvOld.files, wrkEvOld.videos,
                 wrkEvOld.location, wrkEvOld.date, wrkEvOld.estado, wrkEvOld.users_selected, wrkEvOld.topic, wrkEvOld.instructors, wrkEvOld.id))
 
             newUser.interacciones = userOld.interacciones.map(interaccOld => new Interaction(interaccOld.urlVideo, interaccOld.time, interaccOld.id))

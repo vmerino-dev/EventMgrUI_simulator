@@ -16,7 +16,7 @@ async function dbAccess(){
     try {
         await ldDB_ValidInputs();
 
-        let userObj = userMgr.getUser("victor"); //userMgr.getUserId(usrSessionId)
+        let userObj = userMgr.getUser("victor4"); //userMgr.getUserId(usrSessionId)
         header.innerHTML = `username: ${userObj.username}; email: ${userObj.email}; passwd: ${userObj.passwd}, msgTH: ${userObj.msgThreads[0].messages}`;
         document.body.appendChild(header);
         idbUsrEvnt.closeDB();

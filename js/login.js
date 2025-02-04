@@ -42,11 +42,19 @@ async function dbAccessLogIn(){
 
             try {
                 userMgr.logIn(username, passwd);
+
+                const idUser = userMgr.getIdfromUser(username); // Obtenemos id de username
+                localStorage.setItem("userSession", idUser); // Almacenamos el usuario en sesión (id)
+                
+                // Cerramos la DB y cargamos el dashboard
+                idbUsrEvnt.closeDB();
+                window.location.href = "dashboard.html"
+                
             } catch(error) {
                 if(error instanceof UserError || error instanceof PasswdError){
                     console.error(`${logs.getLogDate()} [LOGIN ERROR] The user or passwd are not correct`);
 
-                    // Obteniendo el fieldset y modificando su borde
+                    // Colores de error en fieldset y el botón de login
                     const fieldset = document.getElementsByTagName("fieldset")[0];
                     fieldset.style.borderColor = ERROR_COLOR;
                     event.target.style.backgroundColor = ERROR_COLOR;
@@ -71,25 +79,11 @@ async function dbAccessLogIn(){
                     dialog.setAttribute("open", ""); // Mostrando el dialog
                 }
             }
-
-            /*
-            localStorage.setItem("userSession", idUser); // Almacenamos el usuario en sesión (id)
-                
-                
-                idbUsrEvnt.storeUsers(userMgr) // Almacenamos los usuarios en la base de datos
-                    .then(
-                        idbUsrEvnt.closeDB(), // Se cierra la conexión con la DB antes de acceder al dashboard
-                        window.location.href = "dashboard.html" // Accedemos al dashboard
-                    )
-                    .catch(
-                        console.error(`${logs.getLogDate()} [DB ERROR] Error al almacenar los usuarios en la base de datos`)
-                    )
-
-            }*/
-                
+            
         });
 
     } catch(error) {
+        console.error(`${logs.getLogDate()} [DB ERROR] Error al cargar los usuarios de la base de datos`)
 
     }
 }

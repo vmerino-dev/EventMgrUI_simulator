@@ -171,6 +171,7 @@ async function dbAccess(){
 
             event.preventDefault();
 
+            // Si no hay errores previos
             if(erroresPrevios.every(hayError => !hayError) && camposVacios.every(campoVacio => !campoVacio)){
                 // Obtenemos el string de los inputs y creamos el usuario
                 let [ username, email, passwd ] = Array.from(inputs).map(input => input.value);
@@ -189,7 +190,7 @@ async function dbAccess(){
                     )
 
             } else {
-                console.error("ERROR DE VALIDACIÓN DE USUARIO");
+                console.error(`${logs.getLogDate()} ERROR DE VALIDACIÓN DE USUARIO`);
             }
                 
         });
