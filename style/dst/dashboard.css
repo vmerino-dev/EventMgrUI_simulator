@@ -50,7 +50,15 @@ body {
 }
 .add__icon:hover {
   filter: invert(1);
-  box-shadow: 0 0 5 5 #000000;
+  scale: 0.95;
+}
+
+.header__title {
+  transition: text-shadow 0.25s linear;
+}
+.header__title:hover {
+  transition: text-shadow 0.5s linear;
+  text-shadow: 0 0 7px #000000;
 }
 
 .main__module {
@@ -62,6 +70,8 @@ body {
   animation: appear-module linear both;
   animation-timeline: view();
   animation-range: entry 20% cover 30%;
+  background: #e0e0e0;
+  box-shadow: 6px 6px 12px #949494, -6px -6px 12px #ffffff;
 }
 
 /*
@@ -106,13 +116,13 @@ se escoja. Por defecto se establece lo que se indica aquí.
   justify-content: center;
   align-items: center;
   position: relative;
-  background-color: blueviolet;
+  background-color: #e0e0e0;
 }
 
 .conf__move {
   width: 75px;
   border-radius: 10px;
-  background-color: white;
+  background-color: black;
 }
 
 .conf__change {
@@ -126,6 +136,11 @@ se escoja. Por defecto se establece lo que se indica aquí.
 
 .conf__move, .conf__change {
   height: 10px;
+  transition: scale 0.2s linear;
+}
+.conf__move:hover, .conf__change:hover {
+  transition: scale 0.35s ease-out;
+  scale: 1.2;
 }
 
 .main__module > article {
@@ -138,6 +153,9 @@ se escoja. Por defecto se establece lo que se indica aquí.
 }
 
 iframe {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
   width: 100%;
   height: 100%;
 }

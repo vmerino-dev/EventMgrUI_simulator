@@ -49,12 +49,22 @@ body {
 .add__icon, .header__title, .header__profile {
     user-select: none;
 }
+
 .add__icon {
     cursor: pointer;
     
     &:hover {
         filter: invert(1);
-        box-shadow: 0 0 5 5#000000;
+        scale: .95;
+    }
+}
+
+.header__title {
+    transition: text-shadow .25s linear;
+
+    &:hover {
+        transition: text-shadow .5s linear;
+        text-shadow: 0 0 7px #000000;
     }
 }
 
@@ -69,6 +79,10 @@ body {
     animation: appear-module linear both;
     animation-timeline: view();
     animation-range: entry 20% cover 30%;
+
+    background: #e0e0e0;
+    box-shadow:  6px 6px 12px #949494,
+    -6px -6px 12px #ffffff;
 }
 
 /*
@@ -115,13 +129,13 @@ se escoja. Por defecto se establece lo que se indica aquí.
     position: relative;
 
     // Borrar propiedad:
-    background-color: blueviolet;
+    background-color: #e0e0e0;
 }
 
 .conf__move {
     width: 75px;
     border-radius: 10px;
-    background-color: white;
+    background-color: black;
 
 }
 
@@ -133,10 +147,17 @@ se escoja. Por defecto se establece lo que se indica aquí.
     position: absolute;
     top: 12px;
     right: 10px;
+
 }
 
 .conf__move, .conf__change {
     height: 10px;
+
+    transition: scale .2s linear;
+    &:hover {
+        transition: scale .35s ease-out;
+        scale: 1.2;
+    }
 }
 
 .main__module > article {
@@ -150,6 +171,7 @@ se escoja. Por defecto se establece lo que se indica aquí.
 }
 
 iframe {
+    user-select: none;
     width: 100%;
     height: 100%;
 }

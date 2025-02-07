@@ -2,15 +2,13 @@
 
 import logs from "./log.js";
 import { UserMgr, User } from "./classes/usrmsg.js";
-import { IDBUsersEvents, ldDB_ValidInputs, idbUsrEvnt, userMgr, userMgrSerial } from "./idb.js";
-
+import { IDBUsersEvents, ldDB_ValidInputs, idbUsrEvnt, userMgr, eventMgr, userMgrSerial } from "./idb.js";
 
 // Carga del userMgr
 let usrSessionId = localStorage.getItem("userSession");
 
 const header = document.createElement("h1");
 
-window.userObj2;
 
 dbAccess();
 
@@ -22,6 +20,9 @@ async function dbAccess(){
         header.innerHTML = `username: ${userObj.username}; email: ${userObj.email}; passwd: ${userObj.passwd}, msgTH: ${userObj.msgThreads.length}`;
         document.body.appendChild(header);
         idbUsrEvnt.closeDB();
+
+        window.userMgr = userMgr;
+        window.eventMgr = eventMgr;
 
         window.userObj2 = userObj;
         
