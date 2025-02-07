@@ -26,16 +26,17 @@ body {
     grid-template-columns: repeat(6, 1fr);
     grid-template-rows: repeat(4, 1fr); // TEST --> PROBANDO DINAMICAMENTE A CAMBIAR TAMAÑO ELEMENTOS
     gap: 20px;
+
+    max-width: 1750px;
 }
 
 // MODULES_SMACSS
 .main__module {
     background-color: rgb(216, 52, 52);
     border-radius: 20px;
+
     min-width: 275px;
     min-height: 275px;
-    max-width: 570px;
-    max-height: 570px;
 
     overflow: hidden;
     display: flex;
@@ -49,6 +50,7 @@ Una columna es un módulo de 2 filas y una columna; una fila (row) ocupa 2 colum
 un cuadrado ocupa 2 filas y 2 columnas. Un módulo puede ser simple, columna, fila y cuadrado, según
 se escoja. Por defecto se establece lo que se indica aquí.
 */
+
 .main__module--column {
     @include mixins.span-grid(1);
 }
@@ -59,6 +61,22 @@ se escoja. Por defecto se establece lo que se indica aquí.
 
 .main__module--square {
     @include mixins.span-grid(1, 1);
+}
+
+.main__module--simple, .main__module--column {
+    max-width: 275px;
+}
+
+.main__module--simple, .main__module--row {
+    max-height: 275px;
+}
+
+.main__module--column, .main__module--square {
+    max-height: 570px;
+}
+
+.main__module--row, .main__module--square {
+    max-width: 570px;;
 }
 
 .module__conf {
@@ -104,9 +122,8 @@ se escoja. Por defecto se establece lo que se indica aquí.
 }
 
 iframe {
-    width: 100%; /* Ocupar el 100% del contenedor */
-    height: 100%; /* Ocupar el 100% del contenedor */
-    object-fit: cover; /* Asegura que el contenido se ajuste sin desbordarse */
+    width: 100%;
+    height: 100%;
 }
 
 
