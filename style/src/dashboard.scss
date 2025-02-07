@@ -24,12 +24,14 @@ body {
     width: 100%;
     min-height: $altHead;
 
+    position: fixed;
+    z-index: 1000;
+
+    @include mixins.flex(center, space-around);
+
     animation: header-fixed linear both;
     animation-timeline: scroll(root);
     animation-range: 0 150px;
-
-    position: fixed;
-    z-index: 1000;
 }
 
 .main {
@@ -43,6 +45,19 @@ body {
 }
 
 // MODULES_SMACSS
+
+.add__icon, .header__title, .header__profile {
+    user-select: none;
+}
+.add__icon {
+    cursor: pointer;
+    
+    &:hover {
+        filter: invert(1);
+        box-shadow: 0 0 5 5#000000;
+    }
+}
+
 .main__module {
     background-color: rgb(216, 52, 52);
     border-radius: 20px;
