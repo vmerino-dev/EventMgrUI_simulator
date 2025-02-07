@@ -38,6 +38,8 @@ body {
     max-height: 570px;
 
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 /*
@@ -64,17 +66,50 @@ se escoja. Por defecto se establece lo que se indica aquí.
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 
     // Borrar propiedad:
     background-color: blueviolet;
 }
 
-.module__conf > div {
+.conf__move {
     width: 75px;
-    height: 10px;
     border-radius: 10px;
     background-color: white;
+
 }
+
+.conf__change {
+    width: 40px;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 10"><circle cx="10" cy="5" r="3" fill="black"/><circle cx="20" cy="5" r="3" fill="black"/><circle cx="30" cy="5" r="3" fill="black"/></svg>');
+    background-repeat: no-repeat;
+
+    position: absolute;
+    top: 12px;
+    right: 10px;
+}
+
+.conf__move, .conf__change {
+    height: 10px;
+}
+
+.main__module > article {
+    margin: 5px;
+    border-radius: 20px;
+    box-sizing: border-box;
+    flex-grow: 1; // Crece el espacio disponible
+    overflow: hidden;
+
+    background-color: cadetblue;
+}
+
+iframe {
+    width: 100%; /* Ocupar el 100% del contenedor */
+    height: 100%; /* Ocupar el 100% del contenedor */
+    object-fit: cover; /* Asegura que el contenido se ajuste sin desbordarse */
+}
+
+
 
 
 // STATES_SMACSS
