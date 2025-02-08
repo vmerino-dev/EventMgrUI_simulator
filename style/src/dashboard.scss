@@ -16,10 +16,25 @@ body {
     background: oklch(89.13% 0 0);
     // Flexbox
     @include mixins.flex(center, initial, column);
+
+    overflow: hidden; // Ocultamos la barra de desplazamiento para el loading
 }
 
 
 // LAYOUT_SMACSS
+div#loading {
+    background: azure;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    opacity: 1;
+    z-index: 2000;
+
+    @include mixins.flex(center, center);
+
+    transition: opacity 1s linear;
+}
+
 .header {
     width: 100%;
     min-height: $altHead;

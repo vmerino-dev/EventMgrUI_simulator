@@ -33,6 +33,23 @@
         <script src="../js/dashboard.js" type="module" defer></script>
     </head>
     <body>
+        <!-- Elemento loading para no mostrar contenido hasta que se cargue la página -->
+        <div id="loading">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+                <radialGradient id="a8" cx=".66" fx=".66" cy=".3125" fy=".3125" gradientTransform="scale(1.5)">
+                    <stop offset="0" stop-color="#7B01FF"></stop><stop offset=".3" stop-color="#7B01FF" stop-opacity=".9"></stop>
+                    <stop offset=".6" stop-color="#7B01FF" stop-opacity=".6"></stop>
+                    <stop offset=".8" stop-color="#7B01FF" stop-opacity=".3"></stop>
+                    <stop offset="1" stop-color="#7B01FF" stop-opacity="0">
+                    </stop>
+                </radialGradient>
+                <circle transform-origin="center" fill="none" stroke="url(#a8)" stroke-width="30" stroke-linecap="round" stroke-dasharray="200 1000" stroke-dashoffset="0" cx="100" cy="100" r="30">
+                        <animateTransform type="rotate" attributeName="transform" calcMode="spline" dur="2" values="360;0" keyTimes="0;1" keySplines="0 0 1 1" repeatCount="indefinite">
+                        </animateTransform></circle><circle transform-origin="center" fill="none" opacity=".2" stroke="#7B01FF" stroke-width="30" stroke-linecap="round" cx="100" cy="100" r="30">
+                </circle>
+            </svg>
+        </div>
+
         <header class="header">
             <section class="header__add">
                 <img class="add__icon" src="../assets/img/addElement.ico" alt="Add element" title="Añade un elemento" width="50px">
