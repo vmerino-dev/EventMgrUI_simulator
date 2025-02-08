@@ -36,6 +36,8 @@ async function dbAccess(){
             document.getElementById("loading").style.opacity = 0;
         },2000);
 
+        // Código comprobación dashboard usuario mediante clase de IDB dashboard
+
         idbUsrEvnt.closeDB(); // Cerramos la DB
     } catch(error){
         console.error(`${logs.getLogDate()} [DB ERROR] ${error.message}`);

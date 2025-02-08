@@ -14,20 +14,40 @@ export let userMgrSerial;
 
 /**
  * IDB
- * 
- * Clase que se encarga de gestionar las bases de datos IndexedDB de los usuarios
- * Si #request o #db son null, no se ha abierto aún la bbdd o ha habido un error
  */
-export class IDBUsersEvents {
-    #request = null;
-    #db = null;
-    #oldVersion = null;
-    
+
+export class IDB {
     #dbVersion = null; // versión de la DB indicada en el constructor
 
     // Constructor
     constructor(dbVersion){
         this.#dbVersion = dbVersion;
+    }
+
+    get dbVersion(){
+        return this.#dbVersion;
+    }
+
+    set dbVersion(dbVersion){
+        this.#dbVersion = dbVersion;
+    }
+}
+
+
+/**
+ * IDBUsersEvents
+ * 
+ * Clase que se encarga de gestionar las bases de datos IndexedDB de los usuarios
+ * Si #request o #db son null, no se ha abierto aún la bbdd o ha habido un error
+ */
+export class IDBUsersEvents extends IDB {
+    #request = null;
+    #db = null;
+    #oldVersion = null;
+
+    // Constructor
+    constructor(dbVersion){
+        super(dbVersion);
     }
 
     /** 
@@ -42,7 +62,7 @@ export class IDBUsersEvents {
         let userMgr; // Almacenará el gestor de usuarios
         let eventMgr; // Almacenará el gestor de eventos
 
-        let request = window.indexedDB.open(DB_NAME, this.#dbVersion);
+        let request = window.indexedDB.open(DB_NAME, this.dbVersion);
 
         return new Promise((resolve, reject) => {
             request.onerror = () => {
