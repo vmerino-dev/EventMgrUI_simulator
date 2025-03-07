@@ -32,7 +32,7 @@ div#loading {
 
     @include mixins.flex(center, center);
 
-    transition: opacity 1s linear;
+    transition: opacity 1s linear, z-index 1s linear;
 }
 
 .header {
@@ -68,7 +68,9 @@ div#loading {
 .add__icon {
     cursor: pointer;
     
+    transition: filter .2s linear;
     &:hover {
+        transition: filter .3s linear;
         filter: invert(1);
         scale: .95;
     }
@@ -80,6 +82,15 @@ div#loading {
     &:hover {
         transition: text-shadow .5s linear;
         text-shadow: 0 0 7px #000000;
+    }
+}
+
+.header__profile {
+    transition: scale .2s linear;
+    &:hover {
+        cursor: pointer;
+        scale: 1.05;
+        transition: scale .3s linear;
     }
 }
 

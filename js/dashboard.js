@@ -34,6 +34,7 @@ async function dbAccess(){
         setTimeout(()=>{ // Simulamos una carga más longeva con 2 segundo al menos de carga (efecto estético)
             document.body.style.overflow = "auto";
             document.getElementById("loading").style.opacity = 0;
+            document.getElementById("loading").style.zIndex = 0;
         },2000);
 
         // Código comprobación dashboard usuario mediante clase de IDB dashboard

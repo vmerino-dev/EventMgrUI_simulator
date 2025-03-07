@@ -80,7 +80,7 @@ export class IDBUsersEvents extends IDB {
                 }
                     
 
-                if(!db.objectStoreNames.contains('userEventMgr')){
+                if(!db.objectStoreNames.includes('userEventMgr')){
                     db.createObjectStore('userEventMgr', {keyPath: "id"});
                 }
             }
@@ -321,4 +321,55 @@ export async function ldDB_ValidInputs(){
     eventMgr = eventMgrDB;
     idbUsrEvnt = idbUsrEvntTemp;
     userMgrSerial = userMgrSerialTemp;
+}
+
+
+export class IDBDashboard extends IDB {
+    #oldVersion = null;
+
+    // Constructor
+    constructor(dbVersion){
+        super(dbVersion);
+    }
+
+    /** 
+     * init()
+     * 
+     * Inicializa la DB y el object store. Si no existen ambos, los crea.
+     * 
+     * @returns {Promise} Promesa que se resuelve al abrir la base de datos o se rechaza si hay error
+    */
+    init(){
+
+        // Abrimos la bbdd
+        let request = window.indexedDB.open(DB_NAME, this.dbVersion);
+
+        return new Promise((resolve, reject) => {
+            request.onerror = () => {
+                reject('Error al abrir la base de datos' + request);
+            }
+
+            request.onupgradeneeded = () => {
+                if(!db.objectStoreNames.includes('dashboard')){
+                    db.createObjectStore('dashboard', {keyPath: "userID"});
+                }
+
+            }
+
+            request.onsuccess = () => {
+                let db = request.result;
+
+                db.onversionchange = () => {
+                    db.close(); // Si ha habido cambio de versión, cerramos la conexión
+                }
+
+                /* Añadir entre otros metodos, etc -> usuarios que ya existen en el sistema
+                    en cada registro de la tabla "dashboard" con valor 'default' (si se crea
+                    por primera vez la tabla dashboard, ningun usuario ha podido modificar
+                    su dashboard).
+                */
+            }
+        })
+    }
+    
 }
