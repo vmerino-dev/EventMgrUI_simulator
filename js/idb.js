@@ -348,6 +348,10 @@ export class IDBDashboard extends IDB {
     */
     init(){
 
+        
+        let isDBNew = false; // Pasará a true si la DB se acaba de crear
+        let addsCompleted = false; // Pasará a true si se han añadido los usuarios a la DB
+
         // Abrimos la bbdd
         let request = window.indexedDB.open(DB_NAME, this.dbVersion);
 
@@ -358,15 +362,10 @@ export class IDBDashboard extends IDB {
 
             request.onupgradeneeded = () => {
                 let db = request.result;
+                isDBNew = true; // La DB no existía
 
                 if(!db.objectStoreNames.includes('dashboard')){
                     db.createObjectStore('dashboard', {keyPath: "userID"});
-
-                    /* Añadir entre otros metodos, etc -> usuarios que ya existen en el sistema
-                    en cada registro de la tabla "dashboard" con valor 'default' (si se crea
-                    por primera vez la tabla dashboard, ningun usuario ha podido modificar
-                    su dashboard).
-                    */
 
                     /*********************************
                     *  Añadir usuarios al dashboard  *
@@ -389,7 +388,9 @@ export class IDBDashboard extends IDB {
                 
                     // Se completan todas las operaciones "add" de la transacción
                     transaccion.oncomplete = () => {
-                        resolve("DB created and users added to dashboard");
+                        
+
+                        addsCompleted = true;
                     }
                 }
             }
@@ -400,12 +401,24 @@ export class IDBDashboard extends IDB {
                 db.onversionchange = () => {
                     db.close(); // Si ha habido cambio de versión, cerramos la conexión
                 }
+                
 
                 /* Verificamos si el ID del usuario es nuevo comparandolo con el resto de
                 IDs (si no existe, es usuario nuevo -> ID_usuario = default) */
 
+                /* Si la DB no se acaba de crear, se verifica el usuario actual y si no existe,
+                se añade */
+                if(!isDBNew){
+
+
+                } else { // La DB se acaba de crear (el evento onupgradeneeded ha sido desencadenado)
+                    // Si se han añadido todos los usuarios al dashboard, se resuelve la promesa
+                    if(addsCompleted) {
+                        // Resolvemos la promesa
+                        resolve("Dashboard loaded");                        
+                    }
+                }
             }
         })
     }
-    
 }
