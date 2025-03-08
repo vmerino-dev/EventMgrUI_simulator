@@ -351,6 +351,7 @@ export class IDBDashboard extends IDB {
         
         let isDBNew = false; // Pasará a true si la DB se acaba de crear
         let addsCompleted = false; // Pasará a true si se han añadido los usuarios a la DB
+        let onSuccessCompleted = false; // Cuando finalice la ejecución de onsuccess --> true
 
         // Abrimos la bbdd
         let request = window.indexedDB.open(DB_NAME, this.dbVersion);
@@ -390,6 +391,13 @@ export class IDBDashboard extends IDB {
                     transaccion.oncomplete = () => {
                         
 
+
+                        // Si el evento onsuccess ha finalizado su ejecución antes, se resuelve la promesa
+                        if(onSuccessCompleted) {
+                            resolve("Dashboard loaded"); 
+                        }
+
+                        // Si se han añadido antes los usuarios que la ejecución de onsuccess
                         addsCompleted = true;
                     }
                 }
@@ -398,10 +406,11 @@ export class IDBDashboard extends IDB {
             request.onsuccess = () => {
                 let db = request.result;
 
+
                 db.onversionchange = () => {
                     db.close(); // Si ha habido cambio de versión, cerramos la conexión
                 }
-                
+
 
                 /* Verificamos si el ID del usuario es nuevo comparandolo con el resto de
                 IDs (si no existe, es usuario nuevo -> ID_usuario = default) */
@@ -416,6 +425,8 @@ export class IDBDashboard extends IDB {
                     if(addsCompleted) {
                         // Resolvemos la promesa
                         resolve("Dashboard loaded");                        
+                    } else { // Los usuarios no han sido añadidos aún, se resolverá en evento oncomplete
+                        onSuccessCompleted = true;
                     }
                 }
             }
