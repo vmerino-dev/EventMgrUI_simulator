@@ -323,13 +323,20 @@ export async function ldDB_ValidInputs(){
     userMgrSerial = userMgrSerialTemp;
 }
 
+/**
+ * class IDBDashboard
+ * 
+ * Inicialización y control del dashboard en IDB
+ * Se debe obtener userMgr antes de crear un obj. y pasarlo al constructor
+ */
 
 export class IDBDashboard extends IDB {
-    #oldVersion = null;
+    #userMgr;
 
     // Constructor
-    constructor(dbVersion){
+    constructor(dbVersion, userMgr){
         super(dbVersion);
+        this.#userMgr = userMgr; // Gestor de usuarios
     }
 
     /** 
@@ -350,10 +357,41 @@ export class IDBDashboard extends IDB {
             }
 
             request.onupgradeneeded = () => {
+                let db = request.result;
+
                 if(!db.objectStoreNames.includes('dashboard')){
                     db.createObjectStore('dashboard', {keyPath: "userID"});
-                }
 
+                    /* Añadir entre otros metodos, etc -> usuarios que ya existen en el sistema
+                    en cada registro de la tabla "dashboard" con valor 'default' (si se crea
+                    por primera vez la tabla dashboard, ningun usuario ha podido modificar
+                    su dashboard).
+                    */
+
+                    /*********************************
+                    *  Añadir usuarios al dashboard  *
+                    *********************************/
+
+                    // Obtenemos todos los id de los usuarios en un vector
+                    let users_id = Object.keys(this.#userMgr.users);
+
+
+                    // Creamos una transacción a partir del obj. store dashboard y lo devolvemos
+                    const transaccion = db.transaction('dashboard', 'readwrite');
+                    const dashbObjSt = transaccion.objectStore('dashboard');
+                    
+                    // Añadimos usuarios al objectStore con valor default (default dashboard)
+                    users_id.forEach(user_id => {
+                        let dashB_register = {userID: user_id, state: 'default'}; // Creamos un registro con los campos id y estado
+                        dashbObjSt.add(dashB_register); // Añadimos el registro al obj. store
+                    });
+                   
+                
+                    // Se completan todas las operaciones "add" de la transacción
+                    transaccion.oncomplete = () => {
+                        resolve("DB created and users added to dashboard");
+                    }
+                }
             }
 
             request.onsuccess = () => {
@@ -363,11 +401,9 @@ export class IDBDashboard extends IDB {
                     db.close(); // Si ha habido cambio de versión, cerramos la conexión
                 }
 
-                /* Añadir entre otros metodos, etc -> usuarios que ya existen en el sistema
-                    en cada registro de la tabla "dashboard" con valor 'default' (si se crea
-                    por primera vez la tabla dashboard, ningun usuario ha podido modificar
-                    su dashboard).
-                */
+                /* Verificamos si el ID del usuario es nuevo comparandolo con el resto de
+                IDs (si no existe, es usuario nuevo -> ID_usuario = default) */
+
             }
         })
     }
