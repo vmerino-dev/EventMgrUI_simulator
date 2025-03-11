@@ -80,7 +80,7 @@ export class IDBUsersEvents extends IDB {
                 }
                     
 
-                if(!db.objectStoreNames.includes('userEventMgr')){
+                if(!db.objectStoreNames.contains('userEventMgr')){
                     db.createObjectStore('userEventMgr', {keyPath: "id"});
                 }
             }
