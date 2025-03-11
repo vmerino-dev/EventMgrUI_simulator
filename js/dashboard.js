@@ -5,12 +5,13 @@ document.body.style.overflow = "hidden";
 
 import logs from "./log.js";
 import { UserMgr, User } from "./classes/usrmsg.js";
+import { DASHBOARD_ELEMS } from "./utils.js";
 import { IDBUsersEvents, ldDB_ValidInputs, idbUsrEvnt, userMgr, eventMgr, userMgrSerial, IDBDashboard } from "./idb.js";
 
 // Obtenemos el id del usuario actual
 let usrSessionId = localStorage.getItem("userSession");
 
-const header = document.createElement("h1");
+// DEBUGGING: const header = document.createElement("h1");
 
 dbAccess();
 
@@ -39,6 +40,7 @@ async function dbAccess(){
 
         // 
         if(statusProm_dashb.includes('exists')){
+            // Ejemplo de dashb_status: "1:4;2:3". Los elementos del dashboard se delimitan por ;
             dashb_status = statusProm_dashb.match(/<([^>]+)>/); // Devolvemos el contenido entre <> devuelto por la promesa (estado del dashboard)
         
         }
@@ -64,6 +66,12 @@ function renderDashboard(dashb_status){
     // El dashboard del usuario es diferente al renderizado
     if(dashb_status !== 'default'){
         let elems_dashb = dashb_status.split(';'); // Array de elementos a renderizar
+
+        elems_dashb.forEach((elem) => { // Ejemplo de elem: "1:4" --> Elemento 1 de tamaño 4 (cuadrado)
+            // En base al formato de los elementos creamos elementos del DOM que luego se añadirán
+            // Utilizamos el mapa DASHBOARD_ELEMS para obtener los enlaces de los iframes.
+
+        });
     }
 
 }
