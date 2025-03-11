@@ -348,10 +348,8 @@ export class IDBDashboard extends IDB {
     */
     init(){
 
-        
         let isDBNew = false; // Pasará a true si la DB se acaba de crear
-        let addsCompleted = false; // Pasará a true si se han añadido los usuarios a la DB
-        let onSuccessCompleted = false; // Cuando finalice la ejecución de onsuccess --> true
+        let sem_success_compl = false; // Semáforo que pasará a true si onsuccess u oncompleted finalizan su ejecución
 
         // Abrimos la bbdd
         let request = window.indexedDB.open(DB_NAME, this.dbVersion);
@@ -390,15 +388,12 @@ export class IDBDashboard extends IDB {
                     // Se completan todas las operaciones "add" de la transacción
                     transaccion.oncomplete = () => {
                         
-
-
                         // Si el evento onsuccess ha finalizado su ejecución antes, se resuelve la promesa
-                        if(onSuccessCompleted) {
+                        if(sem_success_compl) {
                             resolve("Dashboard loaded"); 
                         }
 
-                        // Si se han añadido antes los usuarios que la ejecución de onsuccess
-                        addsCompleted = true;
+                        sem_success_compl = true;
                     }
                 }
             }
@@ -422,11 +417,11 @@ export class IDBDashboard extends IDB {
 
                 } else { // La DB se acaba de crear (el evento onupgradeneeded ha sido desencadenado)
                     // Si se han añadido todos los usuarios al dashboard, se resuelve la promesa
-                    if(addsCompleted) {
+                    if(sem_success_compl) {
                         // Resolvemos la promesa
                         resolve("Dashboard loaded");                        
                     } else { // Los usuarios no han sido añadidos aún, se resolverá en evento oncomplete
-                        onSuccessCompleted = true;
+                        sem_success_compl = true;
                     }
                 }
             }
