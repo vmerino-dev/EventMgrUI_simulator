@@ -332,11 +332,13 @@ export async function ldDB_ValidInputs(){
 
 export class IDBDashboard extends IDB {
     #userMgr;
+    #userSessionID;
 
     // Constructor
-    constructor(dbVersion, userMgr){
+    constructor(dbVersion, userMgr, userSessionID){
         super(dbVersion);
         this.#userMgr = userMgr; // Gestor de usuarios
+        this.#userSessionID = userSessionID;
     }
 
     /** 
@@ -417,7 +419,7 @@ export class IDBDashboard extends IDB {
                     const transUser = db.transaction('dashboard', 'readonly');
                     const dashb_objSt = transUser.objectStore('dashboard');
 
-                    let request_user = dashb_objSt.get(localStorage.getItem('userSession'));
+                    let request_user = dashb_objSt.get(this.#userSessionID);
 
                     request_user.onsuccess = (event) => {
                         // El usuario existe y podemos renderizar su dashboard
@@ -433,7 +435,7 @@ export class IDBDashboard extends IDB {
 
                             // Añadimos el usuario actual al dashboard
                             let request_user_add = dashb_objSt.add(
-                                {userID: localStorage.getItem('userSession'), state: 'default'}
+                                {userID: this.#userSessionID, state: 'default'}
                             );
 
                             request_user_add.onsuccess = (event) => {
