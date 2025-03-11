@@ -390,7 +390,7 @@ export class IDBDashboard extends IDB {
                         
                         // Si el evento onsuccess ha finalizado su ejecución antes, se resuelve la promesa
                         if(sem_success_compl) {
-                            resolve("Dashboard loaded"); 
+                            resolve("Dashboard loaded (new DB created)"); 
                         }
 
                         sem_success_compl = true;
@@ -413,16 +413,46 @@ export class IDBDashboard extends IDB {
                 /* Si la DB no se acaba de crear, se verifica el usuario actual y si no existe,
                 se añade */
                 if(!isDBNew){
+                    // ** Validación de usuario en el Dashboard **
+                    const transUser = db.transaction('dashboard', 'readonly');
+                    const dashb_objSt = transUser.objectStore('dashboard');
 
+                    let request_user = dashb_objSt.get(localStorage.getItem('userSession'));
+
+                    request_user.onsuccess = (event) => {
+                        // El usuario existe y podemos renderizar su dashboard
+                        if(event.target.result){
+                            resolve(`Dashboard loaded (exists: <${event.target.result}>)`);
+
+                        } else { // usuario = undefined (no existe)
+                            // El usuario actual no existe y debemos crearlo en el dashboard estableciendo su estado en default
+                            
+                            // Creamos de nuevo una transacción y obtenemos obj. store
+                            const transUser = db.transaction('dashboard', 'readwrite');
+                            const dashb_objSt = transUser.objectStore('dashboard');
+
+                            // Añadimos el usuario actual al dashboard
+                            let request_user_add = dashb_objSt.add(
+                                {userID: localStorage.getItem('userSession'), state: 'default'}
+                            );
+
+                            request_user_add.onsuccess = (event) => {
+                                resolve('Dashboard loaded (actual user added)');
+                            }
+                        }
+                    }
+                    
 
                 } else { // La DB se acaba de crear (el evento onupgradeneeded ha sido desencadenado)
                     // Si se han añadido todos los usuarios al dashboard, se resuelve la promesa
                     if(sem_success_compl) {
                         // Resolvemos la promesa
-                        resolve("Dashboard loaded");                        
-                    } else { // Los usuarios no han sido añadidos aún, se resolverá en evento oncomplete
-                        sem_success_compl = true;
+                        resolve("Dashboard loaded (new DB created)");
                     }
+
+                    // Los usuarios no han sido añadidos aún, se resolverá en evento oncomplete
+                    sem_success_compl = true;
+                    
                 }
             }
         })
