@@ -33,17 +33,17 @@ async function dbAccess(){
         */
 
         // Código comprobación dashboard usuario mediante clase de IDB dashboard
-        const idbDashboard = new IDBDashboard(1, userMgr, usrSessionId);
+        const idbDashboard = new IDBDashboard(1, usrSessionId);
         const statusProm_dashb = await idbDashboard.init(); // Obtenemos el estado del dashboard del usuario
 
         let dashb_status; // Estado que dependerá del valor de depuración devuelto por la promesa
 
-        // Si la DB no se acaba de crear o el usuario estaba en el obj. store dashboard, 
+        // Si el usuario estaba en el obj. store dashboard se extrae su contenido
         if(statusProm_dashb.includes('exists')){ // El usuario "existe" dentro de la tabla
             // Ejemplo de dashb_status: "1:4;2:3". Los elementos del dashboard se delimitan por ;
             dashb_status = statusProm_dashb.match(/<([^>]+)>/); // Devolvemos el contenido entre <> devuelto por la promesa (estado del dashboard)
         
-        } else { // Si la DB se acaba de crear (todos los usuarios = default) o el usuario tenía el dashboard en default
+        } else { // Si el usuario no existía en el dashboard se establece su estado en default
             dashb_status = 'default';
         }
 
@@ -72,7 +72,7 @@ function renderDashboard(dashb_status){
         elems_dashb.forEach((elem) => { // Ejemplo de elem: "1:4" --> Elemento 1 de tamaño 4 (cuadrado)
             // En base al formato de los elementos creamos elementos del DOM que luego se añadirán
             // Utilizamos el mapa DASHBOARD_ELEMS para obtener los enlaces de los iframes.
-
+ 
 
 
         });

@@ -72,7 +72,7 @@ export class IDBUsersEvents extends IDB {
             request.onupgradeneeded = (event) => {
                 let db = request.result;
 
-                if(event.oldVersion === 0){ // Si la bbdd no existe, creamos el objeto gestor de usuarios
+                if(event.oldVersion === 0){ // Si la db no existe, creamos el objeto gestor de usuarios
                     userMgr = new UserMgr();
                     eventMgr = new EventMgr();
 
@@ -82,6 +82,13 @@ export class IDBUsersEvents extends IDB {
 
                 if(!db.objectStoreNames.contains('userEventMgr')){
                     db.createObjectStore('userEventMgr', {keyPath: "id"});
+                }
+
+                // Al crear la DB por primera vez, debemos crear todos los Object Store
+                // Creamos el dashboard que será utilizado por IDBDashboard
+                if(!db.objectStoreNames.contains('dashboard')){
+                    db.createObjectStore('dashboard', {keyPath: "userID"});
+
                 }
             }
 
@@ -331,20 +338,22 @@ export async function ldDB_ValidInputs(){
  */
 
 export class IDBDashboard extends IDB {
-    #userMgr;
     #userSessionID;
 
     // Constructor
-    constructor(dbVersion, userMgr, userSessionID){
+    constructor(dbVersion, userSessionID){
         super(dbVersion);
-        this.#userMgr = userMgr; // Gestor de usuarios
         this.#userSessionID = userSessionID;
     }
 
     /** 
      * init()
      * 
-     * Inicializa la DB y el object store. Si no existen ambos, los crea.
+     * Carga la DB y el object store. Ambos deben haber sido creados en el objeto
+     * IDBUsersEvents o saltará error al no encontrarlos.
+     * 
+     * Esta clase debe instanciarse solo en dashboard.js, de modo que ningún usuario
+     * tendrá un registro en la DB hasta que cargue el dashboard por primera vez.
      * 
      * @returns {Promise} Promesa que se resuelve al abrir la base de datos o se rechaza si hay error
     */
@@ -357,72 +366,45 @@ export class IDBDashboard extends IDB {
                 reject('Error al abrir la base de datos' + request);
             }
 
-            request.onsuccess = () => {
+            request.onsuccess = () => { // Request de la DB
                 let db = request.result;
                 
                 db.onversionchange = () => {
                     db.close(); // Si ha habido cambio de versión, cerramos la conexión
                 }
 
-                if(!db.objectStoreNames.contains('dashboard')){
-                    db.createObjectStore('dashboard', {keyPath: "userID"});
-
-                    /*********************************
-                    *  Añadir usuarios al dashboard  *
-                    *********************************/
-
-                    // Obtenemos todos los id de los usuarios en un vector
-                    let users_id = Object.keys(this.#userMgr.users);
+                /* Verificamos si el ID del usuario es nuevo comparandolo con el resto de
+                IDs (si no existe, es usuario nuevo -> ID_usuario = default) */
 
 
-                    // Creamos una transacción a partir del obj. store dashboard y lo devolvemos
-                    const transaccion = db.transaction('dashboard', 'readwrite');
-                    const dashbObjSt = transaccion.objectStore('dashboard');
-                    
-                    // Añadimos usuarios al objectStore con valor default (default dashboard)
-                    users_id.forEach(user_id => {
-                        let dashB_register = {userID: user_id, state: 'default'}; // Creamos un registro con los campos id y estado
-                        dashbObjSt.add(dashB_register); // Añadimos el registro al obj. store
-                    });
-                   
-                
-                    // Se completan todas las operaciones "add" de la transacción
-                    transaccion.oncomplete = () => {
-                        resolve("Dashboard loaded (new DB created)"); 
+                // ** Validación de usuario en el Dashboard **
+                const transUser = db.transaction('dashboard', 'readonly');
+                const dashb_objSt = transUser.objectStore('dashboard');
+                let request_user = dashb_objSt.get(this.#userSessionID);
 
-                    }
-                } else {
-                    /* Verificamos si el ID del usuario es nuevo comparandolo con el resto de
-                    IDs (si no existe, es usuario nuevo -> ID_usuario = default) */
+                request_user.onsuccess = (event) => { // Request de la operación get que devuelve el registro del usuario
+                    // Si event.target.result == undefined --> usuario no existe -> Se crea con estado 'default'
+                    if(event.target.result){
+                        resolve(`Dashboard loaded (exists: <${event.target.result}>)`);
 
-
-                    // ** Validación de usuario en el Dashboard **
-                    const transUser = db.transaction('dashboard', 'readonly');
-                    const dashb_objSt = transUser.objectStore('dashboard');
-                    let request_user = dashb_objSt.get(this.#userSessionID);
-
-                    request_user.onsuccess = (event) => {
-                        if(event.target.result){
-                            resolve(`Dashboard loaded (exists: <${event.target.result}>)`);
-
-                        } else { // usuario = undefined (no existe)
-                            // El usuario actual no existe y debemos crearlo en el dashboard estableciendo su estado en default
+                    } else { // usuario = undefined (no existe)
+                        // El usuario actual no existe y debemos crearlo en el dashboard estableciendo su estado en default
                                 
-                            // Creamos de nuevo una transacción y obtenemos obj. store
-                            const transUser = db.transaction('dashboard', 'readwrite');
+                        // Creamos de nuevo una transacción y obtenemos obj. store
+                        const transUser = db.transaction('dashboard', 'readwrite');
                             const dashb_objSt = transUser.objectStore('dashboard');
 
-                            // Añadimos el usuario actual al dashboard
-                            let request_user_add = dashb_objSt.add(
-                                {userID: this.#userSessionID, state: 'default'}
-                            );
+                        // Añadimos el usuario actual al dashboard
+                        let request_user_add = dashb_objSt.add(
+                            {userID: this.#userSessionID, state: 'default'}
+                        );
 
-                            request_user_add.onsuccess = () => {
-                                resolve('Dashboard loaded (actual user added)');
-                            } // END_REQUEST_USER_ADD
-                        }
-                    } // END_REQUEST_USER
-                }
+                        request_user_add.onsuccess = () => {
+                            resolve('Dashboard loaded (actual user added)');
+                        } // END_REQUEST_USER_ADD
+                    }
+                } // END_REQUEST_USER
+                
 
             } // END_REQUEST_ONSUCCESS
         }) // END_RETURN_PROMISE
