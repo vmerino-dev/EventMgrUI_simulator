@@ -3,12 +3,13 @@
 export const DB_NAME = "userEventMgr";
 
 // Ubicación de los elementos del dashboard
+/*
 export const DASHBOARD_ELEMS = {
     '1': ,
     '2': ,
     '3': ,
     '4': 
-};
+};*/
 
 export default class Utils {
     static createId(){

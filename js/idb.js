@@ -1,6 +1,6 @@
 "use strict";
 
-import { UserMgr, MessageThread } from "./classes/usrmsg.js";
+import { UserMgr } from "./classes/usrmsg.js";
 import { EventMgr } from "./classes/events.js";
 import { DB_NAME } from "./utils.js";
 import { IDBError } from "./errors/idbErrors.js";
@@ -349,10 +349,6 @@ export class IDBDashboard extends IDB {
      * @returns {Promise} Promesa que se resuelve al abrir la base de datos o se rechaza si hay error
     */
     init(){
-
-        let isDBNew = false; // Pasará a true si la DB se acaba de crear
-        let sem_success_compl = false; // Semáforo que pasará a true si onsuccess u oncompleted finalizan su ejecución
-
         // Abrimos la bbdd
         let request = window.indexedDB.open(DB_NAME, this.dbVersion);
 
@@ -361,11 +357,14 @@ export class IDBDashboard extends IDB {
                 reject('Error al abrir la base de datos' + request);
             }
 
-            request.onupgradeneeded = () => {
+            request.onsuccess = () => {
                 let db = request.result;
-                isDBNew = true; // La DB no existía
+                
+                db.onversionchange = () => {
+                    db.close(); // Si ha habido cambio de versión, cerramos la conexión
+                }
 
-                if(!db.objectStoreNames.includes('dashboard')){
+                if(!db.objectStoreNames.contains('dashboard')){
                     db.createObjectStore('dashboard', {keyPath: "userID"});
 
                     /*********************************
@@ -389,46 +388,26 @@ export class IDBDashboard extends IDB {
                 
                     // Se completan todas las operaciones "add" de la transacción
                     transaccion.oncomplete = () => {
-                        
-                        // Si el evento onsuccess ha finalizado su ejecución antes, se resuelve la promesa
-                        if(sem_success_compl) {
-                            resolve("Dashboard loaded (new DB created)"); 
-                        }
+                        resolve("Dashboard loaded (new DB created)"); 
 
-                        sem_success_compl = true;
                     }
-                }
-            }
-
-            request.onsuccess = () => {
-                let db = request.result;
+                } else {
+                    /* Verificamos si el ID del usuario es nuevo comparandolo con el resto de
+                    IDs (si no existe, es usuario nuevo -> ID_usuario = default) */
 
 
-                db.onversionchange = () => {
-                    db.close(); // Si ha habido cambio de versión, cerramos la conexión
-                }
-
-
-                /* Verificamos si el ID del usuario es nuevo comparandolo con el resto de
-                IDs (si no existe, es usuario nuevo -> ID_usuario = default) */
-
-                /* Si la DB no se acaba de crear, se verifica el usuario actual y si no existe,
-                se añade */
-                if(!isDBNew){
                     // ** Validación de usuario en el Dashboard **
                     const transUser = db.transaction('dashboard', 'readonly');
                     const dashb_objSt = transUser.objectStore('dashboard');
-
                     let request_user = dashb_objSt.get(this.#userSessionID);
 
                     request_user.onsuccess = (event) => {
-                        // El usuario existe y podemos renderizar su dashboard
                         if(event.target.result){
                             resolve(`Dashboard loaded (exists: <${event.target.result}>)`);
 
                         } else { // usuario = undefined (no existe)
                             // El usuario actual no existe y debemos crearlo en el dashboard estableciendo su estado en default
-                            
+                                
                             // Creamos de nuevo una transacción y obtenemos obj. store
                             const transUser = db.transaction('dashboard', 'readwrite');
                             const dashb_objSt = transUser.objectStore('dashboard');
@@ -438,25 +417,14 @@ export class IDBDashboard extends IDB {
                                 {userID: this.#userSessionID, state: 'default'}
                             );
 
-                            request_user_add.onsuccess = (event) => {
+                            request_user_add.onsuccess = () => {
                                 resolve('Dashboard loaded (actual user added)');
-                            }
+                            } // END_REQUEST_USER_ADD
                         }
-                    }
-                    
-
-                } else { // La DB se acaba de crear (el evento onupgradeneeded ha sido desencadenado)
-                    // Si se han añadido todos los usuarios al dashboard, se resuelve la promesa
-                    if(sem_success_compl) {
-                        // Resolvemos la promesa
-                        resolve("Dashboard loaded (new DB created)");
-                    }
-
-                    // Los usuarios no han sido añadidos aún, se resolverá en evento oncomplete
-                    sem_success_compl = true;
-                    
+                    } // END_REQUEST_USER
                 }
-            }
-        })
-    }
-}
+
+            } // END_REQUEST_ONSUCCESS
+        }) // END_RETURN_PROMISE
+    } // END_INIT
+} // END_CLASS

@@ -5,7 +5,7 @@ document.body.style.overflow = "hidden";
 
 import logs from "./log.js";
 import { UserMgr, User } from "./classes/usrmsg.js";
-import { DASHBOARD_ELEMS } from "./utils.js";
+//import { DASHBOARD_ELEMS } from "./utils.js";
 import { IDBUsersEvents, ldDB_ValidInputs, idbUsrEvnt, userMgr, eventMgr, userMgrSerial, IDBDashboard } from "./idb.js";
 
 // Obtenemos el id del usuario actual
@@ -34,15 +34,17 @@ async function dbAccess(){
 
         // Código comprobación dashboard usuario mediante clase de IDB dashboard
         const idbDashboard = new IDBDashboard(1, userMgr, usrSessionId);
-        const statusProm_dashb = idbDashboard.init(); // Obtenemos el estado del dashboard del usuario
+        const statusProm_dashb = await idbDashboard.init(); // Obtenemos el estado del dashboard del usuario
 
         let dashb_status; // Estado que dependerá del valor de depuración devuelto por la promesa
 
-        // 
-        if(statusProm_dashb.includes('exists')){
+        // Si la DB no se acaba de crear o el usuario estaba en el obj. store dashboard, 
+        if(statusProm_dashb.includes('exists')){ // El usuario "existe" dentro de la tabla
             // Ejemplo de dashb_status: "1:4;2:3". Los elementos del dashboard se delimitan por ;
             dashb_status = statusProm_dashb.match(/<([^>]+)>/); // Devolvemos el contenido entre <> devuelto por la promesa (estado del dashboard)
         
+        } else { // Si la DB se acaba de crear (todos los usuarios = default) o el usuario tenía el dashboard en default
+            dashb_status = 'default';
         }
 
         // Renderizamos el dashboard
@@ -63,7 +65,7 @@ async function dbAccess(){
 }
 
 function renderDashboard(dashb_status){
-    // El dashboard del usuario es diferente al renderizado
+    // El dashboard del usuario es diferente al original (por defecto)
     if(dashb_status !== 'default'){
         let elems_dashb = dashb_status.split(';'); // Array de elementos a renderizar
 
@@ -71,8 +73,10 @@ function renderDashboard(dashb_status){
             // En base al formato de los elementos creamos elementos del DOM que luego se añadirán
             // Utilizamos el mapa DASHBOARD_ELEMS para obtener los enlaces de los iframes.
 
+
+
         });
-    }
+    } // Si el dashboard es 'default', ya lo ha renderizado dashboard.html
 
 }
 
