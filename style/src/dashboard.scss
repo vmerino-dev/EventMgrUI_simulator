@@ -109,6 +109,8 @@ div#loading {
     background: #e0e0e0;
     box-shadow:  6px 6px 12px #949494,
     -6px -6px 12px #ffffff;
+
+    position: relative; // Para el menú del módulo
 }
 
 /*
@@ -173,8 +175,23 @@ se escoja. Por defecto se establece lo que se indica aquí.
     position: absolute;
     top: 12px;
     right: 10px;
-
+    z-index: 500;
 }
+
+.conf__menu {
+    width: 180px;
+    height: 200px;
+    border-radius: 10px;
+
+    background: #e0e0e0;
+    box-shadow: 0 0 3px 1px #333;
+
+    display: none; // El menú no se renderiza hasta que se necesite
+    position: absolute;
+    top: 3px;
+    right: 5px;
+}
+
 
 .conf__move, .conf__change {
     height: 10px;
