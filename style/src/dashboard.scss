@@ -176,20 +176,45 @@ se escoja. Por defecto se establece lo que se indica aquí.
     top: 12px;
     right: 10px;
     z-index: 500;
+
+    cursor: pointer;
 }
 
-.conf__menu {
+// Menú de los elementos en el dashboard
+.conf__menu { // .conf__menu--on para cambiar el estado a visible
     width: 180px;
-    height: 200px;
+    height: 180px;
     border-radius: 10px;
 
-    background: #e0e0e0;
+    background: #e0e0e099;
+    backdrop-filter: blur(7px);
     box-shadow: 0 0 3px 1px #333;
 
-    display: none; // El menú no se renderiza hasta que se necesite
+    //display: none; // El menú no se renderiza hasta que se necesite --> .conf__menu--on
     position: absolute;
     top: 3px;
     right: 5px;
+}
+
+.conf__menu > div:first-child {
+    margin-top: 25px;
+}
+
+.conf__menu > div {
+    width: 100%;
+    height: 40px;
+
+    box-sizing: border-box;
+    border-bottom: 1px solid black;
+}
+
+.conf__menu > div:last-child {
+    border-bottom: 0px;
+}
+
+.conf__menu > div > p {
+    padding-left: 10px;
+    user-select: none;
 }
 
 
@@ -200,6 +225,10 @@ se escoja. Por defecto se establece lo que se indica aquí.
     &:hover {
         transition: scale .35s ease-out;
         scale: 1.2;
+    }
+    &:active {
+        transition: scale .15s ease-out;
+        scale: 0.9;
     }
 }
 
@@ -222,7 +251,9 @@ iframe {
 
 
 // STATES_SMACSS
-
+.conf__menu--on {
+    display: block;
+}
 
 // THEMES_SMACSS
 
