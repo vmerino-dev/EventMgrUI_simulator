@@ -333,8 +333,15 @@ export async function ldDB_ValidInputs(){
 /**
  * class IDBDashboard
  * 
- * Inicialización y control del dashboard en IDB
- * Se debe obtener userMgr antes de crear un obj. y pasarlo al constructor
+ *  Inicialización y control del dashboard en IDB
+ *  Se debe obtener userMgr antes de crear un obj. y pasarlo al constructor
+ * 
+ *  Esta clase debe instanciarse solo en dashboard.js, de modo que ningún usuario
+ *  tendrá un registro en la DB hasta que cargue el dashboard por primera vez.
+ * 
+ *  Es necesario que la variable userSession del localStorage o la que se pase
+ *  como parámetro al constructor tenga algún valor != null
+ * 
  */
 
 export class IDBDashboard extends IDB {
@@ -351,9 +358,6 @@ export class IDBDashboard extends IDB {
      * 
      * Carga la DB y el object store. Ambos deben haber sido creados en el objeto
      * IDBUsersEvents o saltará error al no encontrarlos.
-     * 
-     * Esta clase debe instanciarse solo en dashboard.js, de modo que ningún usuario
-     * tendrá un registro en la DB hasta que cargue el dashboard por primera vez.
      * 
      * @returns {Promise} Promesa que se resuelve al abrir la base de datos o se rechaza si hay error
     */
@@ -376,7 +380,6 @@ export class IDBDashboard extends IDB {
                 /* Verificamos si el ID del usuario es nuevo comparandolo con el resto de
                 IDs (si no existe, es usuario nuevo -> ID_usuario = default) */
 
-
                 // ** Validación de usuario en el Dashboard **
                 const transUser = db.transaction('dashboard', 'readonly');
                 const dashb_objSt = transUser.objectStore('dashboard');
@@ -385,22 +388,24 @@ export class IDBDashboard extends IDB {
                 request_user.onsuccess = (event) => { // Request de la operación get que devuelve el registro del usuario
                     // Si event.target.result == undefined --> usuario no existe -> Se crea con estado 'default'
                     if(event.target.result){
-                        resolve(`Dashboard loaded (exists: <${event.target.result}>)`);
+                        resolve(event.target.result); // Devolvemos valor del registro del usuario
 
                     } else { // usuario = undefined (no existe)
                         // El usuario actual no existe y debemos crearlo en el dashboard estableciendo su estado en default
                                 
                         // Creamos de nuevo una transacción y obtenemos obj. store
                         const transUser = db.transaction('dashboard', 'readwrite');
-                            const dashb_objSt = transUser.objectStore('dashboard');
+                        const dashb_objSt = transUser.objectStore('dashboard');
+
+                        const dashboard_value_user = {userID: this.#userSessionID, state: 'default'};
 
                         // Añadimos el usuario actual al dashboard
                         let request_user_add = dashb_objSt.add(
-                            {userID: this.#userSessionID, state: 'default'}
+                            dashboard_value_user
                         );
 
                         request_user_add.onsuccess = () => {
-                            resolve('Dashboard loaded (actual user added)');
+                            resolve(dashboard_value_user);
                         } // END_REQUEST_USER_ADD
                     }
                 } // END_REQUEST_USER

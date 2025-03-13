@@ -36,19 +36,11 @@ async function dbAccess(){
         const idbDashboard = new IDBDashboard(1, usrSessionId);
         const statusProm_dashb = await idbDashboard.init(); // Obtenemos el estado del dashboard del usuario
 
-        let dashb_status; // Estado que dependerá del valor de depuración devuelto por la promesa
+        // Estado del dashboard del usuario loggeado
+        let dashb_state = statusProm_dashb.state;
 
-        // Si el usuario estaba en el obj. store dashboard se extrae su contenido
-        if(statusProm_dashb.includes('exists')){ // El usuario "existe" dentro de la tabla
-            // Ejemplo de dashb_status: "1:4;2:3". Los elementos del dashboard se delimitan por ;
-            dashb_status = statusProm_dashb.match(/<([^>]+)>/); // Devolvemos el contenido entre <> devuelto por la promesa (estado del dashboard)
-        
-        } else { // Si el usuario no existía en el dashboard se establece su estado en default
-            dashb_status = 'default';
-        }
-
-        // Renderizamos el dashboard
-        renderDashboard(dashb_status);
+        // Renderizamos el dashboard pasando el estado según el usuario
+        renderDashboard(dashb_state);
 
         
         setTimeout(()=>{ // Simulamos una carga más longeva con 2 segundos al menos de carga (efecto estético)
@@ -61,13 +53,14 @@ async function dbAccess(){
         idbUsrEvnt.closeDB(); // Cerramos la DB
     } catch(error){
         console.error(`${logs.getLogDate()} [DB ERROR] ${error.message}`);
+        console.trace(error);
     }
 }
 
-function renderDashboard(dashb_status){
+function renderDashboard(dashb_state){
     // El dashboard del usuario es diferente al original (por defecto)
-    if(dashb_status !== 'default'){
-        let elems_dashb = dashb_status.split(';'); // Array de elementos a renderizar
+    if(dashb_state !== 'default'){
+        let elems_dashb = dashb_state.split(';'); // Array de elementos a renderizar
 
         elems_dashb.forEach((elem) => { // Ejemplo de elem: "1:4" --> Elemento 1 de tamaño 4 (cuadrado)
             // En base al formato de los elementos creamos elementos del DOM que luego se añadirán

@@ -49,9 +49,10 @@ async function dbAccess(){
     try {
         await ldDB_ValidInputs(); // Función asíncrona de idb.js para inicializar db
 
-        //userMgr.addUser("holaquetal", "victor@asdf.com", "063Vv.")
+        // DEBUGGING
+        //userMgr.addUser("holaquetal", "victor@asdf.com", "sad.")
         //userMgr.addUser("victor", "victormerino@gmail.com", "passwdD1.")
-        userMgr.getUser("victor").msgThreads = [new MessageThread("holaquetal", "victor", ["JAJAJ", "adios"])];
+        //userMgr.getUser("victor").msgThreads = [new MessageThread("holaquetal", "victor", ["JAJAJ", "adios"])];
 
 
         // *** Validación de inputs ***
