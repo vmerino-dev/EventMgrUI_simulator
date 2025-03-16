@@ -1,6 +1,6 @@
 "using strict";
 
-// Nos aseguaremos que ocultamos la barra de desplazamiento hasta que se cargue la página
+// Nos aseguraremos que ocultamos la barra de desplazamiento hasta que se cargue la página
 document.body.style.overflow = "hidden";
 
 import logs from "./log.js";
@@ -57,6 +57,12 @@ async function dbAccess(){
     }
 }
 
+
+/**
+ * Función que renderiza el dashboard del usuario si ha sido modificado antes
+ * 
+ * @param {*} dashb_state Estado del dashboard obtenido del IDB 
+ */
 function renderDashboard(dashb_state){
     // El dashboard del usuario es diferente al original (por defecto)
     if(dashb_state !== 'default'){
@@ -73,3 +79,9 @@ function renderDashboard(dashb_state){
 
 }
 
+// Muestra el menú de un elemento del dashboard
+function displayMenu(event){ // El desencadenante es un botón (div)
+    let sectionDashb = event.target.closest('.main__module'); // Se obtiene el elemento padre con clase .main__module
+    const menuSection = sectionDashb.querySelector('.conf__menu'); // Se obtiene el elemento menu
+    menuSection.classList.add('.conf__menu--on'); // Se muestra
+}

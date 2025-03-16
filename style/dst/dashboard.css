@@ -171,6 +171,7 @@ se escoja. Por defecto se establece lo que se indica aquí.
   -webkit-backdrop-filter: blur(7px);
           backdrop-filter: blur(7px);
   box-shadow: 0 0 3px 1px #333;
+  display: none;
   position: absolute;
   top: 3px;
   right: 5px;

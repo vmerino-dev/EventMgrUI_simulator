@@ -190,7 +190,7 @@ se escoja. Por defecto se establece lo que se indica aquí.
     backdrop-filter: blur(7px);
     box-shadow: 0 0 3px 1px #333;
 
-    //display: none; // El menú no se renderiza hasta que se necesite --> .conf__menu--on
+    display: none; // El menú no se renderiza hasta que se necesite --> .conf__menu--on
     position: absolute;
     top: 3px;
     right: 5px;
