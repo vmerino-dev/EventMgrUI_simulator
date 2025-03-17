@@ -79,17 +79,40 @@ function renderDashboard(dashb_state){
 
 }
 
-// Muestra/Oculta el menú de un elemento del dashboard
-function displayMenu(event){ // El desencadenante es un botón (div)
-    // Si existe el último elemento se valida si el menú se está mostrando 
-    if(lastMenuElement){
-        if(lastMenuElement.classList.contains('conf__menu--on'))
-            lastMenuElement.classList.remove('conf__menu--on');
-    }
 
+/**
+ * displayMenu()
+ * 
+ * Muestra/Oculta el menú de un elemento del dashboard.
+ * 
+ * Es una función impura al utilizar la variable global 'lastMenuElement', pero
+ * al ser una función específica para el DOM y desencadenada por dashboard.html,
+ * lo consideré necesario.
+ * 
+ * @param {*} event 
+ */
+function displayMenu(event){ // El desencadenante es un botón (div)
+    // Obtenemos primero el elemento menú para validar si corresponde con lastMenuElement
     const sectionDashb = event.target.closest('.main__module'); // Se obtiene el elemento padre con clase .main__module
     const menuSection = sectionDashb.querySelector('.conf__menu'); // Se obtiene el elemento menu
     const sphereContent = sectionDashb.querySelector('.conf__sphere-content'); // Obtenemos el contenedor de la esfera
+
+    // Si existe el último elemento se valida si el menú se está mostrando 
+    if(lastMenuElement){
+
+        // Si el último elemento no es el mismo que el actual y está siendo mostrado
+        if(lastMenuElement.classList.contains('conf__menu--on') && (lastMenuElement !== menuSection)){
+            lastMenuElement.classList.remove('conf__menu--on'); // Se oculta
+        
+            // Obtenemos la esfera del anterior elemento
+            const lastSection = lastMenuElement.closest('.main__module');
+            const lastSphereContent = lastSection.querySelector('.conf__sphere-content');
+            
+            // Ocultamos la esfera y su contenedor
+            lastSphereContent.classList.remove('conf__menu--on');
+        }
+    }
+    
     menuSection.classList.toggle('conf__menu--on'); // Se muestra/oculta el menú
     sphereContent.classList.toggle('conf__menu--on'); // Se muestra/oculta la esfera
 
