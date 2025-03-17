@@ -81,9 +81,21 @@ function renderDashboard(dashb_state){
 
 // Muestra/Oculta el menú de un elemento del dashboard
 function displayMenu(event){ // El desencadenante es un botón (div)
-    let sectionDashb = event.target.closest('.main__module'); // Se obtiene el elemento padre con clase .main__module
+    const sectionDashb = event.target.closest('.main__module'); // Se obtiene el elemento padre con clase .main__module
     const menuSection = sectionDashb.querySelector('.conf__menu'); // Se obtiene el elemento menu
+    const sphereContent = sectionDashb.querySelector('.conf__sphere-content'); // Obtenemos el contenedor de la esfera
     menuSection.classList.toggle('conf__menu--on'); // Se muestra/oculta el menú
+    sphereContent.classList.toggle('conf__menu--on'); // Se muestra/oculta la esfera
+}
+
+function moveSphere(event){
+    const mainModule = event.target.closest('.main__module'); // Elemento padre main__module
+    const sphere = mainModule.querySelector('.sphere-zone__sphere'); // Obtenemos la esfera
+
+    // Posicionamos la esfera donde se sitúe el mouse
+    sphere.style.left = `${event.layerX-10}px`;
+    sphere.style.top = `${event.layerY-10}px`;
 }
 
 window.displayMenu = displayMenu;
+window.moveSphere = moveSphere;

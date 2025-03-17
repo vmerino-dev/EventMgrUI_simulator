@@ -182,18 +182,25 @@ se escoja. Por defecto se establece lo que se indica aquí.
 
 // Menú de los elementos en el dashboard
 .conf__menu { // .conf__menu--on para cambiar el estado a visible
-    width: 180px;
-    height: 180px;
     border-radius: 10px;
 
     background: #e0e0e099;
     backdrop-filter: blur(7px);
     box-shadow: 0 0 3px 1px #333;
 
-    display: none; // El menú no se renderiza hasta que se necesite --> .conf__menu--on
+    z-index: 400;
+}
+
+// Estilo del menú del elemento y del contenedor de la esfera estética
+.conf__menu, .conf__sphere-content {
+    width: 180px;
+    height: 180px;
+
     position: absolute;
     top: 3px;
     right: 5px;
+
+    display: none; // El menú no se renderiza hasta que se necesite --> .conf__menu--on
 }
 
 .conf__menu > div:first-child {
@@ -256,6 +263,26 @@ iframe {
 }
 
 // THEMES_SMACSS
+
+/* Aesthetic */
+.conf__sphere-content {
+    z-index: 300;
+}
+
+.sphere-content__sphere-zone {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.sphere-zone__sphere {
+    width: 20px;
+    height: 20px;
+    background: rgb(255, 255, 255);
+    filter: blur(10px);
+
+    position: absolute;
+}
 
 /* Animations */
 @keyframes header-fixed {
