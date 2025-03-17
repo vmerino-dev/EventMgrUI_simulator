@@ -10,6 +10,7 @@ import { IDBUsersEvents, ldDB_ValidInputs, idbUsrEvnt, userMgr, eventMgr, userMg
 
 // Obtenemos el id del usuario actual
 let usrSessionId = localStorage.getItem("userSession");
+let lastMenuElement; // Referencia al ultimo menu mostrado/ocultado
 
 // DEBUGGING: const header = document.createElement("h1");
 
@@ -41,7 +42,6 @@ async function dbAccess(){
 
         // Renderizamos el dashboard pasando el estado según el usuario
         renderDashboard(dashb_state);
-
         
         setTimeout(()=>{ // Simulamos una carga más longeva con 2 segundos al menos de carga (efecto estético)
             document.body.style.overflow = "auto";
@@ -81,11 +81,19 @@ function renderDashboard(dashb_state){
 
 // Muestra/Oculta el menú de un elemento del dashboard
 function displayMenu(event){ // El desencadenante es un botón (div)
+    // Si existe el último elemento se valida si el menú se está mostrando 
+    if(lastMenuElement){
+        if(lastMenuElement.classList.contains('conf__menu--on'))
+            lastMenuElement.classList.remove('conf__menu--on');
+    }
+
     const sectionDashb = event.target.closest('.main__module'); // Se obtiene el elemento padre con clase .main__module
     const menuSection = sectionDashb.querySelector('.conf__menu'); // Se obtiene el elemento menu
     const sphereContent = sectionDashb.querySelector('.conf__sphere-content'); // Obtenemos el contenedor de la esfera
     menuSection.classList.toggle('conf__menu--on'); // Se muestra/oculta el menú
     sphereContent.classList.toggle('conf__menu--on'); // Se muestra/oculta la esfera
+
+    lastMenuElement = menuSection;
 }
 
 function moveSphere(event){
@@ -93,8 +101,8 @@ function moveSphere(event){
     const sphere = mainModule.querySelector('.sphere-zone__sphere'); // Obtenemos la esfera
 
     // Posicionamos la esfera donde se sitúe el mouse
-    sphere.style.left = `${event.layerX-10}px`;
-    sphere.style.top = `${event.layerY-10}px`;
+    sphere.style.left = `${event.layerX-17}px`;
+    sphere.style.top = `${event.layerY-17}px`;
 }
 
 window.displayMenu = displayMenu;

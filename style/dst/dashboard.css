@@ -164,7 +164,6 @@ se escoja. Por defecto se establece lo que se indica aquí.
 }
 
 .conf__menu {
-  border-radius: 10px;
   background: rgba(224, 224, 224, 0.6);
   -webkit-backdrop-filter: blur(7px);
           backdrop-filter: blur(7px);
@@ -175,6 +174,7 @@ se escoja. Por defecto se establece lo que se indica aquí.
 .conf__menu, .conf__sphere-content {
   width: 180px;
   height: 180px;
+  border-radius: 10px;
   position: absolute;
   top: 3px;
   right: 5px;
@@ -240,6 +240,7 @@ iframe {
 /* Aesthetic */
 .conf__sphere-content {
   z-index: 300;
+  overflow: hidden;
 }
 
 .sphere-content__sphere-zone {
@@ -249,10 +250,10 @@ iframe {
 }
 
 .sphere-zone__sphere {
-  width: 20px;
-  height: 20px;
+  width: 34px;
+  height: 34px;
   background: rgb(255, 255, 255);
-  filter: blur(10px);
+  filter: blur(15px);
   position: absolute;
 }
 

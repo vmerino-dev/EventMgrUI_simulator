@@ -7,7 +7,7 @@ Using SMACSS Architecture & BEM
 
 // Variables
 $altHead: 65px;
-
+$sizeSphere: 34px;
 
 // BASE_SMACSS
 
@@ -182,8 +182,6 @@ se escoja. Por defecto se establece lo que se indica aquí.
 
 // Menú de los elementos en el dashboard
 .conf__menu { // .conf__menu--on para cambiar el estado a visible
-    border-radius: 10px;
-
     background: #e0e0e099;
     backdrop-filter: blur(7px);
     box-shadow: 0 0 3px 1px #333;
@@ -195,6 +193,7 @@ se escoja. Por defecto se establece lo que se indica aquí.
 .conf__menu, .conf__sphere-content {
     width: 180px;
     height: 180px;
+    border-radius: 10px;
 
     position: absolute;
     top: 3px;
@@ -267,6 +266,7 @@ iframe {
 /* Aesthetic */
 .conf__sphere-content {
     z-index: 300;
+    overflow: hidden;
 }
 
 .sphere-content__sphere-zone {
@@ -276,10 +276,10 @@ iframe {
 }
 
 .sphere-zone__sphere {
-    width: 20px;
-    height: 20px;
+    width: $sizeSphere;
+    height: $sizeSphere;
     background: rgb(255, 255, 255);
-    filter: blur(10px);
+    filter: blur(15px);
 
     position: absolute;
 }
