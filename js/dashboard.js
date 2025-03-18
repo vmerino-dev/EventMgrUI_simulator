@@ -43,31 +43,6 @@ async function dbAccess(){
         // Renderizamos el dashboard pasando el estado según el usuario
         renderDashboard(dashb_state);
 
-        const main = document.getElementsByClassName('main')[0]
-        const sectionOne = main.getElementsByTagName('section')[0];
-        let seccion;
-
-        document.body.style.position = 'relative';
-
-        sectionOne.addEventListener('dragstart', (e)=>{
-
-            setTimeout(()=>{
-                seccion = sectionOne.cloneNode(true);
-                seccion.style.position = 'absolute';
-                document.body.appendChild(seccion);
-
-                seccion.style.left = `${e.clientX}px`; // Establece la posición inicial
-                seccion.style.top = `${e.clientY}px`;  // Establece la posición inicial
-                seccion.style.zIndex = '1000'; // Aseguramos que el clon esté encima de los demás elementos
-
-            }, 0);
-        });
-        sectionOne.addEventListener('drag', (e)=>{
-            seccion.left = `${e.clientX}px`;
-            seccion.top = `${e.clientY}px`;
-            console.log(e.clientX, e.clientY);
-        });
-
 
         setTimeout(()=>{ // Simulamos una carga más longeva con 2 segundos al menos de carga (efecto estético)
             document.body.style.overflow = "auto";
