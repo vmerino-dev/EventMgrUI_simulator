@@ -26,8 +26,6 @@ setTimeout(()=>{
 
             // Si se clica al usuario se selecciona como favorito
             userTargets.addEventListener('click', (event)=>{
-                event.currentTarget.classList.toggle('selected');
-
                 /* Seleccionamos el usuario en los iframes del mismo tipo */
                 // Obtenemos el nombre de usuario
                 let usernameh2 = event.currentTarget.getElementsByTagName('h2')[0];
@@ -35,14 +33,14 @@ setTimeout(()=>{
                 // Enviamos mensaje a todos los demás iframes del mismo tipo con el usuario seleccionado
                 const contactIframes = window.parent.document.querySelectorAll('iframe[src="apps/contacts.htm"]');
 
-                console.log(contactIframes);
-
+                // Buscamos los contactos de cada iframe si el contacto del iframe original coincide
                 for(let iframe of contactIframes){
-                    const h2_iframe = iframe.contentDocument.getElementsByTagName('h2')[0];
+                    const all_h2_iframe = iframe.contentDocument.getElementsByTagName('h2');
 
-                    if(h2_iframe.innerHTML === usernameh2.innerHTML){
-                        h2_iframe.closest('article').classList.toggle('selected');
-                        break;
+                    for(let h2 of all_h2_iframe){
+                        if(h2.innerHTML === usernameh2.innerHTML){
+                            h2.closest('article').classList.toggle('selected');
+                        }
                     }
                 }
 

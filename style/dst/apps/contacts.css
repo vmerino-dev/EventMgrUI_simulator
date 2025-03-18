@@ -16,12 +16,11 @@ article {
     overflow: hidden;
     box-shadow: 2px 5px #b8b8b8;
     user-select: none;
+    cursor: pointer;
 }
 
 article.selected {
     filter: invert(1);
-   /* background: #0a0a0a;
-    color: rgb(223, 230, 230)*/
 }
 
 h2 {
@@ -33,10 +32,6 @@ img {
     height: 40px;
     padding: 0 30px;
 }
-/*
-img.selected {
-    filter: invert(1);
-}*/
 
 /* Scrollbar */
 ::-webkit-scrollbar {
