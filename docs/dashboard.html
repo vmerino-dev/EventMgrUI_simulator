@@ -53,15 +53,15 @@
 
         <header class="header">
             <section class="header__add">
-                <img class="add__icon" src="../assets/img/addElement.ico" alt="Add element" title="Añade un elemento" width="50px">
+                <img class="add__icon" src="../assets/img/addElement.ico" alt="Add element" title="Añade un elemento" width="50px" draggable="false">
             </section>
             <h2 class="header__title">Event Manager simulator</h2>
             <section class="header__profile">
-                <img class="profile__icon" src="../assets/img/profile.svg" alt="Profile" title="Perfil de usuario" width="50px">
+                <img class="profile__icon" src="../assets/img/profile.svg" alt="Profile" title="Perfil de usuario" width="50px" draggable="false">
             </section>
         </header>
         <main class="main">
-            <section class="main__module main__module--simple">
+            <section class="main__module main__module--simple" draggable="true">
                 <div class="module__conf">
                     <div class="conf__move"></div>
                     <div class="conf__change" onclick="displayMenu(event)">
@@ -87,7 +87,7 @@
                     </div>
                 </div>
             </section>
-            <section class="main__module main__module--row">
+            <section class="main__module main__module--row" draggable="true">
                 <div class="module__conf">
                     <div class="conf__move"></div>
                     <div class="conf__change" onclick="displayMenu(event)"></div>

@@ -101,6 +101,10 @@ div#loading {
   position: relative;
 }
 
+main > section.pos-absolute {
+  position: absolute;
+}
+
 /*
 Modificaciones de los módulos.
 
@@ -150,6 +154,10 @@ se escoja. Por defecto se establece lo que se indica aquí.
   width: 75px;
   border-radius: 10px;
   background-color: black;
+  cursor: grab;
+}
+.conf__move:active {
+  cursor: grabbing;
 }
 
 .conf__change {
