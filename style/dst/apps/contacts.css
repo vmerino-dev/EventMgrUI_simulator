@@ -1,0 +1,18 @@
+main {
+    border-radius: 20px;
+}
+
+article {
+    margin: 10px 5px;
+    border-radius: 20px;
+    background-color: rgb(223, 230, 230);
+
+    display: flex;
+    align-items: center;
+}
+
+img {
+    width: 40px;
+    height: 40px;
+    padding: 0 40px;
+}
