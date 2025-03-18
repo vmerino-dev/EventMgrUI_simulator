@@ -28,31 +28,30 @@ setTimeout(()=>{
             userTargets.addEventListener('click', (event)=>{
                 event.currentTarget.classList.toggle('selected');
 
+                /* Seleccionamos el usuario en los iframes del mismo tipo */
                 // Obtenemos el nombre de usuario
                 let usernameh2 = event.currentTarget.getElementsByTagName('h2')[0];
 
                 // Enviamos mensaje a todos los demás iframes del mismo tipo con el usuario seleccionado
-                const contactIframes = document.querySelectorAll('iframe[src="apps/contacts.htm"]');
-                contactIframes.forEach(iframe => iframe.contentWindow.postMessage(`${usernameh2}`, '*'));
-            });
+                const contactIframes = window.parent.document.querySelectorAll('iframe[src="apps/contacts.htm"]');
 
-            
+                console.log(contactIframes);
+
+                for(let iframe of contactIframes){
+                    const h2_iframe = iframe.contentDocument.getElementsByTagName('h2')[0];
+
+                    if(h2_iframe.innerHTML === usernameh2.innerHTML){
+                        h2_iframe.closest('article').classList.toggle('selected');
+                        break;
+                    }
+                }
+
+            });
 
             // Añadimos el módulo del usuario
             main.appendChild(userTargets);
             
         }
-
-        // Si recibimos mensaje de selección de usuario
-        window.addEventListener('message', (event)=>{
-            let h2Elems_users = main.getElementsByTagName('h2');
-
-            for(let h2 of h2Elems_users){
-                if(h2.innerHTML === event.data){
-                    event.currentTarget.classList.toggle('selected');
-                }
-            }
-        })
     }
 }
 ,2000)
