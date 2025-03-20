@@ -1,4 +1,22 @@
 
+// Sincronización con otras pestañas de contactos favoritos
+window.addEventListener('storage', (event)=>{
+
+    console.log('STORAGE')
+    if(event.key !== 'contact_pref' || event.newValue === 'none')
+        return 0;
+
+    const usernames_H2 = document.getElementsByTagName('h2');
+
+    for(let username_H2 of usernames_H2){
+        if(username_H2.innerText === event.newValue){
+            username_H2.closest('article').classList.toggle('selected');
+        }
+    }
+
+})
+
+
 setTimeout(()=>{
     if(window.parent.userMgr.users){
         const main = document.getElementsByTagName('main')[0];
@@ -44,28 +62,20 @@ setTimeout(()=>{
                     }
                 }
 
-                // Enviamos el usuario establecido como preferido
+                /**
+                 * Sincronizamos el usuario establecido en preferido al resto de ventanas
+                 **/
+
+                // Comparamos si el usuario en localStorage es el mismo que hemos modificado para asegurar el envío del evento
+                let usernameh2_localst = localStorage.getItem('contact_pref');
+
+                // Si el usuario almacenado es el que está indicado en localStorage, modificamos el localstorage a none
+                if(usernameh2_localst === usernameh2.innerText){
+                    localStorage.setItem('contact_pref', 'none');
+                    
+                }
+
                 localStorage.setItem('contact_pref', usernameh2.innerText);
-            
-
-
-                // Si la key del storage no es de un contacts.js o la ventana actual es un iframe
-                /*if((event.key !== 'contact_pref') || (window !== window.top))
-                    return -1;
-
-                const usernameh2 = event.newValue;
-                const contactIframes = window.document.querySelectorAll('iframe[src="apps/contacts.htm"]');
-
-                // Buscamos los contactos de cada iframe si el contacto del iframe original coincide
-                for(let iframe of contactIframes){
-                    const all_h2_iframe = iframe.contentDocument.getElementsByTagName('h2');
-
-                    for(let h2 of all_h2_iframe){
-                        if(h2.innerText === usernameh2){
-                            h2.closest('article').classList.toggle('selected');
-                        }
-                    }
-                }*/
 
             });
 
