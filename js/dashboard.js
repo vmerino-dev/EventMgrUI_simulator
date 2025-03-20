@@ -12,7 +12,8 @@ import { IDBUsersEvents, ldDB_ValidInputs, idbUsrEvnt, userMgr, eventMgr, userMg
 let usrSessionId = localStorage.getItem("userSession");
 let lastMenuElement; // Referencia al ultimo menu mostrado/ocultado
 
-// DEBUGGING: const header = document.createElement("h1");
+// DEBUGGING: 
+// const header = document.createElement("h1");
 
 dbAccess();
 

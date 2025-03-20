@@ -32,7 +32,7 @@ setTimeout(()=>{
 
                 // Enviamos mensaje a todos los demás iframes del mismo tipo con el usuario seleccionado
                 const contactIframes = window.parent.document.querySelectorAll('iframe[src="apps/contacts.htm"]');
-
+                
                 // Buscamos los contactos de cada iframe si el contacto del iframe original coincide
                 for(let iframe of contactIframes){
                     const all_h2_iframe = iframe.contentDocument.getElementsByTagName('h2');
@@ -43,6 +43,29 @@ setTimeout(()=>{
                         }
                     }
                 }
+
+                // Enviamos el usuario establecido como preferido
+                localStorage.setItem('contact_pref', usernameh2.innerText);
+            
+
+
+                // Si la key del storage no es de un contacts.js o la ventana actual es un iframe
+                /*if((event.key !== 'contact_pref') || (window !== window.top))
+                    return -1;
+
+                const usernameh2 = event.newValue;
+                const contactIframes = window.document.querySelectorAll('iframe[src="apps/contacts.htm"]');
+
+                // Buscamos los contactos de cada iframe si el contacto del iframe original coincide
+                for(let iframe of contactIframes){
+                    const all_h2_iframe = iframe.contentDocument.getElementsByTagName('h2');
+
+                    for(let h2 of all_h2_iframe){
+                        if(h2.innerText === usernameh2){
+                            h2.closest('article').classList.toggle('selected');
+                        }
+                    }
+                }*/
 
             });
 
