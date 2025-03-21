@@ -1,22 +1,4 @@
 
-// Sincronización con otras pestañas de contactos favoritos
-window.addEventListener('storage', (event)=>{
-
-    console.log('STORAGE')
-    if(event.key !== 'contact_pref' || event.newValue === 'none')
-        return 0;
-
-    const usernames_H2 = document.getElementsByTagName('h2');
-
-    for(let username_H2 of usernames_H2){
-        if(username_H2.innerText === event.newValue){
-            username_H2.closest('article').classList.toggle('selected');
-        }
-    }
-
-})
-
-
 setTimeout(()=>{
     if(window.parent.userMgr.users){
         const main = document.getElementsByTagName('main')[0];
@@ -44,6 +26,8 @@ setTimeout(()=>{
 
             // Si se clica al usuario se selecciona como favorito
             userTargets.addEventListener('click', (event)=>{
+                localStorage.setItem('same_window', window.top) // Referencia a ventana superior para no modificar de nuevo los article
+
                 /* Seleccionamos el usuario en los iframes del mismo tipo */
                 // Obtenemos el nombre de usuario
                 let usernameh2 = event.currentTarget.getElementsByTagName('h2')[0];
@@ -86,3 +70,28 @@ setTimeout(()=>{
     }
 }
 ,2000)
+
+
+// Sincronización con otras pestañas de contactos favoritos
+window.addEventListener('storage', (event)=>{
+    let same_window = localStorage.getItem('same_window');
+
+    console.log(same_window === window.top)
+
+    /* Si el evento no es respecto a contact_pref, el nuevo valor es none o same_window
+    es igual a la ventana superior (la ventana superior es común a los iframes en una misma
+    pestaña)
+    */
+    if(event.key !== 'contact_pref' || event.newValue === 'none' || same_window === window.top)
+        return 0;
+
+    console.log('STORAGE')
+    const usernames_H2 = document.getElementsByTagName('h2');
+
+    for(let username_H2 of usernames_H2){
+        if(username_H2.innerText === event.newValue){
+            username_H2.closest('article').classList.toggle('selected');
+        }
+    }
+
+})
