@@ -2,9 +2,11 @@
 setTimeout(()=>{
     if(window.parent.userMgr.users){
         const main = document.getElementsByTagName('main')[0];
-        users = window.parent.userMgr.users;
+        const users = window.parent.userMgr.users;
 
         for(let user in users){
+            const userTargets = addUserTarget(users[user].username);
+/*
             let userTargets;
 
             // Creamos un article para un usuario
@@ -23,6 +25,9 @@ setTimeout(()=>{
             infoUser.appendChild(username);
             infoUser.innerHTML += '\n' + users[user].email;
             userTargets.appendChild(infoUser);
+
+            // Añadimos el módulo del usuario
+            main.appendChild(userTargets);*/
 
             // Si se clica al usuario se selecciona como favorito
             userTargets.addEventListener('click', (event)=>{
@@ -49,9 +54,6 @@ setTimeout(()=>{
                 localStorage.setItem('contact_pref', usernameh2.innerText);
 
             });
-
-            // Añadimos el módulo del usuario
-            main.appendChild(userTargets);
             
         }
     }

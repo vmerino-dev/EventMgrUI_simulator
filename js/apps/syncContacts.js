@@ -31,24 +31,39 @@ window.addEventListener('storage', (event)=>{
     }
 
     if(!isUserInContacts && isMyContacts){
-        let userTargets = document.createElement('article');
-
-        let userProfile = document.createElement('img');
-        userProfile.setAttribute('src', '../../assets/img/profile.svg');
-        userTargets.appendChild(userProfile);
-
-        // Añadimos el nombre de usuario y email
-        const infoUser = document.createElement('p');
-        const username = document.createElement('h2');
-        username.innerHTML = event.newValue;
-
-        infoUser.appendChild(username);
-        infoUser.innerHTML += '\n' + 'asdfjdasñ';
-        userTargets.appendChild(infoUser);
-
-        // Añadimos el módulo del usuario
-        document.getElementsByTagName('main')[0].appendChild(userTargets);
+        addUserTarget(event.newValue);
     }
 
 
 })
+
+// Añade en el DOM del iframe un usuario
+function addUserTarget(username){
+    // Obtenemos el userMgr
+    const users = window.parent.userMgr;
+
+    // A través del usermgr, obtenemos el email mediante el objeto del usuario
+    const email = users.getUser(username).email;
+
+    let main = document.getElementsByTagName('main')[0]; // main del documento
+    let userTargets = document.createElement('article'); // Creamos un target para el user
+
+    // Añadimos la img del perfil del usuario
+    let userProfile = document.createElement('img');
+    userProfile.setAttribute('src', '../../assets/img/profile.svg');
+    userTargets.appendChild(userProfile);
+
+    // Añadimos el nombre de usuario y email
+    const infoUser = document.createElement('p');
+    const usernameElem = document.createElement('h2');
+    usernameElem.innerHTML = username;
+
+    infoUser.appendChild(usernameElem);
+    infoUser.innerHTML += '\n' + email;
+    userTargets.appendChild(infoUser);
+
+    // Añadimos el módulo del usuario
+    main.appendChild(userTargets);
+
+    return userTargets; // para añadir listeners
+}
