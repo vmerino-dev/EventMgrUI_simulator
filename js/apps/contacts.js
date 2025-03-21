@@ -57,22 +57,3 @@ setTimeout(()=>{
     }
 }
 ,2000)
-
-
-// Sincronización con otras pestañas de contactos favoritos
-window.addEventListener('storage', (event)=>{
-
-    /* Si el evento no es respecto a contact_pref o el nuevo valor es none */
-    if(event.key !== 'contact_pref' || event.newValue === 'none')
-        return 0;
-
-    console.log('STORAGE')
-    const usernames_H2 = document.getElementsByTagName('h2');
-
-    for(let username_H2 of usernames_H2){
-        if(username_H2.innerText === event.newValue){
-            username_H2.closest('article').classList.toggle('selected');
-        }
-    }
-
-})

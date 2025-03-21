@@ -33,6 +33,14 @@ img {
     padding: 0 30px;
 }
 
+/* Título en myContacts.htm */
+article#title {
+    min-height: 50px;
+    justify-content: center;
+    cursor: default;
+}
+
+
 /* Scrollbar */
 ::-webkit-scrollbar {
     width: 10px;
