@@ -26,25 +26,12 @@ setTimeout(()=>{
 
             // Si se clica al usuario se selecciona como favorito
             userTargets.addEventListener('click', (event)=>{
-                localStorage.setItem('same_window', window.top) // Referencia a ventana superior para no modificar de nuevo los article
 
                 /* Seleccionamos el usuario en los iframes del mismo tipo */
                 // Obtenemos el nombre de usuario
                 let usernameh2 = event.currentTarget.getElementsByTagName('h2')[0];
 
-                // Enviamos mensaje a todos los demás iframes del mismo tipo con el usuario seleccionado
-                const contactIframes = window.parent.document.querySelectorAll('iframe[src="apps/contacts.htm"]');
-                
-                // Buscamos los contactos de cada iframe si el contacto del iframe original coincide
-                for(let iframe of contactIframes){
-                    const all_h2_iframe = iframe.contentDocument.getElementsByTagName('h2');
-
-                    for(let h2 of all_h2_iframe){
-                        if(h2.innerHTML === usernameh2.innerHTML){
-                            h2.closest('article').classList.toggle('selected');
-                        }
-                    }
-                }
+                event.currentTarget.classList.toggle('selected');
 
                 /**
                  * Sincronizamos el usuario establecido en preferido al resto de ventanas
@@ -74,15 +61,9 @@ setTimeout(()=>{
 
 // Sincronización con otras pestañas de contactos favoritos
 window.addEventListener('storage', (event)=>{
-    let same_window = localStorage.getItem('same_window');
 
-    console.log(same_window === window.top)
-
-    /* Si el evento no es respecto a contact_pref, el nuevo valor es none o same_window
-    es igual a la ventana superior (la ventana superior es común a los iframes en una misma
-    pestaña)
-    */
-    if(event.key !== 'contact_pref' || event.newValue === 'none' || same_window === window.top)
+    /* Si el evento no es respecto a contact_pref o el nuevo valor es none */
+    if(event.key !== 'contact_pref' || event.newValue === 'none')
         return 0;
 
     console.log('STORAGE')
