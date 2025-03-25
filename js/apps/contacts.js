@@ -6,28 +6,6 @@ setTimeout(()=>{
 
         for(let user in users){
             const userTargets = addUserTarget(users[user].username);
-/*
-            let userTargets;
-
-            // Creamos un article para un usuario
-            userTargets = document.createElement('article');
-
-            // Añadimos el icono de usuario (en este simulador la foto de perfil no se puede modificar)
-            let userProfile = document.createElement('img');
-            userProfile.setAttribute('src', '../../assets/img/profile.svg');
-            userTargets.appendChild(userProfile);
-
-            // Añadimos el nombre de usuario y email
-            const infoUser = document.createElement('p');
-            const username = document.createElement('h2');
-            username.innerHTML = users[user].username;
-
-            infoUser.appendChild(username);
-            infoUser.innerHTML += '\n' + users[user].email;
-            userTargets.appendChild(infoUser);
-
-            // Añadimos el módulo del usuario
-            main.appendChild(userTargets);*/
 
             // Si se clica al usuario se selecciona como favorito
             userTargets.addEventListener('click', (event)=>{

@@ -1,6 +1,7 @@
 
 // Sincronización con otras pestañas de contactos favoritos
 window.addEventListener('storage', (event)=>{
+
     // Si el evento no es respecto a contact_pref o el nuevo valor es none
     if(event.key !== 'contact_pref' || event.newValue === 'none')
         return 0;
@@ -30,15 +31,16 @@ window.addEventListener('storage', (event)=>{
         }
     }
 
+    // Si el usuario no estaba añadido en myContacts se añade
     if(!isUserInContacts && isMyContacts){
-        addUserTarget(event.newValue);
+        addUserTarget(event.newValue, isMyContacts);
     }
 
 
 })
 
 // Añade en el DOM del iframe un usuario
-function addUserTarget(username){
+function addUserTarget(username, isMyContacts){
     // Obtenemos el userMgr
     const users = window.parent.userMgr;
 
@@ -47,6 +49,24 @@ function addUserTarget(username){
 
     let main = document.getElementsByTagName('main')[0]; // main del documento
     let userTargets = document.createElement('article'); // Creamos un target para el user
+
+    if(isMyContacts){
+        userTargets.addEventListener('click', (event) =>{
+            let username_h2 = event.currentTarget.getElementsByTagName('h2')[0];
+            event.currentTarget.remove();
+            
+            let usernameh2_localst = localStorage.getItem('contact_pref');
+
+            // Si el usuario almacenado es el que está indicado en localStorage, modificamos el localstorage a none
+            if(usernameh2_localst === username_h2.innerText){
+                localStorage.setItem('contact_pref', 'none'); // Esto permite recibir el evento storage cuando enviemos el usuario de verdad
+                
+            }
+
+            // Enviamos el usuario mediante evento storage
+            localStorage.setItem('contact_pref', username_h2.innerText)
+        });
+    }
 
     // Añadimos la img del perfil del usuario
     let userProfile = document.createElement('img');
