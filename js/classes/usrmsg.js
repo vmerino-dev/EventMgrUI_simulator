@@ -17,18 +17,13 @@ Va desde v (verbose) a vvvv (muy verbose)
 
 import logs from "../log.js";
 import Utils from "../utils.js";
-import { UserError, EmailError, PasswdError } from "../errors/eventErrors.js";
+import { UserError, EmailError, PasswdError, MsgThreadError } from "../errors/eventErrors.js";
 import { userMgr, eventMgr } from "../idb.js";
-import { EventMgr, ConferenceEvent, ConferenceStream, WorkshopEvent } from "./events.js";
+import { EventMgr, ConferenceEvent, ConferenceStream, WorkshopEvent, Interaction, VideoInteractionError } from "./events.js";
 
 // En una sesión de un usuario debe haber una variable que almacene el id de ese usuario
 export class UserMgr {
     users = {}; // {id: user, id2: user2, ...}
-
-    // getters
-    get users() { // Devuelve un objeto con los usuarios. Deberá guardarse en IndexedDB
-        return this.users;
-    }
 
     getUserId(id) { // Devuelve un usuario por su id
         // Validamos que exista user con ese id
@@ -456,19 +451,6 @@ export class MessageThread {
         this.user_src = user_src;
         this.user_dst = user_dst;
         this.messages = messages;
-    }
-
-    // getters
-    get user_src() {
-        return this.user_src;
-    }
-
-    get user_dst() {
-        return this.user_dst;
-    }
-
-    get messages() {
-        return this.messages;
     }
 
     // Métodos
